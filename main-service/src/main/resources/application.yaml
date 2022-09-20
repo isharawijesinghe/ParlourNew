@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: AUTHENTICATION-SERVICE
+    name: MAIN-SERVICE
 
 eureka:
   instance:
