@@ -1,8 +1,10 @@
 package com.ss.parlour.authenticationservice.handler;
 
 import com.ss.parlour.authenticationservice.persistance.AuthDAO;
+import com.ss.parlour.authenticationservice.repository.UserRepositoryI;
 import com.ss.parlour.authenticationservice.util.bean.AuthRequestBean;
 import com.ss.parlour.authenticationservice.util.bean.UserBean;
+import com.ss.parlour.authenticationservice.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,9 +12,12 @@ import org.springframework.stereotype.Component;
 public class AuthHandler implements AuthHandlerI {
     @Autowired
     private AuthDAO authDAO;
+    @Autowired
+    private UserRepositoryI userRepositoryI;
 
-    public UserBean login(AuthRequestBean authRequestBean){
-        return authDAO.login(authRequestBean);
+    public User login(AuthRequestBean authRequestBean){
+        User user = userRepositoryI.findByLoginName(authRequestBean.getLoginName());
+        return user;
     }
 
     public void createUser(UserBean userBeanBean){

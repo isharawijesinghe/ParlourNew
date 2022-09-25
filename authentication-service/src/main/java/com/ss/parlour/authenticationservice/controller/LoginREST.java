@@ -24,7 +24,7 @@ public class LoginREST {
         return "Hello parlour:0.0.1 "+System.currentTimeMillis();
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = {"application/json"})
     public AuthResponseBean login(@RequestBody AuthRequestBean request){
         logger.debug("=Login request found:"+request);
         return authServiceI.login(request);
