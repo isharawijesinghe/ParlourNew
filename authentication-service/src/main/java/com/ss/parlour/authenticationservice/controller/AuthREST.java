@@ -3,6 +3,8 @@ package com.ss.parlour.authenticationservice.controller;
 import com.ss.parlour.authenticationservice.service.AuthServiceI;
 import com.ss.parlour.authenticationservice.util.bean.AuthRequestBean;
 import com.ss.parlour.authenticationservice.util.bean.AuthResponseBean;
+import com.ss.parlour.authenticationservice.util.bean.UserRequestBean;
+import com.ss.parlour.authenticationservice.util.bean.UserResponseBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
 @RequestMapping(path = "/authentication",consumes=MediaType.APPLICATION_JSON_VALUE)
-public class LoginREST {
+public class AuthREST {
     private static Logger logger= LogManager.getLogger("LoginREST.class");
     @Autowired
     private AuthServiceI authServiceI;
@@ -28,6 +30,18 @@ public class LoginREST {
     public AuthResponseBean login(@RequestBody AuthRequestBean request){
         logger.debug("=Login request found:"+request);
         return authServiceI.login(request);
+    }
+
+    @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = {"application/json"})
+    public UserResponseBean login(@RequestBody UserRequestBean userRequestBean){
+        logger.debug("=Create user request found:"+userRequestBean);
+        return authServiceI.createUser(userRequestBean);
+    }
+
+    @RequestMapping(value = "/changePW", method = RequestMethod.POST, consumes = {"application/json"})
+    public UserResponseBean changePW(@RequestBody UserRequestBean userRequestBean){
+        logger.debug("=Change password request found:"+userRequestBean);
+        return authServiceI.changePW(userRequestBean);
     }
 
     public AuthServiceI getAuthServiceI() {
