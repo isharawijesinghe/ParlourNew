@@ -23,6 +23,11 @@ public class AuthHandler implements AuthHandlerI {
         return null;
     }
 
+    public User getUserByUserName(String userName){
+        User user = userRepositoryI.findByLoginName(userName);
+        return user;
+    }
+
     public User createUser(User user){
         userRepositoryI.insert(user);
         return user;

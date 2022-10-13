@@ -1,4 +1,4 @@
-package com.ss.parlour.authenticationservice.configurations;
+package com.ss.parlour.authenticationservice.configurations.dataSoureConfig;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

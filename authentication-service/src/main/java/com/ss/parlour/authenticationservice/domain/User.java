@@ -22,6 +22,8 @@ public class User {
     private String otherNames;
     private String secondName;
     private String title;
+    private String role;
+    private boolean enabled = false;
 
     public String getLoginName() {
         return loginName;
@@ -125,5 +127,21 @@ public class User {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
