@@ -34,7 +34,6 @@ import java.util.UUID;
 @EnableWebSecurity
 public class AuthorizationServerConfig {
 
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -72,6 +71,7 @@ public class AuthorizationServerConfig {
         JWKSet jwkSet = new JWKSet(rsaKey);
         return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
     }
+
 
     private static RSAKey generateRsa() {
         KeyPair keyPair = generateRsaKey();

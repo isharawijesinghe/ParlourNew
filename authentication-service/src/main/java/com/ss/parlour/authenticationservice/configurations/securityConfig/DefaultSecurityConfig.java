@@ -1,6 +1,6 @@
 package com.ss.parlour.authenticationservice.configurations.securityConfig;
 
-import com.ss.parlour.authenticationservice.service.AuthenticationService;
+import com.ss.parlour.authenticationservice.service.AuthenticationProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class DefaultSecurityConfig {
 
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthenticationProviderService authenticationProviderService;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -27,6 +27,6 @@ public class DefaultSecurityConfig {
     @Autowired
     public void bindAuthenticationProvider(AuthenticationManagerBuilder authenticationManagerBuilder) {
         authenticationManagerBuilder
-                .authenticationProvider(authenticationService);
+                .authenticationProvider(authenticationProviderService);
     }
 }
