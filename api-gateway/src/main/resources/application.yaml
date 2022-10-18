@@ -4,6 +4,20 @@ server:
 spring:
   application:
     name: API-GATEWAY
+  security:
+    oauth2:
+      client:
+        registration:
+          gateway:
+            provider: my-provider
+            client-id: gateway-client-id
+            client-secret: my-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://API-GATEWAY:9191/login/oauth2/code/{registrationId}"
+            scope: openid, message.read
+        provider:
+          my-provider:
+            issuer-uri: http://localhost:9002
   cloud:
     gateway:
       routes:
@@ -11,34 +25,14 @@ spring:
           uri: lb://AUTHENTICATION-SERVICE
           predicates:
             - Path=/authentication/**
+          filters:
+            TokenRelay=
         - id: MAIN-SERVICE
           uri: lb://MAIN-SERVICE
           predicates:
             - Path=/main/**
-
-security:
-  oauth2:
-    client:
-      registration:
-        api-client-oidc:
-          provider: spring
-          client-id: api-client
-          client-secret: secret
-          authorization-grant-type: authorization_code
-          redirect-uri: "http://127.0.0.1:8080/login/oauth2/code/{registrationId}"
-          scope: openid
-          client-name: api-client-oidc
-        api-client-authorization-code:
-          provider: spring
-          client-id: api-client
-          client-secret: secret
-          authorization-grant-type: authorization_code
-          redirect-uri: "http://127.0.0.1:8080/authorized"
-          scope: api.read
-          client-name: api-client-authorization-code
-      provider:
-        spring:
-          issuer-uri: http://auth-server:9000
+          filters:
+            TokenRelay=
 
 eureka:
   instance:

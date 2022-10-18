@@ -23,7 +23,7 @@ public class AuthREST {
 
     @RequestMapping(value = "/version", method = RequestMethod.GET)
     public String hello() {
-        return "Hello parlour:0.0.1 "+System.currentTimeMillis();
+        return "Hello parlour:0.0.1 " + System.currentTimeMillis();
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = {"application/json"})
