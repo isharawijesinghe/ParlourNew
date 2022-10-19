@@ -21,7 +21,6 @@ spring:
             - Path=/main/**
           filters:
             TokenRelay=
-
   security:
     oauth2:
       client:
