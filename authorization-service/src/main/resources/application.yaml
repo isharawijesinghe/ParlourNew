@@ -4,10 +4,6 @@ server:
 spring:
   application:
     name: AUTHENTICATION-SERVICE
-  cloud:
-    discovery:
-      locator:
-        enabled: true
   data:
     cassandra:
       keyspaceName: parlour

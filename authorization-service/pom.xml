@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ss.parlour</groupId>
-	<artifactId>authentication-service</artifactId>
+	<artifactId>authorization-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>authentication-service</name>
-	<description>authentication-service</description>
+	<name>authorization-service</name>
+	<description>authorization-service</description>
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>2021.0.4</spring-cloud.version>

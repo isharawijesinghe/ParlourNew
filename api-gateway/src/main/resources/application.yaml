@@ -35,7 +35,7 @@ spring:
             scope: openid, message.read
         provider:
           my-provider:
-            issuer-uri: http://AUTHENTICATION-SERVICE:9002
+            issuer-uri: http://127.0.0.1:9002
 
 eureka:
   instance:
