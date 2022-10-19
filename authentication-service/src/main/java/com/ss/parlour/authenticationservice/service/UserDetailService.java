@@ -44,7 +44,7 @@ public class UserDetailService implements AuthServiceI, UserDetailsService {
                 true,
                 true,
                 true,
-                getAuthorities(List.of(user.getRole()))
+                getAuthorities(user.getRole() != null ? List.of(user.getRole()): new ArrayList<>())
         );
     }
 
@@ -69,8 +69,10 @@ public class UserDetailService implements AuthServiceI, UserDetailsService {
 
     private Collection<? extends GrantedAuthority> getAuthorities(List<String> roles) {
         List<GrantedAuthority>  authorities = new ArrayList<>();
-        for(String role: roles) {
-            authorities.add(new SimpleGrantedAuthority(role));
+        if(roles != null){
+            for(String role: roles) {
+                authorities.add(new SimpleGrantedAuthority(role));
+            }
         }
         return authorities;
     }

@@ -45,22 +45,27 @@ public class AuthorizationServerConfig {
         return http.formLogin(Customizer.withDefaults()).build();
     }
 
+
+
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("api-client")
-                .clientSecret(passwordEncoder.encode("secret"))
+                // client-id and client-secret that must be used from all the OAuth2 clients
+                .clientId("gateway-client-id")
+                .clientSecret(passwordEncoder.encode("my-secret"))
+                // the Basic authentication method will be used between backend-gateway-client and backend-auth
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                // grant types to be used
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.PASSWORD)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://127.0.0.1:9191/login/oauth2/code/api-client-oidc")
+                // permitted redirect URI after the authentication is successful
+                .redirectUri("http://127.0.0.1:9191/login/oauth2/code/gateway")
                 .redirectUri("http://127.0.0.1:9191/authorized")
+                // acceptable scopes for the authorization
                 .scope(OidcScopes.OPENID)
-                .scope("api.read")
-                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .scope("message.read")
+                .scope("message.write")
                 .build();
-
 
         return new InMemoryRegisteredClientRepository(registeredClient);
     }
@@ -98,7 +103,7 @@ public class AuthorizationServerConfig {
     @Bean
     public ProviderSettings providerSettings() {
         return ProviderSettings.builder()
-                .issuer("http://localhost:9002")
+                .issuer("http://AUTHENTICATION-SERVICE:9002")
                 .build();
     }
 }

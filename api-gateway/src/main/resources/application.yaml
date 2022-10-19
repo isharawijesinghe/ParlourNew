@@ -1,9 +1,27 @@
 server:
   port: 9191
 
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty: DEBUG
+
 spring:
   application:
     name: API-GATEWAY
+  cloud:
+    discovery:
+      locator:
+        enabled: true
+    gateway:
+      routes:
+        - id: MAIN-SERVICE
+          uri: lb://MAIN-SERVICE/
+          predicates:
+            - Path=/main/**
+          filters:
+            TokenRelay=
+
   security:
     oauth2:
       client:
@@ -13,32 +31,17 @@ spring:
             client-id: gateway-client-id
             client-secret: my-secret
             authorization-grant-type: authorization_code
-            redirect-uri: "http://API-GATEWAY:9191/login/oauth2/code/{registrationId}"
+            redirect-uri: "http://127.0.0.1:9191/login/oauth2/code/{registrationId}"
             scope: openid, message.read
         provider:
           my-provider:
-            issuer-uri: http://localhost:9002
-  cloud:
-    gateway:
-      routes:
-        - id: AUTHENTICATION-SERVICE
-          uri: lb://AUTHENTICATION-SERVICE
-          predicates:
-            - Path=/authentication/**
-          filters:
-            TokenRelay=
-        - id: MAIN-SERVICE
-          uri: lb://MAIN-SERVICE
-          predicates:
-            - Path=/main/**
-          filters:
-            TokenRelay=
+            issuer-uri: http://AUTHENTICATION-SERVICE:9002
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: 127.0.0.1
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://127.0.0.1:8761/eureka/
