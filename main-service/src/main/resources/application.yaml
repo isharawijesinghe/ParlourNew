@@ -38,6 +38,7 @@ logging:
 #          spring:
 #            issuer-uri: http://localhost:9002
 
+
 eureka:
   instance:
     hostname: 127.0.0.1
