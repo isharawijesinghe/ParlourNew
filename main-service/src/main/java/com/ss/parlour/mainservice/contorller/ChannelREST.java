@@ -1,17 +1,13 @@
 package com.ss.parlour.mainservice.contorller;
 
-<<<<<<< Updated upstream
 import org.springframework.http.MediaType;
-=======
 import com.ss.parlour.mainservice.bean.ArticleBean;
 import com.ss.parlour.mainservice.bean.ChannelRequestBean;
 import com.ss.parlour.mainservice.bean.ChannelResponseBean;
-import com.ss.parlour.mainservice.service.ChannelService;
-import com.ss.parlour.mainservice.service.ChannelServiceI;
+import com.ss.parlour.mainservice.service.ChannelServiceHandlerI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChannelREST {
     private static Logger logger= LogManager.getLogger("public class ChannelREST {\n.class");
     @Autowired
-    private ChannelServiceI channelServiceHandler;
+    private ChannelServiceHandlerI channelServiceHandler;
 
     @RequestMapping(value = "/createChannel", method = RequestMethod.POST, consumes = {"application/json"})
     public ChannelResponseBean create(@RequestBody ChannelRequestBean request){

@@ -3,7 +3,6 @@ package com.ss.parlour.mainservice.service;
 import com.ss.parlour.mainservice.bean.ArticleBean;
 import com.ss.parlour.mainservice.bean.ChannelRequestBean;
 import com.ss.parlour.mainservice.bean.ChannelResponseBean;
-import com.ss.parlour.mainservice.domain.Channel;
 import com.ss.parlour.mainservice.handler.ChannelHandlerI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ChannelService implements ChannelServiceI {
+public class ChannelServiceHandler implements ChannelServiceHandlerI {
 
     @Autowired
     private ChannelHandlerI channelHandlerI;

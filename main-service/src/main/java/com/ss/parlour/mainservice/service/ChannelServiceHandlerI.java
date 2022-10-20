@@ -6,7 +6,7 @@ import com.ss.parlour.mainservice.bean.ChannelResponseBean;
 
 import java.util.List;
 
-public interface ChannelServiceI {
+public interface ChannelServiceHandlerI {
     ChannelResponseBean createChannel(ChannelRequestBean channelRequestBean);
     ChannelResponseBean deleteChannel(ChannelRequestBean channelRequestBean);
     ChannelResponseBean addToChannel(ArticleBean article);
