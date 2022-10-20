@@ -40,7 +40,7 @@ VALUES
         '0710935827',
         'user1First',
         1,
-        '123456',
+        '$2a$11$cEANSCawfJ7Si2K6fiEJMOMgFBeBFq3HVgZrm.XhHCPzqvgC0ztJi',
         'user1other@gmail.com',
         '071095829',
         'user1other',

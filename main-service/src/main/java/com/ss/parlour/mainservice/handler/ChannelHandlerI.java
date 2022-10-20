@@ -1,4 +1,4 @@
 package com.ss.parlour.mainservice.handler;
 
-public interface ChannelServiceHandlerI {
+public interface ChannelHandlerI {
 }
