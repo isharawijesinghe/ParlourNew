@@ -1,7 +1,6 @@
 package com.ss.parlour.userservice.handler;
 
 import com.ss.parlour.userservice.repository.UserRepositoryI;
-import com.ss.parlour.userservice.util.bean.AuthRequestBean;
 import com.ss.parlour.userservice.domain.User;
 import com.ss.parlour.userservice.util.bean.Constants;
 import com.ss.parlour.userservice.util.bean.UserRequestBean;
@@ -10,31 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthHandler implements AuthHandlerI {
+public class UserHandler implements UserHandlerI {
 
     @Autowired
     private UserRepositoryI userRepositoryI;
 
-    public User login(AuthRequestBean authRequestBean){
-        User user = userRepositoryI.findByLoginName(authRequestBean.getLoginName());
-        if(authRequestBean.getPw().toUpperCase().trim().equals(user.getLoginPw())){
-            return user;
-        }
-        return null;
-    }
-
-    public User getUserByUserName(String userName){
-        User user = userRepositoryI.findByLoginName(userName);
-        return user;
-    }
-
-    public User createUser(User user){
-        userRepositoryI.insert(user);
-        return user;
-    }
-
     public UserResponseBean createUser(UserRequestBean userRequestBean){
-        User user=new User();
+        User user = new User();
         user.setFirstName(userRequestBean.getFirstName());
         user.setAddress(userRequestBean.getAddress());
         user.setLoginName(userRequestBean.getLoginName());
@@ -65,6 +46,10 @@ public class AuthHandler implements AuthHandlerI {
 
         return userResponseBean;
     }
+
+//    protected User addUserToDb(){
+//
+//    }
 
 
 }

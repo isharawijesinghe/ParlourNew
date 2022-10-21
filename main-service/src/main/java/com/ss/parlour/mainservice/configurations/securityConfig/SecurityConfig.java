@@ -21,4 +21,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+//    @Bean
+//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeRequests()
+//                .antMatchers("/**").permitAll();
+//        return http.build();
+//    }
+
 }
