@@ -4,12 +4,14 @@ import com.ss.parlour.mainservice.bean.ArticleBean;
 import com.ss.parlour.mainservice.bean.ChannelRequestBean;
 import com.ss.parlour.mainservice.bean.ChannelResponseBean;
 
+import java.util.List;
+
 public interface ChannelServiceHandlerI {
     ChannelResponseBean createChannel(ChannelRequestBean channelRequestBean);
     ChannelResponseBean deleteChannel(ChannelRequestBean channelRequestBean);
     ChannelResponseBean addToChannel(ArticleBean article);
     ChannelResponseBean addToChannel(ArticleBean[] articles);
-    ChannelResponseBean[] viewChannel();
-    ChannelResponseBean[] viewChannel(ChannelRequestBean channelRequestBean);
-    ArticleBean[] viewArticles(ChannelRequestBean channelRequestBean);
+    ChannelResponseBean viewChannels();
+    ChannelResponseBean viewChannel(ChannelRequestBean channelRequestBean);
+    List<ArticleBean> viewArticles(ChannelRequestBean channelRequestBean);
 }
