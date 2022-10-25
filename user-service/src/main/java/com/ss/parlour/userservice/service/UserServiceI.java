@@ -5,6 +5,6 @@ import com.ss.parlour.userservice.util.bean.UserResponseBean;
 
 public interface UserServiceI {
 
-    public UserResponseBean createUser(UserRequestBean userRequestBean);
-    public UserResponseBean changePW(UserRequestBean userRequestBean);
+    UserResponseBean createUser(UserRequestBean userRequestBean);
+    UserResponseBean changePW(UserRequestBean userRequestBean);
 }

@@ -74,7 +74,77 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+<!--			<plugin>-->
+<!--				<groupId>io.fabric8</groupId>-->
+<!--				<artifactId>docker-maven-plugin</artifactId>-->
+<!--				<version>0.33.0</version>-->
+<!--				<configuration>-->
+<!--					<images>-->
+<!--						<image>-->
+<!--							<name>user-service</name>-->
+<!--							<build>-->
+<!--								<assembly>-->
+<!--									<descriptorRef>artifact</descriptorRef>-->
+<!--								</assembly>-->
+<!--								<tags>-->
+<!--									<tag>user-service</tag>-->
+<!--								</tags>-->
+<!--							</build>-->
+<!--						</image>-->
+<!--					</images>-->
+<!--					<imageTags>-->
+<!--						<imageTag>${project.version}</imageTag>-->
+<!--						<imageTag>latest</imageTag>-->
+<!--					</imageTags>-->
+<!--					<authConfig>-->
+<!--						<username>ishara007/user-service</username>-->
+<!--						<password>KNIGHT007@rider</password>-->
+<!--					</authConfig>-->
+<!--				</configuration>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>push</id>-->
+<!--						<phase>install</phase>-->
+<!--						<goals>-->
+<!--							<goal>build</goal>-->
+<!--							<goal>push</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
+
+
+<!--			<plugin>-->
+<!--				<groupId>com.spotify</groupId>-->
+<!--				<artifactId>dockerfile-maven-plugin</artifactId>-->
+<!--				<version>1.4.13</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>default</id>-->
+<!--						<goals>-->
+<!--							<goal>build</goal>-->
+<!--							<goal>push</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--				<configuration>-->
+<!--					<repository>ishara007/user-service</repository>-->
+<!--					<tag>${project.version}</tag>-->
+<!--					<useMavenSettingsForAuth>true</useMavenSettingsForAuth>-->
+<!--				</configuration>-->
+<!--				<dependencies>-->
+<!--					&lt;!&ndash; To make this work on JDK 9+ &ndash;&gt;-->
+<!--					<dependency>-->
+<!--						<groupId>javax.activation</groupId>-->
+<!--						<artifactId>javax.activation-api</artifactId>-->
+<!--						<version>1.2.0</version>-->
+<!--					</dependency>-->
+<!--				</dependencies>-->
+<!--			</plugin>-->
+
 		</plugins>
+
 	</build>
 
 </project>
