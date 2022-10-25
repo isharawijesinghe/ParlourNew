@@ -13,5 +13,6 @@
         <module>api-gateway</module>
         <module>main-service</module>
         <module>user-service</module>
+        <module>notification-server</module>
     </modules>
 </project>
