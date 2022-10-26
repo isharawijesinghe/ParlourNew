@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/channel",consumes= MediaType.APPLICATION_JSON_VALUE)
 public class ChannelREST {
     private static Logger logger= LogManager.getLogger("public class ChannelREST {\n.class");
+
     @Autowired
     private ChannelServiceHandlerI channelServiceHandler;
 

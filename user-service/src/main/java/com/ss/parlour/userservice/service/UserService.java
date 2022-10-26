@@ -1,8 +1,9 @@
 package com.ss.parlour.userservice.service;
 
-import com.ss.parlour.userservice.flow.UserFlowHandlerI;
+import com.ss.parlour.userservice.handler.UserHandlerI;
 import com.ss.parlour.userservice.util.bean.UserRequestBean;
 import com.ss.parlour.userservice.util.bean.UserResponseBean;
+import com.ss.parlour.userservice.util.validators.UserValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,21 +13,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService implements UserServiceI{
 
     @Autowired
-    private UserFlowHandlerI userFlowHandlerI;
+    UserHandlerI userHandlerI;
+
+    @Autowired
+    UserValidatorI userValidatorI;
 
     @Override
     public UserResponseBean createUser(UserRequestBean userRequestBean) {
-         return userFlowHandlerI.createUser(userRequestBean);
+        UserResponseBean userResponseBean = new UserResponseBean();
+        userValidatorI.validateCreateUserRequest(userRequestBean);
+        return userResponseBean;
     }
 
     @Override
     public UserResponseBean changePW(UserRequestBean userRequestBean) {
         UserResponseBean userResponseBean = new UserResponseBean();
-        try {
-            userResponseBean = userFlowHandlerI.changePW(userRequestBean);
-        }catch (Exception ex){
-
-        }
+        userValidatorI.validateChangePwRequest(userRequestBean);
         return userResponseBean;
     }
 }

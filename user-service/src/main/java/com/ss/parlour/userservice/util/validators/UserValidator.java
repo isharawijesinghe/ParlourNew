@@ -1,4 +1,4 @@
-package com.ss.parlour.userservice.validators;
+package com.ss.parlour.userservice.util.validators;
 
 import com.ss.parlour.userservice.util.bean.UserRequestBean;
 import org.springframework.stereotype.Component;
