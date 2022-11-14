@@ -1,9 +1,9 @@
 package com.ss.parlour.userservice.util.validators;
 
-import com.ss.parlour.userservice.util.bean.UserRequestBean;
+import com.ss.parlour.userservice.util.bean.UserRegisterRequestBean;
 
 public interface UserValidatorI {
 
-    void validateCreateUserRequest(UserRequestBean userRequestBean);
-    void validateChangePwRequest(UserRequestBean userRequestBean);
+    void validateCreateUserRequest(UserRegisterRequestBean userRegisterRequestBean);
+    void validateChangePwRequest(UserRegisterRequestBean userRegisterRequestBean);
 }

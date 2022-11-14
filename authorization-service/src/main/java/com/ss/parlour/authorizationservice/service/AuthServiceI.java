@@ -8,8 +8,5 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface AuthServiceI  {
-    public AuthResponseBean login(AuthRequestBean authRequest);
-    public UserResponseBean createUser(UserRequestBean userRequestBean);
-    public UserResponseBean changePW(UserRequestBean userRequestBean);
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 }

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: AUTHENTICATION-SERVICE
+    name: AUTHORIZATION-SERVICE
   data:
     cassandra:
       keyspaceName: parlour
@@ -24,3 +24,7 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://127.0.0.1:8761/eureka/
+
+security:
+  enable:
+    csrf=false:

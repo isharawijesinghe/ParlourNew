@@ -1,12 +1,16 @@
 server:
   port: 9191
 
+
+
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty: DEBUG
 
 spring:
+  main:
+    allow-bean-definition-overriding=true:
   application:
     name: API-GATEWAY
   cloud:
@@ -21,20 +25,30 @@ spring:
             - Path=/main/**
           filters:
             TokenRelay=
+        - id: AUTHORIZATION-SERVICE
+          uri: http://127.0.0.1:9002
+          predicates:
+            - Path=/oauth/**
   security:
     oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:9002
       client:
         registration:
           gateway:
             provider: my-provider
             client-id: gateway-client-id
             client-secret: my-secret
-            authorization-grant-type: authorization_code
+            authorization-grant-type: password
             redirect-uri: "http://127.0.0.1:9191/login/oauth2/code/{registrationId}"
             scope: openid, message.read
+            client-authentication-method: basic
         provider:
           my-provider:
             issuer-uri: http://127.0.0.1:9002
+            token-uri: http://127.0.0.1:9002/oauth/token
+            user-info-uri: http://127.0.0.1:9002/oauth/user
 
 eureka:
   instance:

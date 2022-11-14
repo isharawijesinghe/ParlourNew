@@ -2,47 +2,52 @@ create keyspace IF NOT EXISTS parlour with replication = {'class' : 'SimpleStrat
 and durable_writes = true;
 
 
-CREATE TABLE parlour.user (
+CREATE TABLE IF NOT EXISTS parlour.user (
     loginName text,
-    address text,
-    createdDate timestamp,
-    defaultEmail text,
-    defaultMobile text,
     firstName text,
-    gender int,
-    loginPw text,
-    otherEmails text,
-    otherMobiles text,
-    otherNames text,
-    secondName text,
-    title text,
-    PRIMARY KEY (loginname)
+    lastName text,
+    email text,
+    password text,
+    locked boolean,
+    enabled boolean,
+    createdDate timestamp,
+    lastUpdatedDate timestamp,
+    activeToken text,
+    PRIMARY KEY (loginName)
 );
 
+CREATE TABLE IF NOT EXISTS parlour.userLoginNameEmailMapper (
+    loginName text,
+    email text,
+    PRIMARY KEY (email)
+);
+
+CREATE TABLE IF NOT EXISTS parlour.userToken (
+    loginName text,
+    type text,
+    token text,
+    PRIMARY KEY (token)
+);
+
+
 INSERT INTO parlour.user (loginName,
-                          address ,
-                          createdDate ,
-                          defaultEmail ,
-                          defaultMobile ,
                           firstName ,
-                          gender ,
-                          loginPw ,
-                          otherEmails,
-                          otherMobiles ,
-                          otherNames ,
-                          secondName ,
-                          title )
+                          lastName ,
+                          email ,
+                          password ,
+                          locked ,
+                          enabled ,
+                          createdDate,
+                          lastUpdatedDate,
+                          activeToken)
 VALUES
        ('user1',
-        'colombo',
-        '2022-02-15',
-        'user1@gmail.com',
-        '0710935827',
         'user1First',
-        1,
+        'user1Last',
+        'user1@gmail.com',
         '$2a$11$cEANSCawfJ7Si2K6fiEJMOMgFBeBFq3HVgZrm.XhHCPzqvgC0ztJi',
-        'user1other@gmail.com',
-        '071095829',
-        'user1other',
-        'user1second',
-        'Engineer');
+        false,
+        true,
+        '2022-02-15',
+        '2022-02-15',
+        '');

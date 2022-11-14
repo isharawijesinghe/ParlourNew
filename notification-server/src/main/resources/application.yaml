@@ -1,0 +1,7 @@
+server:
+  port: 9005
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty: DEBUG

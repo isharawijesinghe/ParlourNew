@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,33 +34,20 @@ public class UserDetailService implements AuthServiceI, UserDetailsService {
             throw  new UsernameNotFoundException("No User Found");
         }
         return new org.springframework.security.core.userdetails.User(
-                user.getDefaultEmail(),
-                user.getLoginPw(),
+                user.getEmail(),
+                user.getPassword(),
                 user.isEnabled(),
                 true,
                 true,
                 true,
-                getAuthorities(user.getRole() != null ? List.of(user.getRole()): new ArrayList<>())
+              //  getAuthorities(user.getRole() != null ? List.of(user.getRole()): new ArrayList<>())
+                getAuthorities(new ArrayList<>())
         );
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(11);
-    }
-
-
-    public AuthResponseBean login(AuthRequestBean authRequest){
-        AuthResponseBean authResponseBean= new AuthResponseBean();
-        User user= authHandlerI.login(authRequest);
-        if(user!=null) {
-            authResponseBean.setStatus(Constants.STATUS_SUCCESS);
-            authResponseBean.setDescription("Login success");
-        }else{
-            authResponseBean.setStatus(Constants.STATUS_SUCCESS);
-            authResponseBean.setDescription("Invalid login name/password");
-        }
-        return authResponseBean;
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(List<String> roles) {
@@ -72,15 +60,6 @@ public class UserDetailService implements AuthServiceI, UserDetailsService {
         return authorities;
     }
 
-    @Override
-    public UserResponseBean createUser(UserRequestBean userRequestBean) {
-        return authHandlerI.createUser(userRequestBean);
-    }
-
-    @Override
-    public UserResponseBean changePW(UserRequestBean userRequestBean) {
-        return authHandlerI.changePW(userRequestBean);
-    }
 
     public AuthHandlerI getAuthHandlerI() {
         return authHandlerI;

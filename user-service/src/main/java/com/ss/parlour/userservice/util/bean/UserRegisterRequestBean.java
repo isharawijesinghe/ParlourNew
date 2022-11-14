@@ -1,11 +1,26 @@
 package com.ss.parlour.userservice.util.bean;
 
-public class AuthRequestBean {
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+public class UserRegisterRequestBean {
+
+    private String loginName;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
+    private String token;
 
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -37,5 +52,13 @@ public class AuthRequestBean {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
