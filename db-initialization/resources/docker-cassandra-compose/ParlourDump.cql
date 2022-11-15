@@ -22,12 +22,12 @@ CREATE TABLE IF NOT EXISTS parlour.userLoginNameEmailMapper (
     PRIMARY KEY (email)
 );
 
-CREATE TABLE IF NOT EXISTS parlour.userToken (
-    loginName text,
-    type text,
-    token text,
-    PRIMARY KEY (token)
-);
+-- CREATE TABLE IF NOT EXISTS parlour.userToken (
+--     token text,
+--     loginName text,
+--     type text,
+--     PRIMARY KEY (token)
+-- );
 
 
 INSERT INTO parlour.user (loginName,
