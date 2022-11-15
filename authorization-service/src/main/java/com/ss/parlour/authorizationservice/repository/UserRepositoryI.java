@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepositoryI extends CassandraRepository<User, String> {
+public interface  UserRepositoryI extends CassandraRepository<User, String> {
 
     Optional<User> findByLoginName(String loginName);
 }
