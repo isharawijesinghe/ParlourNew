@@ -4,7 +4,7 @@ import com.ss.parlour.mainservice.dao.ChannelDAOI;
 import com.ss.parlour.mainservice.utils.bean.ArticleBean;
 import com.ss.parlour.mainservice.utils.bean.ChannelRequestBean;
 import com.ss.parlour.mainservice.utils.bean.ChannelResponseBean;
-import com.ss.parlour.mainservice.utils.bean.Const;
+import com.ss.parlour.mainservice.utils.bean.MainConst;
 import com.ss.parlour.mainservice.domain.cassandra.Channel;
 import com.ss.parlour.mainservice.utils.exception.MainServiceRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class ChannelHandler implements ChannelHandlerI {
         Channel channel=new Channel();
         channel.setName(channelRequestBean.getChannelName());
         if(channelRequestBean.getChannelName() == null || channelRequestBean.getChannelName().trim().length()==0){
-            throw new MainServiceRuntimeException(Const.ERROR_DES_INVALID_CHANEL_NAME);
+            throw new MainServiceRuntimeException(MainConst.ERROR_DES_INVALID_CHANEL_NAME);
         }
         channel = channelDAOI.insertChannel(channel); //todo set auto generated ID
         ChannelResponseBean channelResponseBean= new ChannelResponseBean();
@@ -36,7 +36,7 @@ public class ChannelHandler implements ChannelHandlerI {
     @Override
     public ChannelResponseBean deleteChannel(ChannelRequestBean channelRequestBean) {
         if(channelRequestBean.getId() <= 0){
-            throw new MainServiceRuntimeException(Const.ERROR_DES_INVALID_CHANEL_ID);
+            throw new MainServiceRuntimeException(MainConst.ERROR_DES_INVALID_CHANEL_ID);
         }
         Channel channel = new Channel();
         channel.setChannelID(channelRequestBean.getId());
@@ -50,11 +50,11 @@ public class ChannelHandler implements ChannelHandlerI {
     @Override
     public ChannelResponseBean addToChannel(ArticleBean article) {
         if(article.getChannelID()<=0){
-            throw new MainServiceRuntimeException(Const.ERROR_DES_INVALID_CHANEL_ID);
+            throw new MainServiceRuntimeException(MainConst.ERROR_DES_INVALID_CHANEL_ID);
         }
         Channel channel = channelDAOI.findByChannelID(article.getChannelID());
         if(channel==null){
-            throw new MainServiceRuntimeException(Const.ERROR_DES_INVALID_CHANEL_ID);
+            throw new MainServiceRuntimeException(MainConst.ERROR_DES_INVALID_CHANEL_ID);
         }
         if(channel.getArticles()==null){
             channel.setArticles(new ArrayList<>());
@@ -90,7 +90,7 @@ public class ChannelHandler implements ChannelHandlerI {
     @Override
     public List<ArticleBean> viewArticles(ChannelRequestBean channelRequestBean) {
         if(channelRequestBean.getId()<=0){
-            throw new MainServiceRuntimeException(Const.ERROR_DES_INVALID_CHANEL_ID);
+            throw new MainServiceRuntimeException(MainConst.ERROR_DES_INVALID_CHANEL_ID);
         }
         Channel channel = channelDAOI.findByChannelID(channelRequestBean.getId());
         return channel.getArticles();

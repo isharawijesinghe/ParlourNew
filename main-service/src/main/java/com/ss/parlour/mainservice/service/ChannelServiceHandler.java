@@ -1,6 +1,5 @@
 package com.ss.parlour.mainservice.service;
 
-import com.kenai.jffi.Main;
 import com.ss.parlour.mainservice.utils.bean.ArticleBean;
 import com.ss.parlour.mainservice.utils.bean.ChannelErrorCodes;
 import com.ss.parlour.mainservice.utils.bean.ChannelRequestBean;
@@ -20,7 +19,7 @@ public class ChannelServiceHandler implements ChannelServiceHandlerI {
 
     @Override
     public ChannelResponseBean createChannel(ChannelRequestBean channelRequestBean) {
-        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        ChannelResponseBean channelResponseBean;
         try{
             channelResponseBean = channelHandlerI.createChannel(channelRequestBean);
             return channelResponseBean;
@@ -35,7 +34,7 @@ public class ChannelServiceHandler implements ChannelServiceHandlerI {
 
     @Override
     public ChannelResponseBean deleteChannel(ChannelRequestBean channelRequestBean) {
-        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        ChannelResponseBean channelResponseBean;
         try{
             channelResponseBean = channelHandlerI.deleteChannel(channelRequestBean);
             return channelResponseBean;
@@ -50,7 +49,7 @@ public class ChannelServiceHandler implements ChannelServiceHandlerI {
 
     @Override
     public ChannelResponseBean addToChannel(ArticleBean article) {
-        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        ChannelResponseBean channelResponseBean;
         try{
             channelResponseBean = channelHandlerI.addToChannel(article);
             return channelResponseBean;
@@ -65,7 +64,7 @@ public class ChannelServiceHandler implements ChannelServiceHandlerI {
 
     @Override
     public ChannelResponseBean addToChannel(ArticleBean[] articles) {
-        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        ChannelResponseBean channelResponseBean;
         try{
             channelResponseBean = channelHandlerI.addToChannel(articles);
             return channelResponseBean;
@@ -80,7 +79,7 @@ public class ChannelServiceHandler implements ChannelServiceHandlerI {
 
     @Override
     public ChannelResponseBean viewChannels() {
-        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        ChannelResponseBean channelResponseBean;
         try{
             channelResponseBean = channelHandlerI.viewChannels();
             return channelResponseBean;
@@ -95,7 +94,7 @@ public class ChannelServiceHandler implements ChannelServiceHandlerI {
 
     @Override
     public ChannelResponseBean viewChannel(ChannelRequestBean channelRequestBean) {
-        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        ChannelResponseBean channelResponseBean;
         try{
             channelResponseBean = channelHandlerI.viewChannel(channelRequestBean.getId());
             return channelResponseBean;
@@ -110,7 +109,7 @@ public class ChannelServiceHandler implements ChannelServiceHandlerI {
 
     @Override
     public List<ArticleBean> viewArticles(ChannelRequestBean channelRequestBean) {
-        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        ChannelResponseBean channelResponseBean;
         try{
             return channelHandlerI.viewArticles(channelRequestBean);
         }catch (MainServiceRuntimeException ex){
@@ -122,11 +121,4 @@ public class ChannelServiceHandler implements ChannelServiceHandlerI {
         }
     }
 
-    public ChannelHandlerI getChannelHandlerI() {
-        return channelHandlerI;
-    }
-
-    public void setChannelHandlerI(ChannelHandlerI channelHandlerI) {
-        this.channelHandlerI = channelHandlerI;
-    }
 }
