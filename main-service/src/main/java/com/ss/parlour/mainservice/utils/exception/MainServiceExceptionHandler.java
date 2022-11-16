@@ -1,4 +1,4 @@
-package com.ss.parlour.userservice.util.exception;
+package com.ss.parlour.mainservice.utils.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +9,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @ControllerAdvice
-public class UserServiceExceptionHandler {
+public class MainServiceExceptionHandler {
 
-    @ExceptionHandler(UserServiceRuntimeException.class)
-    public ResponseEntity<Object> handleUserServiceException(UserServiceRuntimeException ex){
+    @ExceptionHandler(MainServiceRuntimeException.class)
+    public ResponseEntity<Object> handleUserServiceException(MainServiceRuntimeException ex){
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
-        UserServiceErrorMessage userServiceException = new UserServiceErrorMessage(
+        MainServiceErrorMessage userServiceException = new MainServiceErrorMessage(
                 ex.getMessage(),
                 ex,
                 badRequest,
@@ -26,7 +26,7 @@ public class UserServiceExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleCommonException(Exception ex){
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
-        UserServiceErrorMessage userServiceException = new UserServiceErrorMessage(
+        MainServiceErrorMessage userServiceException = new MainServiceErrorMessage(
                 ex.getMessage(),
                 ex,
                 badRequest,
@@ -38,7 +38,7 @@ public class UserServiceExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handleRuntimeCommonException(RuntimeException ex){
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
-        UserServiceErrorMessage userServiceException = new UserServiceErrorMessage(
+        MainServiceErrorMessage userServiceException = new MainServiceErrorMessage(
                 ex.getMessage(),
                 ex,
                 badRequest,

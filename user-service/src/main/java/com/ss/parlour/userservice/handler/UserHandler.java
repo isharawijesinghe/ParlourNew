@@ -3,7 +3,7 @@ package com.ss.parlour.userservice.handler;
 import com.ss.parlour.userservice.dao.UserDAOI;
 import com.ss.parlour.userservice.domain.cassandra.User;
 import com.ss.parlour.userservice.util.bean.*;
-import com.ss.parlour.userservice.util.exception.UserServiceRequestException;
+import com.ss.parlour.userservice.util.exception.UserServiceRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,9 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.sql.Timestamp;
-import java.util.Calendar;
 
 @Component
 public class UserHandler implements UserHandlerI {
@@ -28,7 +25,7 @@ public class UserHandler implements UserHandlerI {
         try {
             userDAOI.saveUserDetails(userRegisterRequestBean);
         }catch (Exception ex){
-            throw new UserServiceRequestException(UserErrorCodes.USER_SAVE_ERROR);
+            throw new UserServiceRuntimeException(UserErrorCodes.USER_SAVE_ERROR);
         }
     }
 

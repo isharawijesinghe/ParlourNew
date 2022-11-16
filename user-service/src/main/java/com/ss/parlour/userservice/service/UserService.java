@@ -2,13 +2,12 @@ package com.ss.parlour.userservice.service;
 
 import com.ss.parlour.userservice.handler.UserHandlerI;
 import com.ss.parlour.userservice.util.bean.*;
-import com.ss.parlour.userservice.util.exception.UserServiceRequestException;
+import com.ss.parlour.userservice.util.exception.UserServiceRuntimeException;
 import com.ss.parlour.userservice.util.validators.UserValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -34,19 +33,19 @@ public class UserService implements UserServiceI{
             requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), UserConst.USER_ACTION_TYPE_REGISTER);
             userHandlerI.populateUserCreateResponseBean(userCommonResponseBean);
             return userCommonResponseBean;
-        }catch (UserServiceRequestException ex){
+        }catch (UserServiceRuntimeException ex){
             //todo add logger
             throw ex;
         }catch (Exception ex){
             //todo add logger
-            throw new UserServiceRequestException(UserErrorCodes.UNKNOWN_ERROR , ex);
+            throw new UserServiceRuntimeException(UserErrorCodes.UNKNOWN_ERROR , ex);
         }
     }
 
     public void confirmRegistration(){
         try{
 
-        }catch (UserServiceRequestException ex){
+        }catch (UserServiceRuntimeException ex){
 
         }catch (Exception ex){
 
@@ -61,10 +60,10 @@ public class UserService implements UserServiceI{
             userHandlerI.changePW(userRegisterRequestBean);
             userHandlerI.populateUserChangePwResponseBean(userRegisterRequestBean);
             return userCommonResponseBean;
-        }catch (UserServiceRequestException ex){
+        }catch (UserServiceRuntimeException ex){
             throw ex;
         }catch (Exception ex){
-            throw new UserServiceRequestException(UserErrorCodes.UNKNOWN_ERROR , ex);
+            throw new UserServiceRuntimeException(UserErrorCodes.UNKNOWN_ERROR , ex);
         }
     }
 
@@ -90,10 +89,10 @@ public class UserService implements UserServiceI{
             UserCommonResponseBean userCommonResponseBean = new UserCommonResponseBean();
 
             return userCommonResponseBean;
-        }catch (UserServiceRequestException ex){
+        }catch (UserServiceRuntimeException ex){
             throw ex;
         }catch (Exception ex){
-            throw new UserServiceRequestException(UserErrorCodes.UNKNOWN_ERROR , ex);
+            throw new UserServiceRuntimeException(UserErrorCodes.UNKNOWN_ERROR , ex);
         }
     }
 }

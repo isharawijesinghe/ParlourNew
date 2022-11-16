@@ -5,7 +5,7 @@ import com.ss.parlour.userservice.domain.cassandra.UserLoginNameEmailMapper;
 import com.ss.parlour.userservice.domain.cassandra.User;
 import com.ss.parlour.userservice.util.bean.UserErrorCodes;
 import com.ss.parlour.userservice.util.bean.UserRegisterRequestBean;
-import com.ss.parlour.userservice.util.exception.UserServiceRequestException;
+import com.ss.parlour.userservice.util.exception.UserServiceRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +29,7 @@ public class UserValidator implements UserValidatorI{
     protected void validateUserLoginNameExists(UserRegisterRequestBean userRegisterRequestBean){
         User existingUser = userDAOI.getUserByLoginName(userRegisterRequestBean.getLoginName());
         if (existingUser != null){
-            throw new UserServiceRequestException(UserErrorCodes.LOGIN_NAME_EXISTS);
+            throw new UserServiceRuntimeException(UserErrorCodes.LOGIN_NAME_EXISTS);
         }
     }
 
@@ -37,7 +37,7 @@ public class UserValidator implements UserValidatorI{
         UserLoginNameEmailMapper existingUserLoginNameEmailMapper
                 = userDAOI.getLoginNameEmailMapperBean(userRegisterRequestBean.getEmail());
         if (existingUserLoginNameEmailMapper != null){
-            throw new UserServiceRequestException(UserErrorCodes.EMAIL_EXISTS);
+            throw new UserServiceRuntimeException(UserErrorCodes.EMAIL_EXISTS);
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.ss.parlour.mainservice.utils.bean;
 
-import com.ss.parlour.mainservice.domain.Channel;
+import com.ss.parlour.mainservice.domain.cassandra.Channel;
 
 import java.util.List;
 
