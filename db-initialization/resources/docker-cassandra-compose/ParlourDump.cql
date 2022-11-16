@@ -29,6 +29,40 @@ CREATE TABLE IF NOT EXISTS parlour.userLoginNameEmailMapper (
 --     PRIMARY KEY (token)
 -- );
 
+CREATE TABLE parlour.channel (
+     name text,
+     title text,
+     ownerName text,
+     createdDate timestamp,
+     PRIMARY KEY (name)
+);
+
+CREATE TABLE parlour.article (
+     name text,
+     title text,
+     content text,
+     createdDate timestamp,
+     modifiedDate timestamp,
+     PRIMARY KEY (name)
+);
+
+CREATE TABLE parlour.channelArticles (
+     channelNam text,
+     articleName text,
+     PRIMARY KEY (channelNam,articleName)
+);
+
+CREATE TABLE parlour.articleHistory (
+    name text,
+    titleNew text,
+    titlePrev text,
+    contentNew text,
+    contentPrev text,
+    createdDate timestamp,
+    editedBy text,
+    PRIMARY KEY (name,editedBy,createdDate)
+);
+
 
 INSERT INTO parlour.user (loginName,
                           firstName ,

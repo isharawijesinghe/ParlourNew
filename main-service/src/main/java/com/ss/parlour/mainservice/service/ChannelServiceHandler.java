@@ -1,9 +1,12 @@
 package com.ss.parlour.mainservice.service;
 
-import com.ss.parlour.mainservice.bean.ArticleBean;
-import com.ss.parlour.mainservice.bean.ChannelRequestBean;
-import com.ss.parlour.mainservice.bean.ChannelResponseBean;
+import com.kenai.jffi.Main;
+import com.ss.parlour.mainservice.utils.bean.ArticleBean;
+import com.ss.parlour.mainservice.utils.bean.ChannelErrorCodes;
+import com.ss.parlour.mainservice.utils.bean.ChannelRequestBean;
+import com.ss.parlour.mainservice.utils.bean.ChannelResponseBean;
 import com.ss.parlour.mainservice.handler.ChannelHandlerI;
+import com.ss.parlour.mainservice.utils.exception.MainServiceRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,37 +20,106 @@ public class ChannelServiceHandler implements ChannelServiceHandlerI {
 
     @Override
     public ChannelResponseBean createChannel(ChannelRequestBean channelRequestBean) {
-        return channelHandlerI.createChannel(channelRequestBean);
+        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        try{
+            channelResponseBean = channelHandlerI.createChannel(channelRequestBean);
+            return channelResponseBean;
+        }catch (MainServiceRuntimeException ex){
+            //todo add logger
+            throw ex;
+        }catch (Exception ex){
+            //todo add logger
+            throw new MainServiceRuntimeException(ChannelErrorCodes.UNKNOWN_ERROR , ex);
+        }
     }
 
     @Override
     public ChannelResponseBean deleteChannel(ChannelRequestBean channelRequestBean) {
-        return channelHandlerI.deleteChannel(channelRequestBean);
+        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        try{
+            channelResponseBean = channelHandlerI.deleteChannel(channelRequestBean);
+            return channelResponseBean;
+        }catch (MainServiceRuntimeException ex){
+            //todo add logger
+            throw ex;
+        }catch (Exception ex){
+            //todo add logger
+            throw new MainServiceRuntimeException(ChannelErrorCodes.UNKNOWN_ERROR , ex);
+        }
     }
 
     @Override
     public ChannelResponseBean addToChannel(ArticleBean article) {
-        return channelHandlerI.addToChannel(article);
+        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        try{
+            channelResponseBean = channelHandlerI.addToChannel(article);
+            return channelResponseBean;
+        }catch (MainServiceRuntimeException ex){
+            //todo add logger
+            throw ex;
+        }catch (Exception ex){
+            //todo add logger
+            throw new MainServiceRuntimeException(ChannelErrorCodes.UNKNOWN_ERROR , ex);
+        }
     }
 
     @Override
     public ChannelResponseBean addToChannel(ArticleBean[] articles) {
-        return channelHandlerI.addToChannel(articles);
+        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        try{
+            channelResponseBean = channelHandlerI.addToChannel(articles);
+            return channelResponseBean;
+        }catch (MainServiceRuntimeException ex){
+            //todo add logger
+            throw ex;
+        }catch (Exception ex){
+            //todo add logger
+            throw new MainServiceRuntimeException(ChannelErrorCodes.UNKNOWN_ERROR , ex);
+        }
     }
 
     @Override
     public ChannelResponseBean viewChannels() {
-        return channelHandlerI.viewChannels();
+        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        try{
+            channelResponseBean = channelHandlerI.viewChannels();
+            return channelResponseBean;
+        }catch (MainServiceRuntimeException ex){
+            //todo add logger
+            throw ex;
+        }catch (Exception ex){
+            //todo add logger
+            throw new MainServiceRuntimeException(ChannelErrorCodes.UNKNOWN_ERROR , ex);
+        }
     }
 
     @Override
     public ChannelResponseBean viewChannel(ChannelRequestBean channelRequestBean) {
-        return channelHandlerI.viewChannel(channelRequestBean.getId());
+        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        try{
+            channelResponseBean = channelHandlerI.viewChannel(channelRequestBean.getId());
+            return channelResponseBean;
+        }catch (MainServiceRuntimeException ex){
+            //todo add logger
+            throw ex;
+        }catch (Exception ex){
+            //todo add logger
+            throw new MainServiceRuntimeException(ChannelErrorCodes.UNKNOWN_ERROR , ex);
+        }
     }
 
     @Override
     public List<ArticleBean> viewArticles(ChannelRequestBean channelRequestBean) {
-        return channelHandlerI.viewArticles(channelRequestBean);
+        ChannelResponseBean channelResponseBean = new ChannelResponseBean();
+        try{
+            return channelHandlerI.viewArticles(channelRequestBean);
+        }catch (MainServiceRuntimeException ex){
+            //todo add logger
+            throw ex;
+        }catch (Exception ex){
+            //todo add logger
+            throw new MainServiceRuntimeException(ChannelErrorCodes.UNKNOWN_ERROR , ex);
+        }
     }
 
     public ChannelHandlerI getChannelHandlerI() {

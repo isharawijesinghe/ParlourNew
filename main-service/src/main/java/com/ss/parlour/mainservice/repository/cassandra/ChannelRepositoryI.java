@@ -1,4 +1,4 @@
-package com.ss.parlour.mainservice.repository;
+package com.ss.parlour.mainservice.repository.cassandra;
 
 import com.ss.parlour.mainservice.domain.Channel;
 import org.springframework.data.cassandra.repository.CassandraRepository;

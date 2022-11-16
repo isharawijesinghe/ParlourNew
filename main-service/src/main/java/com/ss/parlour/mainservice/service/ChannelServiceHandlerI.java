@@ -1,8 +1,8 @@
 package com.ss.parlour.mainservice.service;
 
-import com.ss.parlour.mainservice.bean.ArticleBean;
-import com.ss.parlour.mainservice.bean.ChannelRequestBean;
-import com.ss.parlour.mainservice.bean.ChannelResponseBean;
+import com.ss.parlour.mainservice.utils.bean.ArticleBean;
+import com.ss.parlour.mainservice.utils.bean.ChannelRequestBean;
+import com.ss.parlour.mainservice.utils.bean.ChannelResponseBean;
 
 import java.util.List;
 

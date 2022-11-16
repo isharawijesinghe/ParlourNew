@@ -1,4 +1,4 @@
-package com.ss.parlour.mainservice.bean;
+package com.ss.parlour.mainservice.utils.bean;
 
 public class ArticleBean {
     private int channelID;
