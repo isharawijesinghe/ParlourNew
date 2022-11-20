@@ -60,7 +60,7 @@ public class AuthService implements AuthServiceI{
             authValidatorI.validateCreateUserRequest(userRegisterRequestBean);
             authHandlerI.createUser(userRegisterRequestBean);
             //Asynchronously send email requests + calling notification service
-           // requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), UserConst.USER_ACTION_TYPE_REGISTER);
+            requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), AuthorizationConst.USER_ACTION_TYPE_REGISTER);
             authHandlerI.populateUserRegistrationResponseBean(userRegistrationResponseBean);
             return userRegistrationResponseBean;
         }catch (Exception ex){

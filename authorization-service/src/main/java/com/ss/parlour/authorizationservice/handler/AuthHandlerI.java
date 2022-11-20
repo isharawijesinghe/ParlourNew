@@ -11,5 +11,4 @@ public interface AuthHandlerI {
     void populateUserRegistrationResponseBean(UserRegistrationResponseBean userRegistrationResponseBean);
     User saveUser(User user);
     EmailRequestBean populateEmailRequest(String receiverEmail, String token, String type);
-    void sendNotificationMail(EmailRequestBean emailRequestBean);
 }
