@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS parlour.user (
     createdDate timestamp,
     lastUpdatedDate timestamp,
     activeToken text,
+    provider text,
+    imageUrl text,
+    providerId text,
     PRIMARY KEY (loginName)
 );
 
@@ -64,24 +67,24 @@ CREATE TABLE parlour.articleHistory (
 );
 
 
-INSERT INTO parlour.user (loginName,
-                          firstName ,
-                          lastName ,
-                          email ,
-                          password ,
-                          locked ,
-                          enabled ,
-                          createdDate,
-                          lastUpdatedDate,
-                          activeToken)
-VALUES
-       ('user1',
-        'user1First',
-        'user1Last',
-        'user1@gmail.com',
-        '$2a$11$cEANSCawfJ7Si2K6fiEJMOMgFBeBFq3HVgZrm.XhHCPzqvgC0ztJi',
-        false,
-        true,
-        '2022-02-15',
-        '2022-02-15',
-        '');
+-- INSERT INTO parlour.user (loginName,
+--                           firstName ,
+--                           lastName ,
+--                           email ,
+--                           password ,
+--                           locked ,
+--                           enabled ,
+--                           createdDate,
+--                           lastUpdatedDate,
+--                           activeToken)
+-- VALUES
+--        ('user1',
+--         'user1First',
+--         'user1Last',
+--         'user1@gmail.com',
+--         '$2a$11$cEANSCawfJ7Si2K6fiEJMOMgFBeBFq3HVgZrm.XhHCPzqvgC0ztJi',
+--         false,
+--         true,
+--         '2022-02-15',
+--         '2022-02-15',
+--         '');

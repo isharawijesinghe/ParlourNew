@@ -1,6 +1,6 @@
 package com.ss.parlour.authorizationservice.util.bean;
 
-public class UserResponseBean {
+public class UserCommonResponseBean {
     private int status;
     private String narration;
 

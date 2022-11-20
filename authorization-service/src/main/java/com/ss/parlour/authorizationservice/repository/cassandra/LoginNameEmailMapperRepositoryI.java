@@ -1,6 +1,6 @@
-package com.ss.parlour.authorizationservice.domain;
+package com.ss.parlour.authorizationservice.repository.cassandra;
 
-import com.ss.parlour.authorizationservice.repository.UserLoginNameEmailMapper;
+import com.ss.parlour.authorizationservice.domain.cassandra.UserLoginNameEmailMapper;
 import org.springframework.data.cassandra.repository.CassandraRepository;
 
 import java.util.Optional;

@@ -3,8 +3,12 @@ package com.ss.parlour.authorizationservice.util.bean;
 public class AuthResponseBean {
     private int status;
     private String description;
-    private int userId;
-    private String firstName;
+    private String accessToken;
+    private String tokenType = "Bearer";
+
+    public AuthResponseBean(String accessToken) {
+        this.setAccessToken(accessToken);
+    }
 
     public int getStatus() {
         return status;
@@ -22,19 +26,19 @@ public class AuthResponseBean {
         this.description = description;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getTokenType() {
+        return tokenType;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
     }
 }

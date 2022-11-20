@@ -1,54 +1,66 @@
-//package com.ss.parlour.authorizationservice.controller;
-//
-//import com.ss.parlour.authorizationservice.service.AuthServiceI;
-//import com.ss.parlour.authorizationservice.util.bean.AuthRequestBean;
-//import com.ss.parlour.authorizationservice.util.bean.AuthResponseBean;
-//import com.ss.parlour.authorizationservice.util.bean.UserRequestBean;
-//import com.ss.parlour.authorizationservice.util.bean.UserResponseBean;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.MediaType;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestMethod;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//@RestController()
-//@RequestMapping(path = "/authentication",consumes=MediaType.APPLICATION_JSON_VALUE)
-//public class AuthREST {
-//    private static Logger logger= LogManager.getLogger("LoginREST.class");
-//    @Autowired
-//    private AuthServiceI authServiceI;
-//
-//    @RequestMapping(value = "/version", method = RequestMethod.GET)
-//    public String hello() {
-//        return "Hello parlour:0.0.1 " + System.currentTimeMillis();
-//    }
-//
-//    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = {"application/json"})
-//    public AuthResponseBean login(@RequestBody AuthRequestBean request){
-//        logger.debug("=Login request found:"+request);
-//        return authServiceI.login(request);
-//    }
-//
-//    @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = {"application/json"})
-//    public UserResponseBean login(@RequestBody UserRequestBean userRequestBean){
-//        logger.debug("=Create user request found:"+userRequestBean);
-//        return authServiceI.createUser(userRequestBean);
-//    }
-//
-//    @RequestMapping(value = "/changePW", method = RequestMethod.POST, consumes = {"application/json"})
-//    public UserResponseBean changePW(@RequestBody UserRequestBean userRequestBean){
-//        logger.debug("=Change password request found:"+userRequestBean);
-//        return authServiceI.changePW(userRequestBean);
-//    }
-//
-//    public AuthServiceI getAuthServiceI() {
-//        return authServiceI;
-//    }
-//
-//    public void setAuthServiceI(AuthServiceI authServiceI) {
-//        this.authServiceI = authServiceI;
-//    }
-//}
+package com.ss.parlour.authorizationservice.controller;
+
+import com.ss.parlour.authorizationservice.configurations.security.CurrentUser;
+import com.ss.parlour.authorizationservice.configurations.security.UserPrincipal;
+import com.ss.parlour.authorizationservice.domain.cassandra.User;
+import com.ss.parlour.authorizationservice.repository.cassandra.UserRepositoryI;
+import com.ss.parlour.authorizationservice.service.AuthServiceI;
+import com.ss.parlour.authorizationservice.util.bean.AuthRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.AuthResponseBean;
+import com.ss.parlour.authorizationservice.util.bean.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.UserRegistrationResponseBean;
+import com.ss.parlour.authorizationservice.util.exception.ResourceNotFoundException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+@RestController()
+@RequestMapping(path = "/authentication",consumes=MediaType.APPLICATION_JSON_VALUE)
+public class AuthREST {
+
+    private static Logger logger= LogManager.getLogger("LoginREST.class");
+
+    @Autowired
+    private AuthServiceI authServiceI;
+
+    @Autowired
+    private UserRepositoryI userRepository;
+
+
+    @RequestMapping(value = "/version", method = RequestMethod.GET)
+    public String hello() {
+        return "Hello parlour:0.0.1 " + System.currentTimeMillis();
+    }
+
+    @RequestMapping(value = "/auth/login", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<?> login(@RequestBody AuthRequestBean authRequestBean){
+        logger.debug("=Login request found: " + authRequestBean);
+        AuthResponseBean authResponseBean = authServiceI.userLogin(authRequestBean);
+        return ResponseEntity.ok(authResponseBean);
+    }
+
+    @RequestMapping(value = "/auth/createUser", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<?> login(@RequestBody UserRegisterRequestBean userRegisterRequestBean){
+        logger.debug("=Create user request found: " + userRegisterRequestBean);
+        UserRegistrationResponseBean userRegistrationResponseBean = authServiceI.registerUser(userRegisterRequestBean);
+        return ResponseEntity.ok(userRegistrationResponseBean);
+//        URI location = ServletUriComponentsBuilder
+//                .fromCurrentContextPath().path("/user/me")
+//                .buildAndExpand(result.getUsername()).toUri();
+
+//        return ResponseEntity.created(location)
+//                .body(new UserRegistrationResponseBean(true, "User registered successfully@"));
+    }
+
+    @GetMapping("/user/me")
+    @PreAuthorize("hasRole('USER')")
+    public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
+        return userRepository.findByLoginName(userPrincipal.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getEmail()));
+    }
+
+}

@@ -1,4 +1,4 @@
-package com.ss.parlour.authorizationservice.repository;
+package com.ss.parlour.authorizationservice.domain.cassandra;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;

@@ -1,5 +1,7 @@
-package com.ss.parlour.authorizationservice.domain;
+package com.ss.parlour.authorizationservice.domain.cassandra;
 
+import com.ss.parlour.authorizationservice.util.bean.AuthProvider;
+import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +24,10 @@ public class User implements UserDetails {
     private Timestamp createdDate;
     private Timestamp lastUpdatedDate;
     private String activeToken;
+    @CassandraType(type = CassandraType.Name.TEXT)
+    private AuthProvider provider;
+    private String imageUrl;
+    private String providerId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -132,5 +138,29 @@ public class User implements UserDetails {
 
     public void setActiveToken(String activeToken) {
         this.activeToken = activeToken;
+    }
+
+    public AuthProvider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(AuthProvider provider) {
+        this.provider = provider;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 }

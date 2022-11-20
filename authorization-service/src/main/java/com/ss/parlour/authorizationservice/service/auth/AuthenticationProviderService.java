@@ -1,6 +1,8 @@
-package com.ss.parlour.authorizationservice.service;
+package com.ss.parlour.authorizationservice.service.auth;
 
+import com.ss.parlour.authorizationservice.service.AuthServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationProviderService implements AuthenticationProvider {
 
     @Autowired
-    private AuthServiceI authServiceI;
+    private UserDetailServiceI userDetailServiceI;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -23,13 +25,13 @@ public class AuthenticationProviderService implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        UserDetails user= authServiceI.loadUserByUsername(username);
+        UserDetails user= userDetailServiceI.loadUserByUsername(username);
         return checkPassword(user,password);
     }
 
     private Authentication checkPassword(UserDetails user, String rawPassword) {
         if(passwordEncoder.matches(rawPassword, user.getPassword())) {
-            return new UsernamePasswordAuthenticationToken(user.getUsername(),
+            return new UsernamePasswordAuthenticationToken(user,
                     user.getPassword(),
                     user.getAuthorities());
         } else {

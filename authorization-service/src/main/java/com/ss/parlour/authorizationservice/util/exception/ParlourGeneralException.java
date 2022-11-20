@@ -1,4 +1,4 @@
-package com.ss.parlour.authorizationservice.util.exception.runtime;
+package com.ss.parlour.authorizationservice.util.exception;
 
 public class ParlourGeneralException extends RuntimeException {
     public ParlourGeneralException(){

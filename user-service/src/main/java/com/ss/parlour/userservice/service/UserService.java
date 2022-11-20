@@ -95,4 +95,6 @@ public class UserService implements UserServiceI{
             throw new UserServiceRuntimeException(UserErrorCodes.UNKNOWN_ERROR , ex);
         }
     }
+
+
 }

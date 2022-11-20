@@ -30,21 +30,4 @@ public class JSONHandler {
         return null;
     }
 
-    public static void main(String[] args) {
-        UserRequestBean userRequestBean=new UserRequestBean();
-        userRequestBean.setAddress("61/8c,test address");
-        userRequestBean.setEmailDefault("samurdiwitharana123@gmail.com");
-        userRequestBean.setFirstName("samurdi");
-        userRequestBean.setLoginName("samurdi");
-//        userRequestBean.setOldPW("123");
-        userRequestBean.setPw("123");
-        userRequestBean.setMobileNo("0773743222");
-
-        AuthRequestBean authRequestBean=new AuthRequestBean();
-        authRequestBean.setLoginName("samurdi");
-        authRequestBean.setPw("123");
-        JSONHandler jsonHandler=new JSONHandler();
-        String json=jsonHandler.getJSonString(userRequestBean);
-        System.out.println("==Json:"+json);
-    }
 }

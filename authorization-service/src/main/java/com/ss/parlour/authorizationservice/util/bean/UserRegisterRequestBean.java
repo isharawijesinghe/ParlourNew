@@ -1,12 +1,22 @@
 package com.ss.parlour.authorizationservice.util.bean;
 
-public class UserRequestBean {
-    private String userName;
+public class UserRegisterRequestBean {
+
+    private String loginName;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
+    private String token;
 
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -40,11 +50,11 @@ public class UserRequestBean {
         this.password = password;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getToken() {
+        return token;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setToken(String token) {
+        this.token = token;
     }
 }

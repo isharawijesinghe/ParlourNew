@@ -1,22 +1,23 @@
 package com.ss.parlour.authorizationservice.util.bean;
 
 public class AuthRequestBean {
-    private String loginName;
-    private String pw;
+    private String userIdentification;
+    private String password;
 
-    public String getLoginName() {
-        return loginName;
+
+    public String getPassword() {
+        return password;
     }
 
-    public void setLoginName(String loginName) {
-        this.loginName = loginName;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getPw() {
-        return pw;
+    public String getUserIdentification() {
+        return userIdentification;
     }
 
-    public void setPw(String pw) {
-        this.pw = pw;
+    public void setUserIdentification(String userIdentification) {
+        this.userIdentification = userIdentification;
     }
 }

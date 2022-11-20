@@ -1,13 +1,11 @@
 package com.ss.parlour.authorizationservice.handler;
 
 import com.ss.parlour.authorizationservice.dao.UserDAOI;
-import com.ss.parlour.authorizationservice.repository.UserRepositoryI;
-import com.ss.parlour.authorizationservice.util.bean.AuthRequestBean;
-import com.ss.parlour.authorizationservice.domain.User;
-import com.ss.parlour.authorizationservice.util.bean.Constants;
-import com.ss.parlour.authorizationservice.util.bean.UserRequestBean;
-import com.ss.parlour.authorizationservice.util.bean.UserResponseBean;
+import com.ss.parlour.authorizationservice.domain.cassandra.User;
+import com.ss.parlour.authorizationservice.util.bean.*;
+import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,8 +14,39 @@ public class AuthHandler implements AuthHandlerI {
     @Autowired
     private UserDAOI userDAOI;
 
-    public User getUserByUserName(String userName){
-        return userDAOI.getUser(userName);
+    public User loadUserByIdentification(String userName){
+        return userDAOI.loadUserByIdentification(userName);
+    }
+
+    @Override
+    public void createUser(UserRegisterRequestBean userRegisterRequestBean){
+        try {
+            userDAOI.saveUserDetails(userRegisterRequestBean);
+        }catch (Exception ex){
+            throw new AuthorizationRuntimeException(AuthorizationErrorCodes.USER_SAVE_ERROR);
+        }
+    }
+
+    @Override
+    public void populateUserRegistrationResponseBean(UserRegistrationResponseBean userRegistrationResponseBean){
+        userRegistrationResponseBean.setNarration(AuthorizationConst.USER_REGISTER_SUCCESS_NARRATION);
+        userRegistrationResponseBean.setStatus(AuthorizationConst.TRUE);
+    }
+
+    @Override
+    public EmailRequestBean populateEmailRequest(String receiverEmail,  String token, String type){
+        EmailRequestBean emailRequestBean = new EmailRequestBean();
+        emailRequestBean.setReceiverEmail(receiverEmail);
+        emailRequestBean.setType(type);
+        emailRequestBean.setConfirmationToken(token);
+        return emailRequestBean;
+    }
+
+
+
+    @Override
+    public User saveUser(User user){
+        return userDAOI.saveUser(user);
     }
 
 
