@@ -7,8 +7,10 @@ import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeEx
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Component
+@Service
 public class AuthHandler implements AuthHandlerI {
 
     @Autowired
@@ -18,6 +20,7 @@ public class AuthHandler implements AuthHandlerI {
         return userDAOI.loadUserByIdentification(userName);
     }
 
+    @Transactional
     @Override
     public void createUser(UserRegisterRequestBean userRegisterRequestBean){
         try {

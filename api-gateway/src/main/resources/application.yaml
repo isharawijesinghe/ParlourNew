@@ -22,23 +22,29 @@ spring:
         - id: MAIN-SERVICE
           uri: lb://MAIN-SERVICE/
           predicates:
-            - Path=/main/**
+            - Path=/channel/**
           filters:
             TokenRelay=
-  security:
-    oauth2:
-      client:
-        registration:
-          gateway:
-            provider: my-provider
-            client-id: gateway-client-id
-            client-secret: my-secret
-            authorization-grant-type: authorization_code
-            redirect-uri: "http://127.0.0.1:9191/login/oauth2/code/{registrationId}"
-            scope: openid, message.read
-        provider:
-          my-provider:
+
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
             issuer-uri: http://127.0.0.1:9002
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          gateway:
+#            provider: my-provider
+#            client-id: gateway-client-id
+#            client-secret: my-secret
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "http://127.0.0.1:9191/login/oauth2/code/{registrationId}"
+#            scope: openid, message.read
+#        provider:
+#          my-provider:
+#            issuer-uri: http://127.0.0.1:9002
 
 eureka:
   instance:
@@ -48,3 +54,7 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://127.0.0.1:8761/eureka/
+
+  spring:
+    main:
+      web-application-type: reactive

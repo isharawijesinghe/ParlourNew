@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +22,12 @@ public class ChannelREST {
 
     @Autowired
     private ChannelServiceHandlerI channelServiceHandler;
+
+    @PreAuthorize("hasRole('USER')")
+    @RequestMapping(value = "/version", method = RequestMethod.GET)
+    public String hello() {
+        return "Hello parlour:0.0.1 " + System.currentTimeMillis();
+    }
 
     @RequestMapping(value = "/createChannel", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> create(@RequestBody ChannelRequestBean request){

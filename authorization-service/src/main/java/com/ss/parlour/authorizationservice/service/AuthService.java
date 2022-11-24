@@ -1,6 +1,7 @@
 package com.ss.parlour.authorizationservice.service;
 
 import com.ss.parlour.authorizationservice.configurations.security.TokenProvider;
+import com.ss.parlour.authorizationservice.configurations.security.UserPrincipal;
 import com.ss.parlour.authorizationservice.handler.AuthHandlerI;
 import com.ss.parlour.authorizationservice.util.bean.*;
 import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeException;
@@ -11,8 +12,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthService implements AuthServiceI{
@@ -43,7 +49,22 @@ public class AuthService implements AuthServiceI{
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = tokenProvider.createToken(authentication);
-            return new AuthResponseBean(token);
+
+            Map<String, String> claims = new HashMap<>();
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            claims.put("username", userPrincipal.getUsername());
+
+            String authorities = userPrincipal.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.joining(","));
+            claims.put("authorities", "ROLE_ADMIN");
+            claims.put("userId", userPrincipal.getEmail());
+            claims.put("iss", "myApp");
+            claims.put("scope", "message.read");
+            String token1 = tokenProvider.createJwtForClaims(userPrincipal.getUsername(), claims);
+
+
+            return new AuthResponseBean(token1);
         }catch (AuthorizationRuntimeException ex){
             //todo add logger
             throw ex;

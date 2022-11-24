@@ -16,6 +16,7 @@ public class ExternalRestWriter implements ExternalRestWriterI{
     @Autowired
     private RestTemplate restTemplate;
 
+    //This will send email invoke method in notification server
     public void sendNotificationMail(EmailRequestBean emailRequestBean){
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);

@@ -97,7 +97,7 @@ public class UserDAO implements UserDAOI{
     public void saveUserDetails(UserRegisterRequestBean userRegisterRequestBean){
         saveUser(userRegisterRequestBean);
         saveUserLoginNameEmailMapper(userRegisterRequestBean);
-        saveUserToken(userRegisterRequestBean, AuthorizationConst.USER_ACTION_TYPE_REGISTER);
+       // saveUserToken(userRegisterRequestBean, AuthorizationConst.USER_ACTION_TYPE_REGISTER);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class UserDAO implements UserDAOI{
         user.setLastName(userRegisterRequestBean.getLastName());
         user.setLoginName(userRegisterRequestBean.getLoginName());
         user.setEmail(userRegisterRequestBean.getEmail());
-        user.setPassword(user.getPassword());
+        user.setPassword(userRegisterRequestBean.getPassword());
         user.setCreatedDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         user.setLastUpdatedDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         user.setEnabled(AuthorizationConst.FALSE);

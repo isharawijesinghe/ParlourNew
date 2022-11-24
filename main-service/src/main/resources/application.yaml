@@ -8,7 +8,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://127.0.0.1:9002
+          jwk-set-uri: http://127.0.0.1:9002/.well-known/jwks.json
+
+
 
 logging:
   level:
@@ -23,3 +25,5 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
+#key.location: keys/keystore.jks

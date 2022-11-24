@@ -21,9 +21,6 @@ import org.springframework.util.StringUtils;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-//    @Autowired
-//    private UserDAOI userDAOI;
-
     @Autowired
     private AuthHandlerI authHandlerI;
 
