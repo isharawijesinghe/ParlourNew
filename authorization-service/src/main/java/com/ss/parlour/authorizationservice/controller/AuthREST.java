@@ -2,6 +2,7 @@ package com.ss.parlour.authorizationservice.controller;
 
 import com.ss.parlour.authorizationservice.configurations.security.CurrentUser;
 import com.ss.parlour.authorizationservice.configurations.security.UserPrincipal;
+import com.ss.parlour.authorizationservice.dao.UserDAOI;
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.repository.cassandra.UserRepositoryI;
 import com.ss.parlour.authorizationservice.service.AuthServiceI;
@@ -29,6 +30,9 @@ public class AuthREST {
 
     @Autowired
     private UserRepositoryI userRepository;
+
+    @Autowired
+    private UserDAOI userDAOI;
 
 
     @RequestMapping(value = "/version", method = RequestMethod.GET)
@@ -59,8 +63,7 @@ public class AuthREST {
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
-        return userRepository.findByLoginName(userPrincipal.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getEmail()));
+        return userDAOI.loadUserByIdentification(userPrincipal.getEmail());
     }
 
 }

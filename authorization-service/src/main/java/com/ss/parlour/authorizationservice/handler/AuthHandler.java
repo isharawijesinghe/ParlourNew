@@ -1,6 +1,7 @@
 package com.ss.parlour.authorizationservice.handler;
 
 import com.ss.parlour.authorizationservice.configurations.security.UserPrincipal;
+import com.ss.parlour.authorizationservice.configurations.security.oauth2.user.OAuth2UserInfo;
 import com.ss.parlour.authorizationservice.dao.UserDAOI;
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.util.bean.*;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +68,25 @@ public class AuthHandler implements AuthHandlerI {
         claims.put("iss", "myApp");
         claims.put("scope", "message.read");
         return claims;
+    }
+
+    @Override
+    public User registerNewSocialUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
+        User user = new User();
+        user.setLoginName(oAuth2UserInfo.getEmail());
+        user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
+        user.setProviderId(oAuth2UserInfo.getId());
+        user.setFirstName(oAuth2UserInfo.getName());
+        user.setEmail(oAuth2UserInfo.getEmail());
+        user.setImageUrl(oAuth2UserInfo.getImageUrl());
+        return saveUser(user);
+    }
+
+    @Override
+    public User updateExistingSocialUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
+        existingUser.setFirstName(oAuth2UserInfo.getName());
+        existingUser.setImageUrl(oAuth2UserInfo.getImageUrl());
+        return saveUser(existingUser);
     }
 
     @Override

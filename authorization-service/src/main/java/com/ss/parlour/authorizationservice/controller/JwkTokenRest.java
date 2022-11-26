@@ -20,4 +20,5 @@ public class JwkTokenRest {
     public Map<String, List<Map<String, Object>>> getKey() {
         return tokenProvider.getPublicKeys();
     }
+
 }

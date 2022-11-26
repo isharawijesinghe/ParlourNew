@@ -5,7 +5,14 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.ss.parlour.authorizationservice.configurations.dataSoureConfig.AppProperties;
 import com.ss.parlour.authorizationservice.util.bean.AuthKeyConst;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,69 +62,32 @@ public class TokenProvider {
                .sign(Algorithm.RSA256(publicKey, privateKey));
     }
 
-    public String createToken(Authentication authentication) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+    public String getUserIdFromToken(String token) throws InvalidJwtException, MalformedClaimException {
+        JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                .setRequireExpirationTime()
+                .setVerificationKey(publicKey)
+                .build();
 
-//        Date now = new Date();
-//        Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
-//
-//        return Jwts.builder()
-//                .setSubject(userPrincipal.getEmail())
-//                .setIssuedAt(new Date())
-//                .setExpiration(expiryDate)
-//                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
-//                .compact();
-//
-//        // Add expiredAt and etc
-//        return jwtBuilder
-//                .withNotBefore(new Date())
-//                .withExpiresAt(calendar.getTime())
-//                .sign(Algorithm.RSA256(publicKey, privateKey));
-//
-//        User user = (User) authentication.getPrincipal();
-//        Instant now = Instant.now();
-//
-//        JwtClaimsSet claimsSet = JwtClaimsSet.builder()
-//                .issuer("myApp")
-//                .issuedAt(now)
-//                .expiresAt(now.plus(5, ChronoUnit.MINUTES))
-//                .subject(userPrincipal.getEmail())
-//                .build();
-//
-//        return accessTokenEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
+        // validate and decode the jwt
+        JwtClaims jwtDecoded = jwtConsumer.processToClaims(token);
+        String subject = jwtDecoded.getStringClaimValue("sub");
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(Instant.now().toEpochMilli());
-        calendar.add(Calendar.DATE, 1);
-
-        JWTCreator.Builder jwtBuilder = JWT.create().withSubject(userPrincipal.getEmail());
-
-        // Add claims
-//        claims.forEach(jwtBuilder::withClaim);
-
-        // Add expiredAt and etc
-        return jwtBuilder
-                .withNotBefore(new Date())
-                .withExpiresAt(calendar.getTime())
-                .sign(Algorithm.RSA256(publicKey, privateKey));
-
-
+        return subject;
     }
 
-    public String getUserIdFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(appProperties.getAuth().getTokenSecret())
-                .parseClaimsJws(token)
-                .getBody();
 
-        return claims.getSubject();
-    }
-
-    public boolean validateToken(String authToken) {
+    public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(authToken);
+            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                    .setRequireExpirationTime()
+                    .setVerificationKey(publicKey)
+                    .build();
+
+            // validate and decode the jwt
+            jwtConsumer.processToClaims(token);
+
             return true;
-        } catch (SignatureException ex) {
+        } catch (InvalidJwtException ex) {
             logger.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
             logger.error("Invalid JWT token");
