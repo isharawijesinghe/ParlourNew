@@ -3,6 +3,8 @@ package com.ss.parlour.authorizationservice.util.bean;
 public class AuthKeyConst {
 
     public static String ENCRYPT_ALGO = "RS256";
+    public static String USE_VAL = "sig";
+    public static String KEY_SET_NAME = "keys";
 
 
     public static String KTY = "kty";

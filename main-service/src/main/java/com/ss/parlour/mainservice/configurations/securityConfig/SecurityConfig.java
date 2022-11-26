@@ -21,9 +21,5 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri("http://127.0.0.1:9002/.well-known/jwks.json").build();
-    }
 
 }

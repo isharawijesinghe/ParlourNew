@@ -1,14 +1,21 @@
 package com.ss.parlour.authorizationservice.handler;
 
+import com.ss.parlour.authorizationservice.configurations.security.UserPrincipal;
 import com.ss.parlour.authorizationservice.dao.UserDAOI;
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.util.bean.*;
 import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthHandler implements AuthHandlerI {
@@ -45,7 +52,21 @@ public class AuthHandler implements AuthHandlerI {
         return emailRequestBean;
     }
 
+    @Override
+    public Map<String, String> createUserClaimMap(Authentication authentication){
+        Map<String, String> claims = new HashMap<>();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        claims.put("username", userPrincipal.getUsername());
 
+        String authorities = userPrincipal.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+        claims.put("authorities", authorities);
+        claims.put("userId", userPrincipal.getEmail());
+        claims.put("iss", "myApp");
+        claims.put("scope", "message.read");
+        return claims;
+    }
 
     @Override
     public User saveUser(User user){

@@ -29,9 +29,6 @@ public class TokenProvider {
     @Autowired
     private RSAPublicKey publicKey;
 
-//    @Autowired
-//    JwtEncoder accessTokenEncoder;
-
     private AppProperties appProperties;
 
     @Value("${app.security.jwt.key-alias}")
@@ -41,24 +38,21 @@ public class TokenProvider {
         this.appProperties = appProperties;
     }
 
-    public String createJwtForClaims(String subject, Map<String, String> claims) {
+    public String createJwtForClaims(Authentication authentication, Map<String, String> claims) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(Instant.now().toEpochMilli());
         calendar.add(Calendar.DATE, 1);
 
-        JWTCreator.Builder jwtBuilder = JWT.create().withSubject(subject);
+        JWTCreator.Builder jwtBuilder = JWT.create().withSubject(userPrincipal.getEmail());
 
         // Add claims
         claims.forEach(jwtBuilder::withClaim);
 
         // Add expiredAt and etc
-        return jwtBuilder
-                .withNotBefore(new Date())
-                .withExpiresAt(calendar.getTime())
-                .sign(Algorithm.RSA256(publicKey, privateKey));
-
-
-
+        return jwtBuilder.withNotBefore(new Date())
+               .withExpiresAt(calendar.getTime())
+               .sign(Algorithm.RSA256(publicKey, privateKey));
     }
 
     public String createToken(Authentication authentication) {
@@ -139,22 +133,20 @@ public class TokenProvider {
 
     public Map<String, List<Map<String, Object>>> getPublicKeys(){
         Map<String, Object> values = new HashMap<>();
-
-        values.put(AuthKeyConst.KTY, publicKey.getAlgorithm()); // getAlgorithm() returns kty not algorithm
+        // getAlgorithm() returns kty not algorithm
+        values.put(AuthKeyConst.KTY, publicKey.getAlgorithm());
         values.put(AuthKeyConst.KID, keyAlias);
-        values.put(AuthKeyConst.N, Base64.getUrlEncoder().encodeToString(publicKey.getModulus().toByteArray()));
-        values.put(AuthKeyConst.E, Base64.getUrlEncoder().encodeToString(publicKey.getPublicExponent().toByteArray()));
+        values.put(AuthKeyConst.N,
+                Base64.getUrlEncoder().encodeToString(publicKey.getModulus().toByteArray()));
+        values.put(AuthKeyConst.E,
+                Base64.getUrlEncoder().encodeToString(publicKey.getPublicExponent().toByteArray()));
         values.put(AuthKeyConst.ALG, AuthKeyConst.ENCRYPT_ALGO);
-        values.put(AuthKeyConst.USE, "sig");
-        values.put(AuthKeyConst.ISS, "myApp");
+        values.put(AuthKeyConst.USE, AuthKeyConst.USE_VAL);
 
         List<Map<String, Object>> keyList = new ArrayList<>();
-
         keyList.add(values);
-
         Map<String, List<Map<String, Object>>> keys = new HashMap<>();
-
-        keys.put("keys", keyList);
+        keys.put(AuthKeyConst.KEY_SET_NAME, keyList);
 
         return keys;
     }

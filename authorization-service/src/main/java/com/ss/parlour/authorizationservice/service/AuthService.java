@@ -48,23 +48,9 @@ public class AuthService implements AuthServiceI{
                     )
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            String token = tokenProvider.createToken(authentication);
-
-            Map<String, String> claims = new HashMap<>();
-            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-            claims.put("username", userPrincipal.getUsername());
-
-            String authorities = userPrincipal.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.joining(","));
-            claims.put("authorities", "ROLE_ADMIN");
-            claims.put("userId", userPrincipal.getEmail());
-            claims.put("iss", "myApp");
-            claims.put("scope", "message.read");
-            String token1 = tokenProvider.createJwtForClaims(userPrincipal.getUsername(), claims);
-
-
-            return new AuthResponseBean(token1);
+            Map<String, String> claimMap = authHandlerI.createUserClaimMap(authentication);
+            String token = tokenProvider.createJwtForClaims(authentication, claimMap);
+            return new AuthResponseBean(token);
         }catch (AuthorizationRuntimeException ex){
             //todo add logger
             throw ex;
