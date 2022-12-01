@@ -41,9 +41,11 @@ CREATE TABLE parlour.channel (
 );
 
 CREATE TABLE parlour.article (
+     id text,
      name text,
      title text,
      content text,
+     author text,
      createdDate timestamp,
      modifiedDate timestamp,
      PRIMARY KEY (name)

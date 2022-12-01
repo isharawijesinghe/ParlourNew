@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController()
-public class JwkTokenRest {
+public class JwkTokenREST {
 
     @Autowired
     TokenProvider tokenProvider;
