@@ -1,13 +1,13 @@
-package com.ss.parlour.articleservice.utils.bean;
+package com.ss.parlour.articleservice.utils.bean.response;
 
-public class ArticleResponseBean {
+public class ArticleCommonResponseBean {
 
     private int status;
     private String narration;
 
-    public ArticleResponseBean(){}
+    public ArticleCommonResponseBean(){}
 
-    public ArticleResponseBean(int status, String narration){
+    public ArticleCommonResponseBean(int status, String narration){
         this.setStatus(status);
         this.setNarration(narration);
     }

@@ -1,8 +1,6 @@
 package com.ss.parlour.authorizationservice.service.auth;
 
-import com.ss.parlour.authorizationservice.service.AuthServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

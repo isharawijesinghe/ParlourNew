@@ -1,13 +1,22 @@
-package com.ss.parlour.articleservice.utils.bean;
+package com.ss.parlour.articleservice.domain.cassandra;
+
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 import java.sql.Timestamp;
 
-public class ArticleRequestBean {
+@Table("comment")
+@UserDefinedType
+public class Comment {
+
+    @PrimaryKey
     private String id;
+    private String articleId;
+    private String parentId;
     private String authorName;
-    private String title;
-    private String summary;
     private String content;
+    private int status;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
 
@@ -27,28 +36,20 @@ public class ArticleRequestBean {
         this.authorName = authorName;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public Timestamp getCreatedDate() {
@@ -66,4 +67,21 @@ public class ArticleRequestBean {
     public void setModifiedDate(Timestamp modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
+
+    public String getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(String articleId) {
+        this.articleId = articleId;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
 }

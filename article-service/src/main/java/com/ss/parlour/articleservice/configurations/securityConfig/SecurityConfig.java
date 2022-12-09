@@ -10,12 +10,18 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http.cors().and().csrf().disable();
+
         http.mvcMatcher("/**")
                 .authorizeRequests()
                 .mvcMatchers("/**")
-                .access("hasAuthority('SCOPE_message.read')")
-                .and()
-                .oauth2ResourceServer().jwt();
+                .permitAll()
+                .antMatchers("/article/**", "/article/addComment/**", "/login/**", "/auth/**", "/oauth2/**", "/createUser/**", "/authentication/**")
+                .permitAll();
+//                .access("hasAuthority('SCOPE_message.read')")
+//                .and()
+//                .oauth2ResourceServer().jwt();
         return http.build();
     }
 

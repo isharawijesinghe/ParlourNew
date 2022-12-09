@@ -2,21 +2,21 @@ package com.ss.parlour.articleservice.utils.bean;
 
 import java.sql.Timestamp;
 
-public class ArticleBean {
-    private String id;
+public class LikeBean {
+
+    private String articleId;
     private String authorName;
-    private String title;
-    private String summary;
-    private String content;
+    private int status;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
+    private LikeType likeType;
 
-    public String getId() {
-        return id;
+    public String getArticleId() {
+        return articleId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setArticleId(String articleId) {
+        this.articleId = articleId;
     }
 
     public String getAuthorName() {
@@ -27,28 +27,12 @@ public class ArticleBean {
         this.authorName = authorName;
     }
 
-    public String getTitle() {
-        return title;
+    public int getStatus() {
+        return status;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public Timestamp getCreatedDate() {
@@ -65,5 +49,13 @@ public class ArticleBean {
 
     public void setModifiedDate(Timestamp modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+
+    public LikeType getLikeType() {
+        return likeType;
+    }
+
+    public void setLikeType(LikeType likeType) {
+        this.likeType = likeType;
     }
 }

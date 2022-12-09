@@ -5,21 +5,23 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.sql.Timestamp;
 
-@Table("article")
-public class Article {
+@Table("like")
+public class Like {
 
     @PrimaryKey
-    private String id;
+    private String articleId;
     private String authorName;
-    private String title;
-    private String summary;
-    private String content;
+    private int status;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
 
-    public String getId() {return id;}
+    public String getArticleId() {
+        return articleId;
+    }
 
-    public void setId(String id) {this.id = id;}
+    public void setArticleId(String articleId) {
+        this.articleId = articleId;
+    }
 
     public String getAuthorName() {
         return authorName;
@@ -29,28 +31,12 @@ public class Article {
         this.authorName = authorName;
     }
 
-    public String getTitle() {
-        return title;
+    public int getStatus() {
+        return status;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public Timestamp getCreatedDate() {
@@ -68,6 +54,4 @@ public class Article {
     public void setModifiedDate(Timestamp modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
-
-
 }

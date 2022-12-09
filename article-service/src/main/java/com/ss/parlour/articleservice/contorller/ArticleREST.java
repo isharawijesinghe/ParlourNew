@@ -1,8 +1,10 @@
 package com.ss.parlour.articleservice.contorller;
 
 import com.ss.parlour.articleservice.service.ArticleServiceI;
-import com.ss.parlour.articleservice.utils.bean.ArticleRequestBean;
-import com.ss.parlour.articleservice.utils.bean.ArticleResponseBean;
+import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
+import com.ss.parlour.articleservice.utils.bean.requests.LikeRequestBean;
+import com.ss.parlour.articleservice.utils.bean.response.ArticleCommonResponseBean;
+import com.ss.parlour.articleservice.utils.bean.requests.CommentRequestBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +22,20 @@ public class ArticleREST {
 
     @RequestMapping(value = "/createArticle", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> createArticle(@RequestBody ArticleRequestBean articleRequestBean){
-        ArticleResponseBean articleResponseBean = articleServiceI.createArticle(articleRequestBean);
-        return ResponseEntity.ok().body(articleResponseBean);
-    }
-
-    @RequestMapping(value = "/addLike", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> addLike(@RequestBody ArticleRequestBean articleRequestBean){
-        ArticleResponseBean articleResponseBean = articleServiceI.createArticle(articleRequestBean);
-        return ResponseEntity.ok().body(articleResponseBean);
+        ArticleCommonResponseBean articleCommonResponseBean = articleServiceI.createArticle(articleRequestBean);
+        return ResponseEntity.ok().body(articleCommonResponseBean);
     }
 
     @RequestMapping(value = "/addComment", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> addComment(@RequestBody ArticleRequestBean articleRequestBean){
-        ArticleResponseBean articleResponseBean = articleServiceI.createArticle(articleRequestBean);
-        return ResponseEntity.ok().body(articleResponseBean);
+    public ResponseEntity<Object> addComment(@RequestBody CommentRequestBean commentRequestBean){
+        ArticleCommonResponseBean articleCommonResponseBean = articleServiceI.createComment(commentRequestBean);
+        return ResponseEntity.ok().body(articleCommonResponseBean);
+    }
+
+    @RequestMapping(value = "/addLike", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<Object> addLike(@RequestBody LikeRequestBean likeRequestBean){
+        ArticleCommonResponseBean articleCommonResponseBean = articleServiceI.addLike(likeRequestBean);
+        return ResponseEntity.ok().body(articleCommonResponseBean);
     }
 
 }

@@ -33,28 +33,28 @@ CREATE TABLE IF NOT EXISTS parlour.userLoginNameEmailMapper (
 -- );
 
 CREATE TABLE parlour.channel (
-     name text,
-     title text,
-     ownerName text,
-     createdDate timestamp,
-     PRIMARY KEY (name)
+    name text,
+    title text,
+    ownerName text,
+    createdDate timestamp,
+    PRIMARY KEY (name)
 );
 
 CREATE TABLE parlour.article (
-     id text,
-     name text,
-     title text,
-     content text,
-     author text,
-     createdDate timestamp,
-     modifiedDate timestamp,
-     PRIMARY KEY (name)
+    id text,
+    name text,
+    title text,
+    content text,
+    author text,
+    createdDate timestamp,
+    modifiedDate timestamp,
+    PRIMARY KEY (name)
 );
 
 CREATE TABLE parlour.channelArticles (
-     channelNam text,
-     articleName text,
-     PRIMARY KEY (channelNam,articleName)
+    channelNam text,
+    articleName text,
+    PRIMARY KEY (channelNam,articleName)
 );
 
 CREATE TABLE parlour.articleHistory (
@@ -68,6 +68,61 @@ CREATE TABLE parlour.articleHistory (
     PRIMARY KEY (name,editedBy,createdDate)
 );
 
+CREATE TYPE parlour.comment(
+    id text,
+    articleId text,
+    parentId text,
+    authorName text,
+    content text,
+    status int,
+    createdDate timestamp,
+    modifiedDate timestamp
+);
+
+CREATE TYPE parlour.like(
+    articleId text,
+    authorName text,
+    status int,
+    createdDate timestamp,
+    modifiedDate timestamp
+    );
+
+CREATE TABLE parlour.comment (
+    id text,
+    articleId text,
+    parentId text,
+    authorName text,
+    content text,
+    status int,
+    createdDate timestamp,
+    modifiedDate text,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE parlour.commentbyarticle (
+    articleid text,
+    comments list<frozen<comment>> ,
+    PRIMARY KEY (articleid)
+);
+
+CREATE TABLE parlour.commentbyarticle (
+    articleid text,
+    likes list<frozen<like>> ,
+    PRIMARY KEY (articleid)
+);
+
+CREATE TABLE parlour.likebyarticle (
+    articleid text,
+    likes list<frozen<like>> ,
+    PRIMARY KEY (articleid)
+);
+
+CREATE TABLE parlour.likebycomment (
+    commentid text,
+    articleid text,
+    likes list<frozen<like>> ,
+    PRIMARY KEY (articleid)
+);
 
 -- INSERT INTO parlour.user (loginName,
 --                           firstName ,
