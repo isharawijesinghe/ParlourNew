@@ -80,8 +80,11 @@ CREATE TYPE parlour.comment(
 );
 
 CREATE TYPE parlour.like(
+    key text,
     articleId text,
-    authorName text,
+    commentId text,
+    likeType text,
+    userName text,
     status int,
     createdDate timestamp,
     modifiedDate timestamp
@@ -114,6 +117,7 @@ CREATE TABLE parlour.commentbyarticle (
 CREATE TABLE parlour.likebyarticle (
     articleid text,
     likes list<frozen<like>> ,
+    likeMap map<text, frozen<like>>,
     PRIMARY KEY (articleid)
 );
 
@@ -121,6 +125,7 @@ CREATE TABLE parlour.likebycomment (
     commentid text,
     articleid text,
     likes list<frozen<like>> ,
+    likeMap map<text, frozen<like>>,
     PRIMARY KEY (articleid)
 );
 

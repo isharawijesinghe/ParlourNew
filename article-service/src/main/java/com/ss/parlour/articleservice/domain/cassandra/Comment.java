@@ -14,7 +14,7 @@ public class Comment {
     private String id;
     private String articleId;
     private String parentId;
-    private String authorName;
+    private String userName;
     private String content;
     private int status;
     private Timestamp createdDate;
@@ -28,12 +28,12 @@ public class Comment {
         this.id = id;
     }
 
-    public String getAuthorName() {
-        return authorName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getContent() {

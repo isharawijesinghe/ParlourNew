@@ -5,7 +5,8 @@ import java.sql.Timestamp;
 public class LikeBean {
 
     private String articleId;
-    private String authorName;
+    private String commentId;
+    private String userName;
     private int status;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
@@ -19,12 +20,12 @@ public class LikeBean {
         this.articleId = articleId;
     }
 
-    public String getAuthorName() {
-        return authorName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public int getStatus() {
@@ -57,5 +58,13 @@ public class LikeBean {
 
     public void setLikeType(LikeType likeType) {
         this.likeType = likeType;
+    }
+
+    public String getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
     }
 }

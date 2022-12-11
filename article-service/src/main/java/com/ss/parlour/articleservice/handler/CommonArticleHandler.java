@@ -1,5 +1,6 @@
 package com.ss.parlour.articleservice.handler;
 
+import com.ss.parlour.articleservice.handler.Like.LikeHandlerI;
 import com.ss.parlour.articleservice.handler.article.ArticleHandlerI;
 import com.ss.parlour.articleservice.handler.comment.CommentHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleBean;
@@ -27,7 +28,10 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
     private ArticleValidatorI articleValidatorI;
 
     @Autowired
-    private LikeHandlerFactoryI likeHandlerFactoryI;
+    private LikeTypeHandlerFactoryI likeHandlerFactoryI;
+
+    @Autowired
+    private LikeHandlerI likeHandlerI;
 
     @Override
     public ArticleCommonResponseBean handleArticleRequest(ArticleRequestBean articleRequestBean){
@@ -46,7 +50,7 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
     @Override
     public ArticleCommonResponseBean handleLikeRequest(LikeRequestBean likeRequestBean){
         LikeBean likeBean = articleValidatorI.validateArticleLikeRequest(likeRequestBean); //Doing basic initial validations
-        likeHandlerFactoryI.getLikeHandlerI(likeRequestBean.getArticleLikeBean().getLikeType()).handleLikeRequest(likeBean);
+        likeHandlerI.handleLikeRequest(likeBean);
         return new ArticleCommonResponseBean(ArticleConst.STATUS_SUCCESS, ArticleConst.SUCCESSFULLY_COMMENT_ADDED);//Return response
     }
 

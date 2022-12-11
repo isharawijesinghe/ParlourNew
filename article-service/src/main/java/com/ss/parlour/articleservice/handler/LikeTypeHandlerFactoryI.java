@@ -2,7 +2,7 @@ package com.ss.parlour.articleservice.handler;
 
 import com.ss.parlour.articleservice.utils.bean.LikeType;
 
-public interface LikeHandlerFactoryI {
+public interface LikeTypeHandlerFactoryI {
 
-    LikeHandlerI getLikeHandlerI(LikeType likeType);
+    LikeTypeHandlerI getLikeTypeHandlerI(LikeType likeType);
 }

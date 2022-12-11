@@ -1,23 +1,30 @@
 package com.ss.parlour.articleservice.handler.comment;
 
 import com.ss.parlour.articleservice.dao.CommentDAOI;
-import com.ss.parlour.articleservice.domain.cassandra.Comment;
-import com.ss.parlour.articleservice.domain.cassandra.CommentByArticle;
-import com.ss.parlour.articleservice.handler.LikeHandlerI;
+import com.ss.parlour.articleservice.dao.LikeDAOI;
+import com.ss.parlour.articleservice.domain.cassandra.*;
+import com.ss.parlour.articleservice.handler.LikeTypeHandlerI;
 import com.ss.parlour.articleservice.utils.bean.CommentBean;
-import com.ss.parlour.articleservice.utils.bean.LikeBean;
+import com.ss.parlour.articleservice.utils.common.KeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class CommentHandler implements CommentHandlerI, LikeHandlerI {
+public class CommentTypeHandler implements CommentHandlerI, LikeTypeHandlerI {
 
     @Autowired
     private CommentDAOI commentDAOI;
+
+    @Autowired
+    private KeyGenerator keyGenerator;
+
+    @Autowired
+    private LikeDAOI likeDAOI;
 
     //Flow of handle all article comment mechanism
     @Override
@@ -28,8 +35,17 @@ public class CommentHandler implements CommentHandlerI, LikeHandlerI {
     }
 
     @Override
-    public void handleLikeRequest(LikeBean likeBean) {
+    public void handleLikeType(Like like){
+        HashMap<String, Like> likeMap = new HashMap<>();
+        Optional<LikeByComment> existingLikeByCommentBean = commentDAOI.getLikeByComment(like.getCommentId(), like.getArticleId());
+        if (existingLikeByCommentBean.isPresent()){
+            likeMap =  existingLikeByCommentBean.get().getLikeMap();
 
+        }
+        likeMap.put(like.getKey(), like);
+        LikeByArticle likeByArticle = new LikeByArticle();
+        likeByArticle.setArticleId(like.getArticleId());
+        likeByArticle.setLikeMap(likeMap);
     }
 
     //Responsible in handling comment persisting
@@ -75,7 +91,7 @@ public class CommentHandler implements CommentHandlerI, LikeHandlerI {
         comment.setId(commentBean.getId());
         comment.setArticleId(commentBean.getArticleId());
         comment.setParentId(commentBean.getParentId());
-        comment.setAuthorName(commentBean.getAuthorName());
+        comment.setUserName(commentBean.getAuthorName());
         comment.setContent(commentBean.getContent());
         comment.setCreatedDate(commentBean.getCreatedDate());
         comment.setModifiedDate(commentBean.getModifiedDate());

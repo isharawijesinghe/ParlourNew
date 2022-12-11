@@ -10,7 +10,7 @@ public class Article {
 
     @PrimaryKey
     private String id;
-    private String authorName;
+    private String userName;
     private String title;
     private String summary;
     private String content;
@@ -21,12 +21,12 @@ public class Article {
 
     public void setId(String id) {this.id = id;}
 
-    public String getAuthorName() {
-        return authorName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getTitle() {

@@ -1,20 +1,30 @@
 package com.ss.parlour.articleservice.handler.article;
 
 import com.ss.parlour.articleservice.dao.ArticleDAOI;
+import com.ss.parlour.articleservice.dao.LikeDAOI;
 import com.ss.parlour.articleservice.domain.cassandra.Article;
-import com.ss.parlour.articleservice.handler.LikeHandlerI;
+import com.ss.parlour.articleservice.domain.cassandra.Like;
+import com.ss.parlour.articleservice.domain.cassandra.LikeByArticle;
+import com.ss.parlour.articleservice.handler.LikeTypeHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleBean;
-import com.ss.parlour.articleservice.utils.bean.LikeBean;
+import com.ss.parlour.articleservice.utils.common.KeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 @Component
-public class ArticleHandler implements ArticleHandlerI, LikeHandlerI {
+public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
 
     @Autowired
     private ArticleDAOI articleDAOI;
+
+    @Autowired
+    private KeyGenerator keyGenerator;
+
+    @Autowired
+    private LikeDAOI likeDAOI;
 
     @Override
     public void handleArticleRequest(ArticleBean articleBean){
@@ -30,9 +40,19 @@ public class ArticleHandler implements ArticleHandlerI, LikeHandlerI {
     }
 
     @Override
-    public void handleLikeRequest(LikeBean likeBean) {
+    public void handleLikeType(Like like){
+        HashMap<String, Like> likeMap = new HashMap<>();
+        Optional<LikeByArticle> existingLikeByArticleBean = articleDAOI.getLikeByArticle(like.getArticleId());
+        if (existingLikeByArticleBean.isPresent()){
+            likeMap =  existingLikeByArticleBean.get().getLikeMap();
 
+        }
+        likeMap.put(like.getKey(), like);
+        LikeByArticle likeByArticle = new LikeByArticle();
+        likeByArticle.setArticleId(like.getArticleId());
+        likeByArticle.setLikeMap(likeMap);
     }
+
 
     protected void createArticle(Article article){
         articleDAOI.saveArticle(article);
@@ -41,7 +61,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeHandlerI {
     protected Article populateArticle(ArticleBean articleBean){
         Article article = new Article();
         article.setId(articleBean.getId());
-        article.setAuthorName(articleBean.getAuthorName());
+        article.setUserName(articleBean.getAuthorName());
         article.setTitle(articleBean.getTitle());
         article.setSummary(articleBean.getSummary());
         article.setContent(articleBean.getContent());
@@ -49,5 +69,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeHandlerI {
         article.setModifiedDate(articleBean.getModifiedDate());
         return article;
     }
+
+
 
 }

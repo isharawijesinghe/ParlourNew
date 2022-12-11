@@ -1,4 +1,4 @@
-package com.ss.parlour.articleservice.handler;
+package com.ss.parlour.articleservice.handler.Like;
 
 import com.ss.parlour.articleservice.utils.bean.LikeBean;
 
