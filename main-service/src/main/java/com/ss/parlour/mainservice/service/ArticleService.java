@@ -1,10 +1,9 @@
 package com.ss.parlour.mainservice.service;
 
-import com.ss.parlour.mainservice.bean.ArticleRequestBean;
-import com.ss.parlour.mainservice.bean.ArticleResponseBean;
+import com.ss.parlour.mainservice.utils.bean.ArticleRequestBean;
+import com.ss.parlour.mainservice.utils.bean.ArticleResponseBean;
 import com.ss.parlour.mainservice.handler.ArticleHandlerI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service

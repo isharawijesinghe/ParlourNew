@@ -1,10 +1,7 @@
 package com.ss.parlour.mainservice.handler;
 
-import com.ss.parlour.mainservice.bean.ArticleRequestBean;
-import com.ss.parlour.mainservice.bean.ArticleResponseBean;
-import com.ss.parlour.mainservice.domain.Article;
-
-import java.util.List;
+import com.ss.parlour.mainservice.utils.bean.ArticleRequestBean;
+import com.ss.parlour.mainservice.utils.bean.ArticleResponseBean;
 
 public interface ArticleHandlerI {
     public ArticleResponseBean create(ArticleRequestBean articleRequestBean);

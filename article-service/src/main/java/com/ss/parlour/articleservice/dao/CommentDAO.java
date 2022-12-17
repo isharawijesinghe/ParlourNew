@@ -46,7 +46,7 @@ public class CommentDAO implements CommentDAOI{
 
     @Override
     public Optional<LikeByComment> getLikeByComment(String commentId, String articleId){
-        return likeByCommentRepositoryI.findLikeByCommentByAndCommentIdAndArticleId(commentId, articleId);
+        return likeByCommentRepositoryI.findLikeByAndCommentIdAndArticleId(commentId, articleId);
     }
 
     public void updateCommentListByArticle(List<Comment> commentList, String articleId){

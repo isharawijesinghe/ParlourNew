@@ -2,10 +2,9 @@ package com.ss.parlour.articleservice.service;
 
 import com.ss.parlour.articleservice.handler.CommonArticleHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleErrorCodes;
-import com.ss.parlour.articleservice.utils.bean.requests.LikeRequestBean;
-import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
+import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleCommonResponseBean;
-import com.ss.parlour.articleservice.utils.bean.requests.CommentRequestBean;
+import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
 import com.ss.parlour.articleservice.utils.exception.ArticleServiceRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,9 +17,9 @@ public class ArticleService implements ArticleServiceI {
 
     //Service call for create article
     @Override
-    public ArticleCommonResponseBean createArticle(ArticleRequestBean articleRequestBean){
+    public ArticleCommonResponseBean createArticle(ArticleCreateRequestBean articleCreateRequestBean){
         try {
-            return commonArticleHandlerI.handleArticleRequest(articleRequestBean);
+            return commonArticleHandlerI.handleArticleRequest(articleCreateRequestBean);
         }catch (ArticleServiceRuntimeException ex){
             throw ex;
         }catch (Exception ex){
@@ -30,9 +29,9 @@ public class ArticleService implements ArticleServiceI {
 
     //Service call for creating user comment for article
     @Override
-    public ArticleCommonResponseBean createComment(CommentRequestBean commentRequestBean){
+    public ArticleCommonResponseBean createComment(CommentCreateRequestBean commentCreateRequestBean){
         try {
-            return commonArticleHandlerI.handleCommentRequest(commentRequestBean);
+            return commonArticleHandlerI.handleCommentRequest(commentCreateRequestBean);
         }catch (ArticleServiceRuntimeException ex){
             throw ex;
         }catch (Exception ex){
@@ -51,4 +50,41 @@ public class ArticleService implements ArticleServiceI {
             throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
         }
     }
+
+    //Load article details by article id
+    @Override
+    public ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean){
+        try {
+            return commonArticleHandlerI.findArticleById(articleRequestBean);
+        }catch (ArticleServiceRuntimeException ex){
+            throw ex;
+        }catch (Exception ex){
+            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
+        }
+    }
+
+    //Service call for delete article
+    @Override
+    public ArticleCommonResponseBean deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean){
+        try {
+            return commonArticleHandlerI.handleArticleDelete(articleDeleteRequestBean);
+        }catch (ArticleServiceRuntimeException ex){
+            throw ex;
+        }catch (Exception ex){
+            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
+        }
+    }
+
+    //Service call for delete comment
+    @Override
+    public ArticleCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean){
+        try {
+            return commonArticleHandlerI.deleteComment(commentDeleteRequestBean);
+        }catch (ArticleServiceRuntimeException ex){
+            throw ex;
+        }catch (Exception ex){
+            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
+        }
+    }
+
 }

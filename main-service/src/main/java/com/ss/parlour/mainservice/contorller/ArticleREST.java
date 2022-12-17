@@ -1,8 +1,7 @@
 package com.ss.parlour.mainservice.contorller;
 
-import com.ss.parlour.mainservice.bean.ArticleRequestBean;
-import com.ss.parlour.mainservice.bean.ArticleResponseBean;
-import com.ss.parlour.mainservice.handler.ArticleHandlerI;
+import com.ss.parlour.mainservice.utils.bean.ArticleRequestBean;
+import com.ss.parlour.mainservice.utils.bean.ArticleResponseBean;
 import com.ss.parlour.mainservice.service.ArticleServiceI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

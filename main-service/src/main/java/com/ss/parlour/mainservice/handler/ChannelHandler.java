@@ -1,10 +1,7 @@
 package com.ss.parlour.mainservice.handler;
 
 import com.ss.parlour.mainservice.dao.ChannelDAOI;
-import com.ss.parlour.mainservice.utils.bean.ArticleBean;
-import com.ss.parlour.mainservice.utils.bean.ChannelRequestBean;
-import com.ss.parlour.mainservice.utils.bean.ChannelResponseBean;
-import com.ss.parlour.mainservice.utils.bean.MainConst;
+import com.ss.parlour.mainservice.utils.bean.*;
 import com.ss.parlour.mainservice.domain.cassandra.Channel;
 import com.ss.parlour.mainservice.utils.exception.MainServiceRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +45,7 @@ public class ChannelHandler implements ChannelHandlerI {
     }
 
     @Override
-    public ChannelResponseBean addToChannel(ArticleBean article) {
+    public ChannelResponseBean addToChannel(ArticleRequestBean article) {
         if(article.getChannelID()<=0){
             throw new MainServiceRuntimeException(MainConst.ERROR_DES_INVALID_CHANEL_ID);
         }
@@ -59,7 +56,7 @@ public class ChannelHandler implements ChannelHandlerI {
         if(channel.getArticles()==null){
             channel.setArticles(new ArrayList<>());
         }
-        channel.getArticles().add(article);
+        //channel.getArticles().add(article);
         ChannelResponseBean channelResponseBean= new ChannelResponseBean();
         channelResponseBean.setId(channel.getChannelID());
         channelResponseBean.setChannel(channel);
@@ -67,7 +64,7 @@ public class ChannelHandler implements ChannelHandlerI {
     }
 
     @Override
-    public ChannelResponseBean addToChannel(ArticleBean[] articles) {
+    public ChannelResponseBean addToChannel(ArticleRequestBean[] articles) {
         return  new ChannelResponseBean();//  channelRepositoryI.addToChannel(articles);//todo
     }
 

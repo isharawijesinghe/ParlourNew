@@ -11,5 +11,13 @@ public interface ArticleConst {
     int USER_UNLIKED = -1;
     int USER_NEUTRAL = 0;
 
+    int ARTICLE_ACTIVE = 1;
+    int ARTICLE_INACTIVE = -1;
+
+    int COMMENT_ACTIVE = 1;
+    int COMMENT_INACTIVE = -1;
+
+    String NO_PARENT_COMMENT = "-1";
+
 
 }

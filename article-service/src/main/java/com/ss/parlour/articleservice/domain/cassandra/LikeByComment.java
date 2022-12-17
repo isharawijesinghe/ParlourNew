@@ -1,14 +1,15 @@
 package com.ss.parlour.articleservice.domain.cassandra;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.HashMap;
 
+@Table("likebycomment")
 public class LikeByComment {
 
     @PrimaryKey
     private String commentId;
-    @PrimaryKey
     private String articleId;
     private HashMap<String, Like> likeMap = new HashMap<>();
 

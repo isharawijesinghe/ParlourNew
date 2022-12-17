@@ -1,9 +1,11 @@
 package com.ss.parlour.articleservice.domain.cassandra;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.HashMap;
 
+@Table("likebyarticle")
 public class LikeByArticle {
 
     @PrimaryKey

@@ -1,6 +1,5 @@
 package com.ss.parlour.mainservice.domain;
 
-import com.ss.parlour.mainservice.bean.ArticleRequestBean;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 

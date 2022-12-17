@@ -1,13 +1,15 @@
 package com.ss.parlour.articleservice.handler;
 
-import com.ss.parlour.articleservice.utils.bean.requests.LikeRequestBean;
-import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
+import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleCommonResponseBean;
-import com.ss.parlour.articleservice.utils.bean.requests.CommentRequestBean;
+import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
 
 public interface CommonArticleHandlerI {
 
-    ArticleCommonResponseBean handleArticleRequest(ArticleRequestBean articleRequestBean);
-    ArticleCommonResponseBean handleCommentRequest(CommentRequestBean commentRequestBean);
+    ArticleCommonResponseBean handleArticleRequest(ArticleCreateRequestBean articleCreateRequestBean);
+    ArticleCommonResponseBean handleCommentRequest(CommentCreateRequestBean commentCreateRequestBean);
     ArticleCommonResponseBean handleLikeRequest(LikeRequestBean likeRequestBean);
+    ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean);
+    ArticleCommonResponseBean handleArticleDelete(ArticleDeleteRequestBean articleDeleteRequestBean);
+    ArticleCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean);
 }

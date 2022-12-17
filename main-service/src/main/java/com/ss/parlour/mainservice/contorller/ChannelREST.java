@@ -1,10 +1,11 @@
 package com.ss.parlour.mainservice.contorller;
 
+import com.ss.parlour.mainservice.service.ChannelServiceI;
+import com.ss.parlour.mainservice.utils.bean.ArticleRequestBean;
 import org.springframework.http.MediaType;
 import com.ss.parlour.mainservice.utils.bean.ArticleBean;
 import com.ss.parlour.mainservice.utils.bean.ChannelRequestBean;
 import com.ss.parlour.mainservice.utils.bean.ChannelResponseBean;
-import com.ss.parlour.mainservice.service.ChannelServiceHandlerI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class ChannelREST {
     private static Logger logger= LogManager.getLogger("public class ChannelREST {\n.class");
 
     @Autowired
-    private ChannelServiceHandlerI channelServiceHandler;
+    private ChannelServiceI channelServiceHandler;
 
     @PreAuthorize("hasRole('USER')")
     @RequestMapping(value = "/version", method = RequestMethod.GET)
@@ -44,14 +45,14 @@ public class ChannelREST {
     }
 
     @RequestMapping(value = "/addArticleToChannel", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> addToChannel(@RequestBody ArticleBean articleBean){
+    public ResponseEntity<Object> addToChannel(@RequestBody ArticleRequestBean articleBean){
         logger.debug("=== Add to channel request found : " + articleBean);
         ChannelResponseBean channelResponseBean =  channelServiceHandler.addToChannel(articleBean);
         return ResponseEntity.ok().body(channelResponseBean);
     }
 
     @RequestMapping(value = "/addArticlesToChannel", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> addToChannel(@RequestBody ArticleBean[] request){
+    public ResponseEntity<Object> addToChannel(@RequestBody ArticleRequestBean[] request){
         logger.debug("=== Add to channel(2) request found: " + request);
         ChannelResponseBean channelResponseBean =  channelServiceHandler.addToChannel(request);
         return ResponseEntity.ok().body(channelResponseBean);

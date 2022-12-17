@@ -14,6 +14,7 @@ public class Article {
     private String title;
     private String summary;
     private String content;
+    private int status;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
 
@@ -70,4 +71,11 @@ public class Article {
     }
 
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

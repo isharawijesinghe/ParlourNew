@@ -1,11 +1,13 @@
 package com.ss.parlour.articleservice.handler.article;
 
-import com.ss.parlour.articleservice.domain.cassandra.Like;
 import com.ss.parlour.articleservice.utils.bean.ArticleBean;
-import com.ss.parlour.articleservice.utils.bean.CommentBean;
+import com.ss.parlour.articleservice.utils.bean.requests.ArticleDeleteRequestBean;
 import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
+import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
 
 public interface ArticleHandlerI {
 
     void handleArticleRequest(ArticleBean articleBean);
+    void deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean);
+    ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean);
 }

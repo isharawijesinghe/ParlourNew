@@ -1,9 +1,9 @@
 package com.ss.parlour.articleservice.utils.bean;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class CommentBean {
-
     private String id;
     private String articleId;
     private String parentId;
@@ -13,6 +13,7 @@ public class CommentBean {
     private int status;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
+    private List<CommentBean> subCommentBean;
 
     public String getId() {
         return id;
@@ -85,4 +86,8 @@ public class CommentBean {
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
+
+    public List<CommentBean> getSubCommentBean() {return subCommentBean;}
+
+    public void setSubCommentBean(List<CommentBean> subCommentBean) {this.subCommentBean = subCommentBean;}
 }

@@ -5,6 +5,8 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table("comment")
 @UserDefinedType
@@ -19,6 +21,8 @@ public class Comment {
     private int status;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
+    @org.springframework.data.annotation.Transient
+    private List<Comment> subComments = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -84,4 +88,11 @@ public class Comment {
         this.parentId = parentId;
     }
 
+    public List<Comment> getSubComments() {
+        return subComments;
+    }
+
+    public void setSubComments(List<Comment> subComments) {
+        this.subComments = subComments;
+    }
 }

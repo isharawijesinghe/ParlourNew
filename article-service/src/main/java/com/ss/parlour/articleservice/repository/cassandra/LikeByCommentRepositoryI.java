@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface LikeByCommentRepositoryI extends CassandraRepository<LikeByComment, String> {
 
-    Optional<LikeByComment> findLikeByCommentByAndCommentIdAndArticleId(String commentId, String articleId);
+    Optional<LikeByComment> findLikeByAndCommentIdAndArticleId(String commentId, String articleId);
 }

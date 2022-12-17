@@ -7,10 +7,9 @@ import com.ss.parlour.articleservice.utils.bean.ArticleBean;
 import com.ss.parlour.articleservice.utils.bean.ArticleConst;
 import com.ss.parlour.articleservice.utils.bean.CommentBean;
 import com.ss.parlour.articleservice.utils.bean.LikeBean;
-import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
-import com.ss.parlour.articleservice.utils.bean.requests.CommentRequestBean;
-import com.ss.parlour.articleservice.utils.bean.requests.LikeRequestBean;
+import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleCommonResponseBean;
+import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
 import com.ss.parlour.articleservice.utils.validator.ArticleValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,21 +27,18 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
     private ArticleValidatorI articleValidatorI;
 
     @Autowired
-    private LikeTypeHandlerFactoryI likeHandlerFactoryI;
-
-    @Autowired
     private LikeHandlerI likeHandlerI;
 
     @Override
-    public ArticleCommonResponseBean handleArticleRequest(ArticleRequestBean articleRequestBean){
-        ArticleBean articleBean = articleValidatorI.validateArticleRequest(articleRequestBean);
+    public ArticleCommonResponseBean handleArticleRequest(ArticleCreateRequestBean articleCreateRequestBean){
+        ArticleBean articleBean = articleValidatorI.validateArticleRequest(articleCreateRequestBean);
         articleHandlerI.handleArticleRequest(articleBean);
         return new ArticleCommonResponseBean(ArticleConst.STATUS_SUCCESS, ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);//Return response
     }
 
     @Override
-    public ArticleCommonResponseBean handleCommentRequest(CommentRequestBean commentRequestBean){
-        CommentBean commentBean = articleValidatorI.validateCommentRequest(commentRequestBean); //Doing basic initial validations
+    public ArticleCommonResponseBean handleCommentRequest(CommentCreateRequestBean commentCreateRequestBean){
+        CommentBean commentBean = articleValidatorI.validateCommentRequest(commentCreateRequestBean); //Doing basic initial validations
         commentHandlerI.handleCommentRequest(commentBean); //Handle comments related logics
         return new ArticleCommonResponseBean(ArticleConst.STATUS_SUCCESS, ArticleConst.SUCCESSFULLY_COMMENT_ADDED);//Return response
     }
@@ -54,5 +50,24 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
         return new ArticleCommonResponseBean(ArticleConst.STATUS_SUCCESS, ArticleConst.SUCCESSFULLY_COMMENT_ADDED);//Return response
     }
 
+    @Override
+    public ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean){
+        ArticleResponseBean articleResponseBean = articleHandlerI.findArticleById(articleRequestBean);
+        return articleResponseBean;
+    }
+
+    @Override
+    public ArticleCommonResponseBean handleArticleDelete(ArticleDeleteRequestBean articleDeleteRequestBean){
+        articleValidatorI.validateArticleDeleteRequest(articleDeleteRequestBean); //Doing basic initial validations
+        articleHandlerI.deleteArticle(articleDeleteRequestBean);
+        return new ArticleCommonResponseBean(ArticleConst.STATUS_SUCCESS, ArticleConst.SUCCESSFULLY_COMMENT_ADDED);//Return response
+    }
+
+    @Override
+    public ArticleCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean){
+        articleValidatorI.validateCommentDeleteRequest(commentDeleteRequestBean); //Doing basic initial validations
+        commentHandlerI.deleteComment(commentDeleteRequestBean);
+        return new ArticleCommonResponseBean(ArticleConst.STATUS_SUCCESS, ArticleConst.SUCCESSFULLY_COMMENT_ADDED);//Return response
+    }
 
 }

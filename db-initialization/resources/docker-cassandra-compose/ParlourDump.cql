@@ -2,6 +2,32 @@ create keyspace IF NOT EXISTS parlour with replication = {'class' : 'SimpleStrat
 and durable_writes = true;
 
 
+// ------------------ Type scripts ------------------- //
+
+CREATE TYPE parlour.comment(
+    id text,
+    articleId text,
+    parentId text,
+    userName text,
+    content text,
+    status int,
+    createdDate timestamp,
+    modifiedDate timestamp
+    );
+
+CREATE TYPE parlour.like(
+    key text,
+    articleId text,
+    commentId text,
+    likeType text,
+    userName text,
+    status int,
+    createdDate timestamp,
+    modifiedDate timestamp
+    );
+
+// ------------------ Table scripts ------------------- //
+
 CREATE TABLE IF NOT EXISTS parlour.user (
     loginName text,
     firstName text,
@@ -46,6 +72,7 @@ CREATE TABLE parlour.article (
     title text,
     content text,
     author text,
+    status int,
     createdDate timestamp,
     modifiedDate timestamp,
     PRIMARY KEY (name)
@@ -68,33 +95,11 @@ CREATE TABLE parlour.articleHistory (
     PRIMARY KEY (name,editedBy,createdDate)
 );
 
-CREATE TYPE parlour.comment(
-    id text,
-    articleId text,
-    parentId text,
-    authorName text,
-    content text,
-    status int,
-    createdDate timestamp,
-    modifiedDate timestamp
-);
-
-CREATE TYPE parlour.like(
-    key text,
-    articleId text,
-    commentId text,
-    likeType text,
-    userName text,
-    status int,
-    createdDate timestamp,
-    modifiedDate timestamp
-    );
-
 CREATE TABLE parlour.comment (
     id text,
     articleId text,
     parentId text,
-    authorName text,
+    userName text,
     content text,
     status int,
     createdDate timestamp,
@@ -102,31 +107,30 @@ CREATE TABLE parlour.comment (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE parlour.commentbyarticle (
-    articleid text,
-    comments list<frozen<comment>> ,
-    PRIMARY KEY (articleid)
+CREATE TABLE parlour.commentByArticle (
+    articleId text,
+    comments frozen<map<text, list<comment>>> ,
+    PRIMARY KEY (articleId)
 );
 
-CREATE TABLE parlour.commentbyarticle (
-    articleid text,
+CREATE TABLE parlour.likeByArticle (
+    articleId text,
     likes list<frozen<like>> ,
-    PRIMARY KEY (articleid)
+    PRIMARY KEY (articleId)
 );
 
-CREATE TABLE parlour.likebyarticle (
-    articleid text,
-    likes list<frozen<like>> ,
-    likeMap map<text, frozen<like>>,
-    PRIMARY KEY (articleid)
-);
-
-CREATE TABLE parlour.likebycomment (
-    commentid text,
-    articleid text,
+CREATE TABLE parlour.likeByArticle (
+    articleId text,
     likes list<frozen<like>> ,
     likeMap map<text, frozen<like>>,
-    PRIMARY KEY (articleid)
+    PRIMARY KEY (articleId)
+);
+
+CREATE TABLE parlour.likeByComment (
+    commentId text,
+    articleId text,
+    likeMap map<text, frozen<like>>,
+    PRIMARY KEY ((articleId, commentId))
 );
 
 -- INSERT INTO parlour.user (loginName,

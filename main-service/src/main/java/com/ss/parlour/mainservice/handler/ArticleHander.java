@@ -1,11 +1,9 @@
 package com.ss.parlour.mainservice.handler;
 
-import com.ss.parlour.mainservice.bean.ArticleRequestBean;
-import com.ss.parlour.mainservice.bean.ArticleResponseBean;
-import com.ss.parlour.mainservice.bean.ChannelRequestBean;
+import com.ss.parlour.mainservice.utils.bean.ArticleRequestBean;
+import com.ss.parlour.mainservice.utils.bean.ArticleResponseBean;
 import com.ss.parlour.mainservice.bean.Const;
 import com.ss.parlour.mainservice.domain.Article;
-import com.ss.parlour.mainservice.domain.Channel;
 import com.ss.parlour.mainservice.repository.ArticleRepositoryI;
 import com.ss.parlour.mainservice.utils.exception.MainServiceRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;

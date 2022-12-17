@@ -1,13 +1,16 @@
 package com.ss.parlour.articleservice.handler.article;
 
 import com.ss.parlour.articleservice.dao.ArticleDAOI;
-import com.ss.parlour.articleservice.dao.LikeDAOI;
 import com.ss.parlour.articleservice.domain.cassandra.Article;
 import com.ss.parlour.articleservice.domain.cassandra.Like;
 import com.ss.parlour.articleservice.domain.cassandra.LikeByArticle;
 import com.ss.parlour.articleservice.handler.LikeTypeHandlerI;
+import com.ss.parlour.articleservice.handler.comment.CommentHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleBean;
-import com.ss.parlour.articleservice.utils.common.KeyGenerator;
+import com.ss.parlour.articleservice.utils.bean.ArticleConst;
+import com.ss.parlour.articleservice.utils.bean.requests.ArticleDeleteRequestBean;
+import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
+import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +24,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     private ArticleDAOI articleDAOI;
 
     @Autowired
-    private KeyGenerator keyGenerator;
-
-    @Autowired
-    private LikeDAOI likeDAOI;
+    private CommentHandlerI commentHandlerI;
 
     @Override
     public void handleArticleRequest(ArticleBean articleBean){
@@ -53,6 +53,22 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         likeByArticle.setLikeMap(likeMap);
     }
 
+    @Override
+    public void deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean){
+        Optional<Article> exitingArticle = articleDAOI.getArticleById(articleDeleteRequestBean.getArticleId());
+        if (exitingArticle.isPresent()){
+            Article existingArticle = exitingArticle.get();
+            existingArticle.setStatus(ArticleConst.ARTICLE_INACTIVE);
+            articleDAOI.saveArticle(existingArticle);
+        }
+    }
+
+    @Override
+    public ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean){
+        ArticleResponseBean articleResponseBean = new ArticleResponseBean();
+        articleResponseBean.setArticleComments(commentHandlerI.getCommentListForPost(articleRequestBean));
+        return articleResponseBean;
+    }
 
     protected void createArticle(Article article){
         articleDAOI.saveArticle(article);
@@ -69,7 +85,6 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         article.setModifiedDate(articleBean.getModifiedDate());
         return article;
     }
-
 
 
 }

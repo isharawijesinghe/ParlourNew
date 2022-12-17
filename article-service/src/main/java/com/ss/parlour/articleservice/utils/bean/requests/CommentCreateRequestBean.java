@@ -3,7 +3,7 @@ package com.ss.parlour.articleservice.utils.bean.requests;
 
 import com.ss.parlour.articleservice.utils.bean.CommentBean;
 
-public class CommentRequestBean {
+public class CommentCreateRequestBean {
 
     private CommentBean commentBean;
 
