@@ -1,4 +1,4 @@
-package com.ss.parlour.mainservice.domain;
+package com.ss.parlour.mainservice.domain.cassandra;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
