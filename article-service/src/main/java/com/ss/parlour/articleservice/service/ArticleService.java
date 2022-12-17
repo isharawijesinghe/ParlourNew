@@ -4,6 +4,7 @@ import com.ss.parlour.articleservice.handler.CommonArticleHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleErrorCodes;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleCommonResponseBean;
+import com.ss.parlour.articleservice.utils.bean.response.ArticleHistoryResponseBean;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
 import com.ss.parlour.articleservice.utils.exception.ArticleServiceRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,17 @@ public class ArticleService implements ArticleServiceI {
     public ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean){
         try {
             return commonArticleHandlerI.findArticleById(articleRequestBean);
+        }catch (ArticleServiceRuntimeException ex){
+            throw ex;
+        }catch (Exception ex){
+            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
+        }
+    }
+
+    @Override
+    public ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean){
+        try {
+            return commonArticleHandlerI.findArticleHistoryById(articleHistoryRequestBean);
         }catch (ArticleServiceRuntimeException ex){
             throw ex;
         }catch (Exception ex){

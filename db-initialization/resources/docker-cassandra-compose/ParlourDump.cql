@@ -26,6 +26,17 @@ CREATE TYPE parlour.like(
     modifiedDate timestamp
     );
 
+CREATE TYPE parlour.article(
+    id text,
+    userName text,
+    title text,
+    summary text,
+    content text,
+    status int,
+    createdDate timestamp,
+    modifiedDate timestamp
+    );
+
 // ------------------ Table scripts ------------------- //
 
 CREATE TABLE IF NOT EXISTS parlour.user (
@@ -85,14 +96,9 @@ CREATE TABLE parlour.channelArticles (
 );
 
 CREATE TABLE parlour.articleHistory (
-    name text,
-    titleNew text,
-    titlePrev text,
-    contentNew text,
-    contentPrev text,
-    createdDate timestamp,
-    editedBy text,
-    PRIMARY KEY (name,editedBy,createdDate)
+    articleId text,
+    oldArticles frozen<list<article>> ,
+    PRIMARY KEY (articleId)
 );
 
 CREATE TABLE parlour.comment (

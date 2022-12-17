@@ -1,6 +1,6 @@
 package com.ss.parlour.mainservice.utils.bean;
 
-import com.ss.parlour.mainservice.domain.Article;
+import com.ss.parlour.mainservice.domain.cassandra.Article;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
 package com.ss.parlour.mainservice.handler;
 
+import com.ss.parlour.mainservice.domain.cassandra.Article;
 import com.ss.parlour.mainservice.utils.bean.ArticleRequestBean;
 import com.ss.parlour.mainservice.utils.bean.ArticleResponseBean;
-import com.ss.parlour.mainservice.bean.Const;
-import com.ss.parlour.mainservice.domain.Article;
 import com.ss.parlour.mainservice.repository.ArticleRepositoryI;
+import com.ss.parlour.mainservice.utils.bean.MainConst;
 import com.ss.parlour.mainservice.utils.exception.MainServiceRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ public class ArticleHander implements ArticleHandlerI {
     @Override
     public ArticleResponseBean viewArticles(int channelId) {
         if(channelId<=0){
-            throw new MainServiceRuntimeException(Const.ERROR_DES_INVALID_CHANEL_ID);
+            throw new MainServiceRuntimeException(MainConst.ERROR_DES_INVALID_CHANEL_ID);
         }
         List<Article> articles= articleRepositoryI.findByChannelId(channelId);
         ArticleResponseBean articleResponseBean=new ArticleResponseBean();

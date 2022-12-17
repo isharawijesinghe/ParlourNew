@@ -9,6 +9,7 @@ import com.ss.parlour.articleservice.utils.bean.CommentBean;
 import com.ss.parlour.articleservice.utils.bean.LikeBean;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleCommonResponseBean;
+import com.ss.parlour.articleservice.utils.bean.response.ArticleHistoryResponseBean;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
 import com.ss.parlour.articleservice.utils.validator.ArticleValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,12 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
     public ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean){
         ArticleResponseBean articleResponseBean = articleHandlerI.findArticleById(articleRequestBean);
         return articleResponseBean;
+    }
+
+    @Override
+    public ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean){
+        ArticleHistoryResponseBean articleHistoryResponseBean = articleHandlerI.findArticleHistoryById(articleHistoryRequestBean);
+        return articleHistoryResponseBean;
     }
 
     @Override

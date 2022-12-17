@@ -22,7 +22,5 @@ public class CommentByArticle {
         return comments;
     }
 
-    public void setComments(HashMap<String, ArrayList<Comment>> comments) {
-        this.comments = comments;
-    }
+    public void setComments(HashMap<String, ArrayList<Comment>> comments) {this.comments = comments;}
 }

@@ -3,6 +3,7 @@ package com.ss.parlour.articleservice.contorller;
 import com.ss.parlour.articleservice.service.ArticleServiceI;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleCommonResponseBean;
+import com.ss.parlour.articleservice.utils.bean.response.ArticleHistoryResponseBean;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -37,10 +38,16 @@ public class ArticleREST {
         return ResponseEntity.ok().body(articleCommonResponseBean);
     }
 
-    @RequestMapping(value = "/articleById", method = RequestMethod.POST, consumes = {"application/json"})
+    @RequestMapping(value = "/findArticleById", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> findArticleById(@RequestBody ArticleRequestBean articleRequestBean){
         ArticleResponseBean articleResponseBean = articleServiceI.findArticleById(articleRequestBean);
         return ResponseEntity.ok().body(articleResponseBean);
+    }
+
+    @RequestMapping(value = "/findArticleHistoryById", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<Object> findArticleHistoryById(@RequestBody ArticleHistoryRequestBean articleHistoryRequestBean){
+        ArticleHistoryResponseBean articleHistoryResponseBean = articleServiceI.findArticleHistoryById(articleHistoryRequestBean);
+        return ResponseEntity.ok().body(articleHistoryResponseBean);
     }
 
     @RequestMapping(value = "/deleteArticle", method = RequestMethod.POST, consumes = {"application/json"})
@@ -51,7 +58,7 @@ public class ArticleREST {
 
     @RequestMapping(value = "/deleteComment", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> deleteComment(@RequestBody CommentDeleteRequestBean commentDeleteRequestBean){
-        ArticleCommonResponseBean articleCommonResponseBean = null;
+        ArticleCommonResponseBean articleCommonResponseBean = articleServiceI.deleteComment(commentDeleteRequestBean);;
         return ResponseEntity.ok().body(articleCommonResponseBean);
     }
 

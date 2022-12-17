@@ -45,12 +45,13 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
         Optional<Comment> existingCommentBean = commentDAOI.getCommentById(commentDeleteRequestBean.getCommentId());
         if (existingCommentBean.isPresent()){
 
-            //Update comment bean in db
-            Comment existingComment = existingCommentBean.get();
-            existingComment.setStatus(ArticleConst.COMMENT_INACTIVE);
-            commentDAOI.saveComment(existingComment);
+            //Update comment bean in db --> does require to remove from db ???
+            Comment oldComment = existingCommentBean.get();
+            oldComment.setStatus(ArticleConst.COMMENT_INACTIVE);
+            commentDAOI.saveComment(oldComment);
 
             //Update article assign comment map in db
+            removeArticleAssignComment(oldComment);
 
             //Update comment history in db
         }
@@ -116,10 +117,35 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
         }
         commentMap.get(comment.getParentId()).add(comment);
 
-        //  Update or insert comment by article entry to db
+        //Update comment by article values into db
+        updatedCommentByArticle(comment.getArticleId(), commentMap);
+    }
+
+    //This will remove article assign comment from stores map when comment deleted
+    protected void removeArticleAssignComment(Comment oldComment){
+        Optional<CommentByArticle> existingCommentByArticleBean = commentDAOI.getCommentsByArticleId(oldComment.getArticleId());
+        if (existingCommentByArticleBean.isPresent()){
+            HashMap<String, ArrayList<Comment>> currentCommentMap = existingCommentByArticleBean.get().getComments();
+
+            //If comment itself is parent then remove it, and it's child from map
+            String commentId = oldComment.getId();
+            currentCommentMap.remove(commentId);
+
+            //If comment is child of parent then remove it from child list
+            String parentCommentId = oldComment.getParentId();
+            List<Comment> childCommentList = currentCommentMap.get(parentCommentId);
+            childCommentList.removeIf(childComment -> childComment.getId() == oldComment.getId());
+
+            //Update comment by article values into db
+            updatedCommentByArticle(oldComment.getArticleId(), currentCommentMap);
+        }
+    }
+
+    protected void updatedCommentByArticle(String articleId, HashMap<String, ArrayList<Comment>> commentMap){
         CommentByArticle commentByArticle = new CommentByArticle();
-        commentByArticle.setArticleId(comment.getArticleId());
-        commentByArticle.setComments(commentMap);commentDAOI.saveCommentByArticle(commentByArticle);
+        commentByArticle.setArticleId(articleId);
+        commentByArticle.setComments(commentMap);
+        commentDAOI.saveCommentByArticle(commentByArticle);
     }
 
     //Insert or update article
@@ -127,6 +153,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
         commentDAOI.saveComment(comment);
     }
 
+    //Populate and create comment entry in db
     protected Comment populateComment(CommentBean commentBean){
         Comment comment = new Comment();
         comment.setId(commentBean.getId());
