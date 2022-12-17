@@ -103,9 +103,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     protected void handleCommentByArticle(Comment comment){
         Optional<CommentByArticle> existingCommentByArticle = commentDAOI.getCommentsByArticleId(comment.getArticleId());
         HashMap<String, ArrayList<Comment>> commentMap = new HashMap<>();
-        //Process when comments are available for articles
-        //--> Adding old one to history
-        //-->Add audit trail
+        //Process when comments are available for articles >> Adding old one to history / Add audit trail
         if (existingCommentByArticle.isPresent()){
             HashMap<String, ArrayList<Comment>> existingCommentMap = existingCommentByArticle.get().getComments();
             commentMap = existingCommentMap;
