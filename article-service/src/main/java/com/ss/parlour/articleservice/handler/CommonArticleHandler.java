@@ -1,6 +1,6 @@
 package com.ss.parlour.articleservice.handler;
 
-import com.ss.parlour.articleservice.handler.Like.LikeHandlerI;
+import com.ss.parlour.articleservice.handler.like.LikeHandlerI;
 import com.ss.parlour.articleservice.handler.article.ArticleHandlerI;
 import com.ss.parlour.articleservice.handler.comment.CommentHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleBean;

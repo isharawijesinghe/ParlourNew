@@ -1,4 +1,4 @@
-package com.ss.parlour.articleservice.handler.Like;
+package com.ss.parlour.articleservice.handler.like;
 
 import com.ss.parlour.articleservice.dao.LikeDAOI;
 import com.ss.parlour.articleservice.domain.cassandra.Like;
