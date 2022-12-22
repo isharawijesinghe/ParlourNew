@@ -1,0 +1,42 @@
+server:
+  port: 9191
+  tomcat:
+    accesslog:
+      enabled=true:logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    reactor.netty: DEBUG
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: MAIN-SERVICE
+          uri: lb://MAIN-SERVICE/
+          predicates:
+            - Path=/channel/**
+          filters:
+            TokenRelay=
+        - id: ARTICLE-SERVICE
+            uri: lb://ARTICLE-SERVICE/
+            predicates:
+              - Path=/article/**
+            filters:
+              TokenRelay=
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://127.0.0.1:9002/.well-known/jwks.json
+
+eureka:
+  instance:
+    hostname: 127.0.0.1
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka/
+

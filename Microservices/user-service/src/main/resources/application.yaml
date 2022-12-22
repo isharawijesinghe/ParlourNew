@@ -1,0 +1,27 @@
+server:
+  port: 9003
+
+spring:
+  application:
+    name: USER-SERVICE
+  data:
+    cassandra:
+      keyspace-name: parlour
+      contact-points: 127.0.0.1
+      port: 9042
+      schema-action: CREATE_IF_NOT_EXISTS
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty: DEBUG
+
+eureka:
+  instance:
+    hostname: 127.0.0.1
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka/
+
