@@ -12,7 +12,9 @@ CREATE TYPE parlour.comment(
     content text,
     status int,
     createdDate timestamp,
-    modifiedDate timestamp
+    modifiedDate timestamp,
+    likedList set<text> ,
+    unLikedList set<text> ,
     );
 
 CREATE TYPE parlour.like(
@@ -86,6 +88,8 @@ CREATE TABLE parlour.article (
     status int,
     createdDate timestamp,
     modifiedDate timestamp,
+    likedList frozen<set<text>> ,
+    unLikedList frozen<set<text>> ,
     PRIMARY KEY (name)
 );
 
@@ -110,6 +114,8 @@ CREATE TABLE parlour.comment (
     status int,
     createdDate timestamp,
     modifiedDate text,
+    likedList frozen<set<text>> ,
+    unLikedList frozen<set<text>> ,
     PRIMARY KEY (id)
 );
 

@@ -16,14 +16,25 @@ public class SecurityConfig {
         http.mvcMatcher("/**")
                 .authorizeRequests()
                 .mvcMatchers("/**")
-                .permitAll()
-                .antMatchers("/article/**", "/article/addComment/**", "/login/**", "/auth/**", "/oauth2/**", "/createUser/**", "/authentication/**")
-                .permitAll();
-//                .access("hasAuthority('SCOPE_message.read')")
-//                .and()
-//                .oauth2ResourceServer().jwt();
+                .access("hasAuthority('SCOPE_message.read')")
+                .and()
+                .oauth2ResourceServer().jwt();
         return http.build();
     }
 
+    //This configuration can be used in testing >> Disable authorization
+//    @Bean
+//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//
+//        http.cors().and().csrf().disable();
+//
+//        http.mvcMatcher("/**")
+//                .authorizeRequests()
+//                .mvcMatchers("/**")
+//                .permitAll()
+//                .antMatchers("/article/**", "/article/addComment/**", "/login/**", "/auth/**", "/oauth2/**", "/createUser/**", "/authentication/**")
+//                .permitAll();
+//        return http.build();
+//    }
 
 }

@@ -23,7 +23,6 @@ public class ChannelREST {
     @Autowired
     private ChannelServiceI channelServiceHandler;
 
-    @PreAuthorize("hasRole('USER')")
     @RequestMapping(value = "/version", method = RequestMethod.GET)
     public String hello() {
         return "Hello parlour:0.0.1 " + System.currentTimeMillis();

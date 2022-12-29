@@ -38,11 +38,4 @@ public class ArticleREST {
         return articleServiceI.viewArticles();
     }
 
-    public ArticleServiceI getArticleServiceI() {
-        return articleServiceI;
-    }
-
-    public void setArticleServiceI(ArticleServiceI articleServiceI) {
-        this.articleServiceI = articleServiceI;
-    }
 }

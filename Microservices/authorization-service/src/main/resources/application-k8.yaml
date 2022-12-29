@@ -2,7 +2,7 @@ spring:
   data:
     cassandra:
       keyspace-name: parlour
-      contact-points: host.minikube.internal
+      contact-points: host.minikube.internal_1
       port: 9042
       schema-action: CREATE_IF_NOT_EXISTS
 

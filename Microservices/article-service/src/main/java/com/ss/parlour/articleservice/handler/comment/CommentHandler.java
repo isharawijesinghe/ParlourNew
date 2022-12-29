@@ -5,6 +5,7 @@ import com.ss.parlour.articleservice.domain.cassandra.*;
 import com.ss.parlour.articleservice.handler.LikeTypeHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleConst;
 import com.ss.parlour.articleservice.utils.bean.CommentBean;
+import com.ss.parlour.articleservice.utils.bean.LikeBean;
 import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
 import com.ss.parlour.articleservice.utils.bean.requests.CommentDeleteRequestBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     @Autowired
     private CommentDAOI commentDAOI;
 
-    //Flow of handle all article comment mechanism
+    //When user add comment on article
     @Override
     public void handleCommentRequest(CommentBean commentBean){
         Comment comment = populateComment(commentBean);
@@ -27,19 +28,22 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
         handleCommentByArticle(comment);
     }
 
+    //When user vote for comment
     @Override
-    public void handleLikeType(Like like){
-        HashMap<String, Like> likeMap = new HashMap<>();
-        Optional<LikeByComment> existingLikeByCommentBean = commentDAOI.getLikeByComment(like.getCommentId(), like.getArticleId());
-        if (existingLikeByCommentBean.isPresent()){
-            likeMap =  existingLikeByCommentBean.get().getLikeMap();
+    public void handleLikeRequest(LikeBean likeBean){
+        Optional<Comment> existingCommentBean = commentDAOI.getCommentById(likeBean.getCommentId());
+        if (existingCommentBean.isPresent()){
+            //Update saved comment object in db >> Update "Comment" table
+            Comment updatedComment = updateCommentVote(likeBean, existingCommentBean.get());
+
+            //Update article assign comment map in db >> Update "CommentByArticle" table
+            updatedArticleAssignComment(updatedComment);
+
         }
-        likeMap.put(like.getKey(), like);
-        LikeByArticle likeByArticle = new LikeByArticle();
-        likeByArticle.setArticleId(like.getArticleId());
-        likeByArticle.setLikeMap(likeMap);
     }
 
+    //When delete comment
+    @Override
     public void deleteComment(CommentDeleteRequestBean commentDeleteRequestBean){
         Optional<Comment> existingCommentBean = commentDAOI.getCommentById(commentDeleteRequestBean.getCommentId());
         if (existingCommentBean.isPresent()){
@@ -51,19 +55,20 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
 
             //Update article assign comment map in db
             removeArticleAssignComment(oldComment);
-
-            //Update comment history in db
         }
     }
 
+    //When user request for comment list for post
     @Override
     public List<Comment> getCommentListForPost(ArticleRequestBean articleRequestBean){
+        //Load all comments for particular article
         Optional<CommentByArticle> existingCommentByArticle = commentDAOI.getCommentsByArticleId(articleRequestBean.getArticleId());
         List<Comment> responseComment = new ArrayList<>();
         if (existingCommentByArticle.isPresent()){
+
             CommentByArticle commentByArticleExisting = existingCommentByArticle.get();
             //Load existing parent comment assign child comment list
-            HashMap<String, ArrayList<Comment>> parentToChildCommentMap = commentByArticleExisting.getComments();
+            HashMap<String, List<Comment>> parentToChildCommentMap = commentByArticleExisting.getComments();
             //Stream over parent child comment map to get list of comments
             List<Comment> listOfComments = parentToChildCommentMap
                                            .values()
@@ -101,10 +106,11 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     //Handle comment list by article id
     protected void handleCommentByArticle(Comment comment){
         Optional<CommentByArticle> existingCommentByArticle = commentDAOI.getCommentsByArticleId(comment.getArticleId());
-        HashMap<String, ArrayList<Comment>> commentMap = new HashMap<>();
+        HashMap<String, List<Comment>> commentMap = new HashMap<>();
+
         //Process when comments are available for articles >> Adding old one to history / Add audit trail
         if (existingCommentByArticle.isPresent()){
-            HashMap<String, ArrayList<Comment>> existingCommentMap = existingCommentByArticle.get().getComments();
+            HashMap<String, List<Comment>> existingCommentMap = existingCommentByArticle.get().getComments();
             commentMap = existingCommentMap;
         }
 
@@ -114,7 +120,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
         }
         commentMap.get(comment.getParentId()).add(comment);
 
-        //Update comment by article values into db
+        //Update comment by article values into db >> save in db
         updatedCommentByArticle(comment.getArticleId(), commentMap);
     }
 
@@ -122,7 +128,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     protected void removeArticleAssignComment(Comment oldComment){
         Optional<CommentByArticle> existingCommentByArticleBean = commentDAOI.getCommentsByArticleId(oldComment.getArticleId());
         if (existingCommentByArticleBean.isPresent()){
-            HashMap<String, ArrayList<Comment>> currentCommentMap = existingCommentByArticleBean.get().getComments();
+            HashMap<String, List<Comment>> currentCommentMap = existingCommentByArticleBean.get().getComments();
 
             //If comment itself is parent then remove it, and it's child from map
             String commentId = oldComment.getId();
@@ -138,7 +144,55 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
         }
     }
 
-    protected void updatedCommentByArticle(String articleId, HashMap<String, ArrayList<Comment>> commentMap){
+    //Update comment like / unlike status
+    protected Comment updateCommentVote(LikeBean likeBean, Comment oldComment){
+        Set<String> likedUsers = oldComment.getLikedList();
+        Set<String> unLikeUsers = oldComment.getUnLikedList();
+
+        //Update user like or unlike list based on user input
+        switch (likeBean.getStatus()){
+            case ArticleConst.USER_LIKED:
+                likedUsers.add(likeBean.getUserName());
+                unLikeUsers.removeIf(username -> username.equals(likeBean.getUserName()));
+                break;
+            case ArticleConst.USER_UNLIKED:
+                unLikeUsers.add(likeBean.getUserName());
+                likedUsers.removeIf(username -> username.equals(likeBean.getUserName()));
+                break;
+            default:
+                likedUsers.removeIf(username -> username.equals(likeBean.getUserName()));
+                unLikeUsers.removeIf(username -> username.equals(likeBean.getUserName()));
+                break;
+        }
+
+        Comment updatedComment = oldComment;
+        updatedComment.setLikedList(likedUsers);
+        updatedComment.setUnLikedList(unLikeUsers);
+        commentDAOI.saveComment(updatedComment);
+
+        return updatedComment;
+    }
+
+    //Update comment by article bean to db
+    protected void updatedArticleAssignComment(Comment updatedComment){
+        Optional<CommentByArticle> existingCommentByArticleBean = commentDAOI.getCommentsByArticleId(updatedComment.getArticleId());
+        if (existingCommentByArticleBean.isPresent()){
+            //Load current child map list
+            HashMap<String, List<Comment>> currentCommentMap = existingCommentByArticleBean.get().getComments();
+            List<Comment> childCommentList = currentCommentMap.get(updatedComment.getParentId());
+
+            List<Comment> newChildCommentList = childCommentList.parallelStream()
+                    .map(comment -> comment.getId() == updatedComment.getId() ? updatedComment : comment)
+                    .collect(Collectors.toList());
+            currentCommentMap.put(updatedComment.getParentId(), newChildCommentList);
+
+            //Update comment by article values into db
+            updatedCommentByArticle(updatedComment.getArticleId(), currentCommentMap);
+        }
+    }
+
+    //Update comment by article bean to db
+    protected void updatedCommentByArticle(String articleId, HashMap<String, List<Comment>> commentMap){
         CommentByArticle commentByArticle = new CommentByArticle();
         commentByArticle.setArticleId(articleId);
         commentByArticle.setComments(commentMap);

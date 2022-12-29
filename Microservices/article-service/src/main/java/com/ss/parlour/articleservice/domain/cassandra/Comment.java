@@ -5,8 +5,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Table("comment")
 @UserDefinedType
@@ -21,6 +20,8 @@ public class Comment {
     private int status;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
+    private Set<String> likedList = new HashSet<>();
+    private Set<String> unLikedList = new HashSet<>();
     @org.springframework.data.annotation.Transient
     private List<Comment> subComments = new ArrayList<>();
 
@@ -94,5 +95,22 @@ public class Comment {
 
     public void setSubComments(List<Comment> subComments) {
         this.subComments = subComments;
+    }
+
+
+    public Set<String> getLikedList() {
+        return likedList;
+    }
+
+    public void setLikedList(Set<String> likedList) {
+        this.likedList = likedList;
+    }
+
+    public Set<String> getUnLikedList() {
+        return unLikedList;
+    }
+
+    public void setUnLikedList(Set<String> unLikedList) {
+        this.unLikedList = unLikedList;
     }
 }

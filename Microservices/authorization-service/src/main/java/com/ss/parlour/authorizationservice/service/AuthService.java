@@ -66,6 +66,9 @@ public class AuthService implements AuthServiceI{
             requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), AuthorizationConst.USER_ACTION_TYPE_REGISTER);
             authHandlerI.populateUserRegistrationResponseBean(userRegistrationResponseBean);
             return userRegistrationResponseBean;
+        }catch (AuthorizationRuntimeException ex){
+            //todo add logger
+            throw ex;
         }catch (Exception ex){
             throw new AuthorizationRuntimeException(AuthorizationErrorCodes.UNKNOWN_ERROR, ex);
         }

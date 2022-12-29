@@ -15,10 +15,10 @@ import java.util.UUID;
 @Component
 public class AwsImageHandler implements AwsImageHandlerI {
 
-    @Autowired
+    //@Autowired
     private AmazonS3 amazonS3;
 
-    @Value("${s3.bucket.name}")
+   // @Value("${s3.bucket.name}")
     private String s3BucketName;
 
 

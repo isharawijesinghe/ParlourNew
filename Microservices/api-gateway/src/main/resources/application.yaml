@@ -20,11 +20,11 @@ spring:
           filters:
             TokenRelay=
         - id: ARTICLE-SERVICE
-            uri: lb://ARTICLE-SERVICE/
-            predicates:
-              - Path=/article/**
-            filters:
-              TokenRelay=
+          uri: lb://ARTICLE-SERVICE/
+          predicates:
+            - Path=/article/**
+          filters:
+            TokenRelay=
   security:
     oauth2:
       resourceserver:
@@ -38,5 +38,5 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://127.0.0.1:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/
 

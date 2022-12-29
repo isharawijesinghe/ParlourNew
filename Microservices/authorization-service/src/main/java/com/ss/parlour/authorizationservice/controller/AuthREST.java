@@ -59,10 +59,4 @@ public class AuthREST {
 //                .body(new UserRegistrationResponseBean(true, "User registered successfully@"));
     }
 
-    @GetMapping("/user/me")
-    @PreAuthorize("hasRole('USER')")
-    public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
-        return userDAOI.loadUserByIdentification(userPrincipal.getEmail());
-    }
-
 }

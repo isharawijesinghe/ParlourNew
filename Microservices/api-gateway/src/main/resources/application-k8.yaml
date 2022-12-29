@@ -1,3 +1,10 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://authorization-service-svc.default.svc.cluster.local:9002/.well-known/jwks.json
+
 eureka:
   instance:
     preferIpAddress: true

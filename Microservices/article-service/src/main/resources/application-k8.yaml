@@ -5,6 +5,11 @@ spring:
       contact-points: host.minikube.internal
       port: 9042
       schema-action: CREATE_IF_NOT_EXISTS
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://authorization-service-svc.default.svc.cluster.local:9002/.well-known/jwks.json
 
 eureka:
   instance:

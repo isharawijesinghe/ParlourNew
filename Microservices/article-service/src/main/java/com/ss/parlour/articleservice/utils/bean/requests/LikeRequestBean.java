@@ -6,11 +6,7 @@ public class LikeRequestBean {
 
     private LikeBean likeBean;
 
-    public LikeBean getArticleLikeBean() {
-        return likeBean;
-    }
+    public LikeBean getLikeBean() {return likeBean;}
 
-    public void setArticleLikeBean(LikeBean likeBean) {
-        this.likeBean = likeBean;
-    }
+    public void setLikeBean(LikeBean likeBean) {this.likeBean = likeBean;}
 }

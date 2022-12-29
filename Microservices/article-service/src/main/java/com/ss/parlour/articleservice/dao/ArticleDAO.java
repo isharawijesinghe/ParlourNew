@@ -34,9 +34,7 @@ public class ArticleDAO implements ArticleDAOI {
     }
 
     @Override
-    public Optional<LikeByArticle> getLikeByArticle(String articleId){
-        return likeByArticleRepositoryI.findByArticleId(articleId);
-    }
+    public Optional<LikeByArticle> getLikeByArticle(String articleId){return likeByArticleRepositoryI.findByArticleId(articleId);}
 
     @Override
     public void updateArticleHistory(ArticleHistory articleHistory){
@@ -44,9 +42,6 @@ public class ArticleDAO implements ArticleDAOI {
     }
 
     @Override
-    public Optional<ArticleHistory> getArticleHistoryByArticleId(String articleId){
-        return articleHistoryRepositoryI.findById(articleId);
-    }
-
+    public Optional<ArticleHistory> getArticleHistoryByArticleId(String articleId){return articleHistoryRepositoryI.findById(articleId);}
 
 }

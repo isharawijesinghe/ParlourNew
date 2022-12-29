@@ -11,6 +11,9 @@ public class ArticleValidator implements ArticleValidatorI{
 
     @Override
     public ArticleBean validateArticleRequest(ArticleCreateRequestBean articleCreateRequestBean){
+        //Validate for article existence
+        //Validate for user exist
+        //Validate for fields exist
         return articleCreateRequestBean.getArticleBean();
     }
 
@@ -21,7 +24,7 @@ public class ArticleValidator implements ArticleValidatorI{
 
     @Override
     public LikeBean validateArticleLikeRequest(LikeRequestBean likeRequestBean){
-        return likeRequestBean.getArticleLikeBean();
+        return likeRequestBean.getLikeBean();
     }
 
     @Override

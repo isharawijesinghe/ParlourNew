@@ -2,12 +2,14 @@ package com.ss.parlour.articleservice.utils.bean.response;
 
 import com.ss.parlour.articleservice.domain.cassandra.Article;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArticleHistoryResponseBean {
 
     private String articleId;
-    private List<Article> articleHistoryList;
+    private List<Article> articleHistoryList = new ArrayList<>();
 
     public String getArticleId() {
         return articleId;
@@ -21,7 +23,5 @@ public class ArticleHistoryResponseBean {
         return articleHistoryList;
     }
 
-    public void setArticleHistoryList(List<Article> articleHistoryList) {
-        this.articleHistoryList = articleHistoryList;
-    }
+    public void setArticleHistoryList(List<Article> articleHistoryList) {this.articleHistoryList = articleHistoryList;}
 }

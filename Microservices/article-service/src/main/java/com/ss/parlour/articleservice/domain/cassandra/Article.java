@@ -4,6 +4,7 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.sql.Timestamp;
+import java.util.*;
 
 @Table("article")
 public class Article {
@@ -17,6 +18,8 @@ public class Article {
     private int status;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
+    private Set<String> likedList = new HashSet<>();
+    private Set<String> unLikedList = new HashSet<>();
 
     public String getId() {return id;}
 
@@ -70,12 +73,25 @@ public class Article {
         this.modifiedDate = modifiedDate;
     }
 
-
-    public int getStatus() {
-        return status;
-    }
+    public int getStatus() {return status;}
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public Set<String> getLikedList() {
+        return likedList;
+    }
+
+    public void setLikedList(Set<String> likedList) {
+        this.likedList = likedList;
+    }
+
+    public Set<String> getUnLikedList() {
+        return unLikedList;
+    }
+
+    public void setUnLikedList(Set<String> unLikedList) {
+        this.unLikedList = unLikedList;
     }
 }
