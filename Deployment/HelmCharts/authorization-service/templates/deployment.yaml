@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authorization-service
+  labels:
+    app: authorization-service
+    env: {{.Values.app.env}}
+spec:
+  replicas: {{.Values.app.replicas}}
+  selector:
+    matchLabels:
+      app: authorization-service
+  template:
+    metadata:
+      labels:
+        app: authorization-service
+    spec:
+      containers:
+        - name: authorization-service
+          image: {{.Values.app.container.image}}
+          env:
+            - name: SPRING_DATA_CASSANDRA_CONTACT-POINTS
+              value: 54.237.4.27
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9002
+          resources:
+            {{- toYaml .Values.app.computerc | nindent 12}}

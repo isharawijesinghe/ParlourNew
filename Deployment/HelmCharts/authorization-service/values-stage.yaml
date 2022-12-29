@@ -1,0 +1,12 @@
+app:
+  replicas : 1
+  env: stage
+  container:
+    image: ishara007/authorization-service:latest
+  computerc:
+    limits:
+      cpu: "0.2"
+      memory: 500Mi
+    requests:
+      cpu: "0.2"
+      memory: 500Mi

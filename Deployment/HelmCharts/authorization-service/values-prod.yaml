@@ -1,0 +1,12 @@
+app:
+  replicas : 1
+  env: prod
+  container:
+    image: ishara007/authorization-service:latest
+  computerc:
+    limits:
+      cpu: "4"
+      memory: 16Gi
+    requests:
+      cpu: "4"
+      memory: 16Gi
