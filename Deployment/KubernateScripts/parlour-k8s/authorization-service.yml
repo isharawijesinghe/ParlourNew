@@ -19,7 +19,7 @@ spec:
           image: ishara007/authorization-service:latest
           env:
             - name: SPRING_DATA_CASSANDRA_CONTACT-POINTS
-              value: 54.237.4.27
+              value: host.minikube.internal
           imagePullPolicy: Always
           ports:
             - containerPort: 9002
@@ -28,7 +28,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: authorization-service-svc
+  name: authorization-service
 spec:
   type: NodePort
   ports:

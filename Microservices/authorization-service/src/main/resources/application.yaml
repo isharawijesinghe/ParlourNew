@@ -1,9 +1,15 @@
 server:
   port: 9002
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 spring:
   application:
-    name: AUTHORIZATION-SERVICE
+    name: authorization-service
   data:
     cassandra:
       keyspace-name: parlour
@@ -21,6 +27,16 @@ spring:
             scope:
               - email
               - profile
+  cloud:
+    kubernetes:
+      enabled: false
+      reload:
+        enabled: true
+    gateway:
+      discovery:
+        locator:
+          lowerCaseServiceId: true
+          enabled: true
 
 logging:
   level:
@@ -58,3 +74,4 @@ app:
       keystore-password : password
       key-alias : jwtsigning
       private-key-passphrase : password
+

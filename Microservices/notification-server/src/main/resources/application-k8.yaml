@@ -1,10 +1,4 @@
 spring:
-  data:
-    cassandra:
-      keyspace-name: parlour
-      contact-points: host.minikube.internal
-      port: 9042
-      schema-action: CREATE_IF_NOT_EXISTS
   cloud:
     kubernetes:
       enabled: true
@@ -25,4 +19,3 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka/
-

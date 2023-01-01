@@ -5,13 +5,23 @@ spring:
       contact-points: host.minikube.internal
       port: 9042
       schema-action: CREATE_IF_NOT_EXISTS
+  cloud:
+    kubernetes:
+      enabled: true
+      reload:
+        enabled: true
+    gateway:
+      discovery:
+        locator:
+          lowerCaseServiceId: true
+          enabled: true
 
 eureka:
   instance:
     preferIpAddress: true
     hostname: eureka-0
   client:
-    registerWithEureka: true
+    registerWithEureka: false
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka
+      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka/

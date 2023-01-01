@@ -1,0 +1,23 @@
+app:
+  replicas : 1
+  env: dev
+  name: api-gateway
+  container:
+    image: ishara007/authorization-service:latest
+    imagePullPolicy: Always
+    ports:
+      containerPort: 9191
+  computerc:
+    limits:
+      cpu: "0.2"
+      memory: 500Mi
+    requests:
+      cpu: "0.2"
+      memory: 500Mi
+
+service:
+  name: api-gateway
+  type: LoadBalancer
+  ports:
+    port: 80
+    targetPort: 9191

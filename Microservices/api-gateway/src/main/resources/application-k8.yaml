@@ -3,14 +3,20 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://authorization-service-svc.default.svc.cluster.local:9002/.well-known/jwks.json
+          jwk-set-uri: http://authorization-service.default.svc.cluster.local:9002/.well-known/jwks.json
+  cloud:
+    kubernetes:
+      enabled: true
+      reload:
+        enabled: true
 
 eureka:
   instance:
     preferIpAddress: true
     hostname: eureka-0
   client:
-    registerWithEureka: true
+    registerWithEureka: false
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka
+

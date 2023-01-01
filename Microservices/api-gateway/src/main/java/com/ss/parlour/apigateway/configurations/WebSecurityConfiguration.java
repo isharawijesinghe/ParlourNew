@@ -14,9 +14,24 @@ public class WebSecurityConfiguration  {
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http.cors().and().csrf().disable();
         http
-                .authorizeExchange(exchanges -> exchanges
-                        .anyExchange().authenticated()
-                )
+                .authorizeExchange()
+//                .pathMatchers("/",
+//                        "/error",
+//                        "/favicon.ico",
+//                        "/**/*.png",
+//                        "/**/*.gif",
+//                        "/**/*.svg",
+//                        "/**/*.jpg",
+//                        "/**/*.html",
+//                        "/**/*.css",
+//                        "/**/*.js")
+//                .permitAll()
+                .pathMatchers("/authentication/auth/**", "/login/**", "/auth/**",
+                        "/oauth2/**", "/createUser/**", "/authentication/**")
+                .permitAll()
+                .anyExchange().authenticated()
+                .and()
+                .csrf().disable()
                 .oauth2ResourceServer()
                 .jwt();
 

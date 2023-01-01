@@ -7,22 +7,41 @@ server:
     org.springframework.cloud.gateway: TRACE
     reactor.netty: DEBUG
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 spring:
   application:
-    name: API-GATEWAY
+    name: api-gateway
   cloud:
+    cloud:
+      kubernetes:
+        enabled: false
     gateway:
+      discovery:
+        locator:
+          lowerCaseServiceId: true
+          enabled: true
       routes:
         - id: MAIN-SERVICE
-          uri: lb://MAIN-SERVICE/
+          uri: lb://main-service/
           predicates:
             - Path=/channel/**
           filters:
             TokenRelay=
         - id: ARTICLE-SERVICE
-          uri: lb://ARTICLE-SERVICE/
+          uri: lb://article-service/
           predicates:
             - Path=/article/**
+          filters:
+            TokenRelay=
+        - id: AUTHORIZATION-SERVICE
+          uri: lb://authorization-service/
+          predicates:
+            - Path=/authentication/**
           filters:
             TokenRelay=
   security:

@@ -69,6 +69,22 @@
 			<artifactId>aws-java-sdk-s3</artifactId>
 			<version>1.11.64</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-kubernetes-fabric8-all</artifactId>
+			<version>2.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.ap4k</groupId>
+			<artifactId>kubernetes-spring-starter</artifactId>
+			<version>0.3.4</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>tools</artifactId>
+					<groupId>com.sun</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
     </dependencies>
 
     <dependencyManagement>

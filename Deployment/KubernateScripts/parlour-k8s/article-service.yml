@@ -25,7 +25,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: article-service-svc
+  name: article-service
 spec:
   ports:
     - port: 80

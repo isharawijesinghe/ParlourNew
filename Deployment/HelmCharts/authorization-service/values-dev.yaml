@@ -1,8 +1,12 @@
 app:
   replicas : 1
   env: dev
+  name: authorization-service
   container:
     image: ishara007/authorization-service:latest
+    imagePullPolicy: Always
+    ports:
+      containerPort: 9002
   computerc:
     limits:
       cpu: "0.2"
@@ -10,3 +14,10 @@ app:
     requests:
       cpu: "0.2"
       memory: 500Mi
+
+service:
+  name: authorization-service
+  type: LoadBalancer
+  ports:
+    port: 9002
+    targetPort: 9002

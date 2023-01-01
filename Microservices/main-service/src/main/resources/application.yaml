@@ -1,9 +1,15 @@
 server:
   port: 9001
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 spring:
   application:
-    name: MAIN-SERVICE
+    name: main-service
   data:
     cassandra:
       keyspace-name: parlour
