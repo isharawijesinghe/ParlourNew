@@ -1,11 +1,5 @@
 server:
   port: 9191
-  tomcat:
-    accesslog:
-      enabled=true:logging:
-  level:
-    org.springframework.cloud.gateway: TRACE
-    reactor.netty: DEBUG
 
 management:
   endpoints:
@@ -17,9 +11,8 @@ spring:
   application:
     name: api-gateway
   cloud:
-    cloud:
-      kubernetes:
-        enabled: false
+    kubernetes:
+      enabled: false
     gateway:
       discovery:
         locator:

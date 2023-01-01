@@ -22,14 +22,9 @@ spring:
         jwt:
           jwk-set-uri: http://127.0.0.1:9002/.well-known/jwks.json
   cloud:
-    kubernetes:
-      enabled: false
-    gateway:
-      discovery:
-        locator:
-          lowerCaseServiceId: true
-          enabled: true
-
+    cloud:
+      kubernetes:
+        enabled: false
 
 logging:
   level:

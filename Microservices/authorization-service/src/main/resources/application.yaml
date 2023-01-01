@@ -10,6 +10,9 @@ management:
 spring:
   application:
     name: authorization-service
+  cloud:
+    kubernetes:
+      enabled: false
   data:
     cassandra:
       keyspace-name: parlour
@@ -27,16 +30,6 @@ spring:
             scope:
               - email
               - profile
-  cloud:
-    kubernetes:
-      enabled: false
-      reload:
-        enabled: true
-    gateway:
-      discovery:
-        locator:
-          lowerCaseServiceId: true
-          enabled: true
 
 logging:
   level:
