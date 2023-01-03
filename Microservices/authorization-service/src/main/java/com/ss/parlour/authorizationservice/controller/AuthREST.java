@@ -1,21 +1,17 @@
 package com.ss.parlour.authorizationservice.controller;
 
-import com.ss.parlour.authorizationservice.configurations.security.CurrentUser;
-import com.ss.parlour.authorizationservice.configurations.security.UserPrincipal;
 import com.ss.parlour.authorizationservice.dao.UserDAOI;
-import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.repository.cassandra.UserRepositoryI;
 import com.ss.parlour.authorizationservice.service.AuthServiceI;
-import com.ss.parlour.authorizationservice.util.bean.AuthRequestBean;
-import com.ss.parlour.authorizationservice.util.bean.AuthResponseBean;
-import com.ss.parlour.authorizationservice.util.bean.UserRegisterRequestBean;
-import com.ss.parlour.authorizationservice.util.bean.UserRegistrationResponseBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.AuthRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.AuthResponseBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()

@@ -1,4 +1,4 @@
-package com.ss.parlour.authorizationservice.util.bean;
+package com.ss.parlour.authorizationservice.util.bean.response;
 
 public class UserRegistrationResponseBean {
     private boolean status;

@@ -2,7 +2,7 @@ package com.ss.parlour.authorizationservice.dao;
 
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.domain.cassandra.UserLoginNameEmailMapper;
-import com.ss.parlour.authorizationservice.util.bean.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
 
 public interface UserDAOI {
 

@@ -5,6 +5,9 @@ import com.ss.parlour.authorizationservice.configurations.security.oauth2.user.O
 import com.ss.parlour.authorizationservice.dao.UserDAOI;
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.util.bean.*;
+import com.ss.parlour.authorizationservice.util.bean.requests.EmailRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
 import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -44,7 +47,7 @@ public class AuthHandler implements AuthHandlerI {
     }
 
     @Override
-    public EmailRequestBean populateEmailRequest(String receiverEmail,  String token, String type){
+    public EmailRequestBean populateEmailRequest(String receiverEmail, String token, String type){
         EmailRequestBean emailRequestBean = new EmailRequestBean();
         emailRequestBean.setReceiverEmail(receiverEmail);
         emailRequestBean.setType(type);

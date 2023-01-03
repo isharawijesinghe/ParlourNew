@@ -1,6 +1,6 @@
 package com.ss.parlour.authorizationservice.writer;
 
-import com.ss.parlour.authorizationservice.util.bean.EmailRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.EmailRequestBean;
 
 public interface ExternalRestWriterI {
 

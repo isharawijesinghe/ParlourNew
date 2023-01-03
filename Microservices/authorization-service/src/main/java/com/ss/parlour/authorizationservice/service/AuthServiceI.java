@@ -1,9 +1,9 @@
 package com.ss.parlour.authorizationservice.service;
 
-import com.ss.parlour.authorizationservice.util.bean.UserRegisterRequestBean;
-import com.ss.parlour.authorizationservice.util.bean.UserRegistrationResponseBean;
-import com.ss.parlour.authorizationservice.util.bean.AuthRequestBean;
-import com.ss.parlour.authorizationservice.util.bean.AuthResponseBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.AuthRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.AuthResponseBean;
 
 public interface AuthServiceI  {
 

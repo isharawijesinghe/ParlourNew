@@ -8,7 +8,7 @@ import com.ss.parlour.authorizationservice.repository.cassandra.UserRepositoryI;
 import com.ss.parlour.authorizationservice.repository.cassandra.UserTokenRepositoryI;
 import com.ss.parlour.authorizationservice.util.bean.AuthProvider;
 import com.ss.parlour.authorizationservice.util.bean.AuthorizationConst;
-import com.ss.parlour.authorizationservice.util.bean.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;

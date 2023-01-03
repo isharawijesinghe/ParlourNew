@@ -2,9 +2,9 @@ package com.ss.parlour.authorizationservice.handler;
 
 import com.ss.parlour.authorizationservice.configurations.security.oauth2.user.OAuth2UserInfo;
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
-import com.ss.parlour.authorizationservice.util.bean.EmailRequestBean;
-import com.ss.parlour.authorizationservice.util.bean.UserRegisterRequestBean;
-import com.ss.parlour.authorizationservice.util.bean.UserRegistrationResponseBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.EmailRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 

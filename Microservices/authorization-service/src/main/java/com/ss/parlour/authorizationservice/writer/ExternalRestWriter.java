@@ -1,7 +1,7 @@
 package com.ss.parlour.authorizationservice.writer;
 
-import com.ss.parlour.authorizationservice.util.bean.EmailRequestBean;
-import com.ss.parlour.authorizationservice.util.bean.EmailResponseBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.EmailRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.EmailResponseBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
