@@ -1,0 +1,26 @@
+name: Api-Gateway-Deployment
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy Helm
+      uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS__KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        cluster-name: eks
+        config-files: Deployment/HelmCharts/authorization-service/environment/values.yaml
+        chart-path: Deployment/HelmCharts/authorization-service
+        namespace: default
+        name: authorization-service
