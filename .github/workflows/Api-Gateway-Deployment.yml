@@ -16,8 +16,8 @@ jobs:
     - name: Deploy Helm
       uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
       with:
-        aws-access-key-id: AKIAU6EWUZ3DZQKLHNMD
-        aws-secret-access-key: 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
+        aws-access-key-id: AKIAU6EWUZ3D3NAKCR5B
+        aws-secret-access-key: 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
         aws-region: us-east-1
         cluster-name: eks
         config-files: Deployment/HelmCharts/api-gateway/environment/values.yaml
