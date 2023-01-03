@@ -1,4 +1,4 @@
-name: Api-Gateway-Deployment
+name: Authorization-Service-Deployment
 
 on:
   workflow_dispatch: {}
