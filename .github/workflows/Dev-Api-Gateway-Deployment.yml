@@ -20,7 +20,7 @@ jobs:
 
       - name: kubeconfing
         run: |
-          aws eks update-kubeconfig --name eks --region us-east-1
+          aws eks --region us-east-1 update-kubeconfig --name eks
           echo "KUBE_CONFIG_DATA=$(cat ~/.kube/config | base64)" >> $GITHUB_ENV
 
       - name: Read exported variable
