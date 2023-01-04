@@ -3,7 +3,9 @@ app:
   env: dev
   name: api-gateway
   container:
-    image: ishara007/api-gateway:latest
+    image:
+      repository: ishara007/api-gateway
+      tag: latest
     imagePullPolicy: Always
     ports:
       containerPort: 9191
