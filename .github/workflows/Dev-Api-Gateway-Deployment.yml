@@ -25,8 +25,8 @@ jobs:
 
       - name: helm deploy
         uses: koslib/helm-eks-action@master
-          env:
-            KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_DATA }}
+        env:
+          KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_DATA }}
         with:
           plugins: "https://github.com/jkroepke/helm-secrets" # optional
           command: helm upgrade api-gateway Deployment/HelmCharts/api-gateway/ --values Deployment/HelmCharts/api-gateway/environment/values.yaml --set app.container.image.tag=v1
