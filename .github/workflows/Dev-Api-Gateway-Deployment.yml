@@ -22,7 +22,7 @@ jobs:
         run: |
           aws eks --region us-east-1 update-kubeconfig --name eks
           echo "KUBE_CONFIG_DATA=$(cat ~/.kube/config | base64 --decode)<<EOF" >> $GITHUB_ENV
-          KUBE_CONFIG_DATA=$(cat ~/.kube/config | base64 --decode)<<EOF
+          KUBE_CONFIG_DATA=$(cat ~/.kube/config | base64 --decode)
 
       - name: helm deploy
         uses: koslib/helm-eks-action@master
