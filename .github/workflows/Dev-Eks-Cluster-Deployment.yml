@@ -1,56 +1,85 @@
-name: "Dev-Eks-Cluster-Deployment"
+name: "Terraform"
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      # Working directory input from user.
+      resource:
+        type: choice
+        description: Choose the resource
+        options:
+          - name_of_dir1
+          - name_of_dir2
+      # Terraform action you want to perform
+      action:
+        description: 'Terraform Action to Perform'
+        type: choice
+        options:
+          - Terraform_apply
+          - Terraform_destroy
 
 jobs:
-  terraform:
-    name:   ${{matrix.runner}} - ${{ matrix.environment }}
-    runs-on: [ '${{ matrix.runner }}']
-    strategy:
-      max-parallel: 1
-      matrix:
-        include:
-          - environment: dev
-            runner: ubuntu-latest
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS__KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: us-east-1
+  terraform_apply:
+    name: "Terraform_apply"
+    if: ${{ github.event.inputs.action == 'Terraform_apply' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.event.inputs.resource }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_wrapper: false
-        #  tf_actions_working_dir: Deployment/DevEnvironment/EKS/Terraform
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
       - name: Terraform Init
         id: init
-        run: |
-          rm -rf Deployment/DevEnvironment/EKS/Terraform/.terraform
-          terraform -chdir='Deployment/DevEnvironment/EKS/Terraform' init -upgrade=true -no-color -input=false
-      - name: Terraform Plan
-        id: plan
-        run: |
-          terraform -chdir='Deployment/DevEnvironment/EKS/Terraform' plan -input=false -no-color
+        run: terraform init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.REGION }}
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
         id: apply
-        run: terraform -chdir='Deployment/DevEnvironment/EKS/Terraform' apply -auto-approve -input=false
-      - name: Terraform destroy
-        if: github.ref == 'refs/heads/destroy'
-        id: destroy
-        run: terraform -chdir='Deployment/DevEnvironment/EKS/Terraform' destroy -auto-approve -input=false
-  comment:
+        run: terraform apply -auto-approve -var-file=variables.tfvars
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.REGION }}
+
+  terraform_destroy:
+    name: "Terraform_destroy"
+    if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
     runs-on: ubuntu-latest
-    needs: terraform
-    if: github.event_name == 'pull_request'
+    defaults:
+      run:
+        working-directory: ${{ github.event.inputs.resource }}
     steps:
-      - uses: actions/github-script@v5
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
-            })
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.REGION }}
+
+      - name: Terraform Destroy
+        id: destroy
+        working-directory: ${{ github.event.inputs.resource }}
+        run: terraform destroy -auto-approve -var-file=variables.tfvars
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.REGION }}
