@@ -3,14 +3,15 @@ name: Dev-MicroServices-Deployment
 on:
   workflow_dispatch:
   action:
-    description: 'Micro Service To Deploy'
-    type: choice
-    options:
-      - Api-GW
-      - Auth-Server
-      - Main-Server
-      - Article-Server
-      - Notification-Server
+    inputs:
+      description: 'Micro Service To Deploy'
+      type: choice
+      options:
+        - Api-GW
+        - Auth-Server
+        - Main-Server
+        - Article-Server
+        - Notification-Server
 
 jobs:
 
