@@ -13,12 +13,12 @@ terraform {
 
   backend "s3" {
     # Replace this with your bucket name!
-    bucket         = "terraform-dev-state"
+    bucket         = "parlour-terraform-dev-state"
     key            = "global/s3/terraform.tfstate"
-    region         = "us-east-2"
+    region         = "us-east-1"
 
     # Replace this with your DynamoDB table name!
-    dynamodb_table = "terraform-dev-state-locks"
+    dynamodb_table = "parlour-terraform-dev-state-locks"
     encrypt        = true
   }
 }
