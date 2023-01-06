@@ -1,4 +1,4 @@
-name: "Eks-Cluster-Deployment"
+name: "Terraform-State"
 
 on:
   workflow_dispatch:
@@ -8,8 +8,7 @@ on:
         type: choice
         description: Choose the resource
         options:
-          - Deployment/Terraform/Dev/Eks
-          - Deployment/Terraform/Prod/Eks
+          - Deployment/Terraform/TerraformState
       # Terraform action you want to perform --> Terraform apply or delete
       action:
         description: 'Terraform Action to Perform'

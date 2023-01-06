@@ -1,0 +1,96 @@
+name: Dev-MicroServices-Deployment
+
+on:
+  workflow_dispatch: {}
+  action:
+    description: 'Micro Service To Deploy'
+    type: choice
+    options:
+      - Api-GW
+      - Auth-Server
+      - Main-Server
+      - Article-Server
+      - Notification-Server
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      #Deployment of API GW
+      - name: Deploy Helm
+        if: ${{ github.event.inputs.action == 'Api-GW' }}
+        uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS__KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          cluster-name: eks
+          config-files: Deployment/HelmCharts/api-gateway/environment/values.yaml
+          chart-path: Deployment/HelmCharts/api-gateway
+          values: app.container.image.tag=v2
+          namespace: default
+          name: api-gateway
+
+      #Deployment of Auth Server
+      - name: Deploy Helm
+          if: ${{ github.event.inputs.action == 'Auth-Server' }}
+          uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS__KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+            cluster-name: eks
+            config-files: Deployment/HelmCharts/authorization-service/environment/values.yaml
+            chart-path: Deployment/HelmCharts/authorization-service
+            values: app.container.image.tag=v2
+            namespace: default
+            name: authorization-service
+
+      #Deployment of Main Server
+      - name: Deploy Helm
+          if: ${{ github.event.inputs.action == 'Main-Server' }}
+          uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS__KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+            cluster-name: eks
+            config-files: Deployment/HelmCharts/main-service/environment/values.yaml
+            chart-path: Deployment/HelmCharts/main-service
+            values: app.container.image.tag=v2
+            namespace: default
+            name: main-service
+
+      #Deployment of Article Server
+      - name: Deploy Helm
+          if: ${{ github.event.inputs.action == 'Article-Server' }}
+          uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS__KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+            cluster-name: eks
+            config-files: Deployment/HelmCharts/article-service/environment/values.yaml
+            chart-path: Deployment/HelmCharts/article-service
+            values: app.container.image.tag=v2
+            namespace: default
+            name: article-service
+
+      #Deployment of Notification Server
+      - name: Deploy Helm
+          if: ${{ github.event.inputs.action == 'Notification-Server' }}
+          uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS__KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+            cluster-name: eks
+            config-files: Deployment/HelmCharts/notification-service/environment/values.yaml
+            chart-path: Deployment/HelmCharts/notification-service
+            values: app.container.image.tag=v2
+            namespace: default
+            name: notification-service
