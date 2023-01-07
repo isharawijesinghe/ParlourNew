@@ -2,7 +2,6 @@ package com.ss.parlour.streamservice.domain.cassandra;
 
 import com.ss.parlour.streamservice.utils.bean.Article;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.HashMap;
@@ -12,17 +11,17 @@ import java.util.Map;
 public class StreamMapArticles {
 
     @PrimaryKey
-    private String streamName;
+    private String streamId;
     //@PrimaryKey
     private String userName;
     private Map<String, Article> streamMapArticlesMap = new HashMap();
 
-    public String getStreamName() {
-        return streamName;
+    public String getStreamId() {
+        return streamId;
     }
 
-    public void setStreamName(String streamName) {
-        this.streamName = streamName;
+    public void setStreamId(String streamId) {
+        this.streamId = streamId;
     }
 
     public String getUserName() {

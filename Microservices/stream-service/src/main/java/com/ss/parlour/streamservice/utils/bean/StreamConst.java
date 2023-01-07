@@ -1,6 +1,12 @@
 package com.ss.parlour.streamservice.utils.bean;
 
 public interface StreamConst {
-    String ERROR_DES_INVALID_CHANEL_NAME="Channel name invalid";
-    String ERROR_DES_INVALID_CHANEL_ID="Channel id invalid";
+
+    String STREAM_TYPE = "STR";
+
+
+    int STATUS_SUCCESS = 1;
+    String STREAM_CREATE_SUCCESS = "Stream create success";
+    String STREAM_DELETE_SUCCESS = "Stream delete success";
+    String ADD_ARTICLES_TO_STREAM_SUCCESS = "Add article to stream success";
 }

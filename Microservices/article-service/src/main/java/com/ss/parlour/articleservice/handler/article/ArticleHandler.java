@@ -12,6 +12,7 @@ import com.ss.parlour.articleservice.utils.bean.requests.ArticleHistoryRequestBe
 import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleHistoryResponseBean;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
+import com.ss.parlour.articleservice.utils.common.KeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,18 +27,26 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     @Autowired
     private CommentHandlerI commentHandlerI;
 
+    @Autowired
+    private KeyGenerator keyGenerator;
+
     //When user post an article
     @Override
-    public void handleArticleRequest(ArticleBean articleBean){
-        Optional<Article> existingArticleBean = articleDAOI.getArticleById(articleBean.getId());
-        Article article = populateArticle(articleBean);
-        if (existingArticleBean.isPresent()){ //Article update flow
-            Article oldArticle = existingArticleBean.get();
-            //Update "ArticleHistory" table
-            updateArticleHistory(oldArticle);
+    public Article handleArticleRequest(ArticleBean articleBean){
+        if (articleBean.getId() == null){ //New article request
+            articleBean.setId(keyGenerator.articleKeyGenerator(articleBean.getAuthorName()));
+        } else { //Article update request flow
+            Optional<Article> existingArticleBean = articleDAOI.getArticleById(articleBean.getId());
+            if (existingArticleBean.isPresent()){ //Article update flow
+                Article oldArticle = existingArticleBean.get();
+                //Update "ArticleHistory" table
+                updateArticleHistory(oldArticle);
+            }
         }
+        Article article = populateArticle(articleBean);
         //Create or update article >> Update "Article" table
         updateArticle(article);
+        return article;
     }
 
     //When user like on article

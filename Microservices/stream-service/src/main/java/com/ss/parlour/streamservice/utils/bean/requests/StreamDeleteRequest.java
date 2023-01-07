@@ -2,15 +2,15 @@ package com.ss.parlour.streamservice.utils.bean.requests;
 
 public class StreamDeleteRequest {
 
-    private String streamName;
+    private String streamId;
     private String userName;
 
-    public String getStreamName() {
-        return streamName;
+    public String getStreamId() {
+        return streamId;
     }
 
-    public void setStreamName(String streamName) {
-        this.streamName = streamName;
+    public void setStreamId(String streamId) {
+        this.streamId = streamId;
     }
 
     public String getUserName() {

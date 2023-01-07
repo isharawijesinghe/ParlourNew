@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface ArticleHandlerI {
 
-    void handleArticleRequest(ArticleBean articleBean);
+    Article handleArticleRequest(ArticleBean articleBean);
     void deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean);
     ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean);
     ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean);

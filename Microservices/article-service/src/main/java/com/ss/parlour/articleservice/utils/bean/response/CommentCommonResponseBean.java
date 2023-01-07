@@ -1,16 +1,17 @@
 package com.ss.parlour.articleservice.utils.bean.response;
 
-public class ArticleCommonResponseBean {
+public class CommentCommonResponseBean {
 
-    private String articleId;
+    private String commentId;
     private int status;
     private String narration;
 
-    public ArticleCommonResponseBean(){}
+    public String getCommentId() {
+        return commentId;
+    }
 
-    public ArticleCommonResponseBean(int status, String narration){
-        this.setStatus(status);
-        this.setNarration(narration);
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
     }
 
     public int getStatus() {
@@ -27,13 +28,5 @@ public class ArticleCommonResponseBean {
 
     public void setNarration(String narration) {
         this.narration = narration;
-    }
-
-    public String getArticleId() {
-        return articleId;
-    }
-
-    public void setArticleId(String articleId) {
-        this.articleId = articleId;
     }
 }

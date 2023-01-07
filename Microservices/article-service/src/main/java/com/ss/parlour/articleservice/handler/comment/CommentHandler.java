@@ -8,6 +8,7 @@ import com.ss.parlour.articleservice.utils.bean.CommentBean;
 import com.ss.parlour.articleservice.utils.bean.LikeBean;
 import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
 import com.ss.parlour.articleservice.utils.bean.requests.CommentDeleteRequestBean;
+import com.ss.parlour.articleservice.utils.common.KeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,13 +21,17 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     @Autowired
     private CommentDAOI commentDAOI;
 
+    @Autowired
+    private KeyGenerator keyGenerator;
+
 
     //When user add comment on article
     @Override
-    public void handleCommentRequest(CommentBean commentBean){
+    public Comment handleCommentRequest(CommentBean commentBean){
         Comment comment = populateComment(commentBean);
         handleComment(comment);
         handleCommentByArticle(comment);
+        return comment;
     }
 
     //When user vote for comment
@@ -210,7 +215,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     //Populate and create comment entry in db
     protected Comment populateComment(CommentBean commentBean){
         Comment comment = new Comment();
-        comment.setId(commentBean.getId());
+        comment.setId(keyGenerator.commentKeyGenerator(comment.getArticleId()));
         comment.setArticleId(commentBean.getArticleId());
         comment.setParentId(commentBean.getParentId());
         comment.setUserName(commentBean.getAuthorName());

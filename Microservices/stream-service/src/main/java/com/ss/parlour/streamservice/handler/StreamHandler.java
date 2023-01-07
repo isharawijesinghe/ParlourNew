@@ -6,10 +6,12 @@ import com.ss.parlour.streamservice.domain.cassandra.StreamMapArticles;
 import com.ss.parlour.streamservice.domain.cassandra.UserMappedStream;
 import com.ss.parlour.streamservice.utils.bean.Article;
 import com.ss.parlour.streamservice.utils.bean.StreamBean;
+import com.ss.parlour.streamservice.utils.bean.StreamConst;
 import com.ss.parlour.streamservice.utils.bean.requests.*;
 import com.ss.parlour.streamservice.utils.bean.response.StreamCommonResponse;
 import com.ss.parlour.streamservice.utils.bean.response.StreamMappedArticleResponse;
 import com.ss.parlour.streamservice.utils.bean.response.UserMappedStreamResponse;
+import com.ss.parlour.streamservice.utils.common.StreamKeyGenerator;
 import com.ss.parlour.streamservice.utils.validator.MainValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,11 +33,17 @@ public class StreamHandler implements StreamHandlerI{
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private StreamKeyGenerator streamKeyGenerator;
+
     @Override
     public StreamCommonResponse createStream(StreamCreateRequest streamCreateRequest){
         StreamCommonResponse streamCommonResponse = new StreamCommonResponse();
         StreamBean streamBean = mainValidatorI.streamCreateRequestValidate(streamCreateRequest);
-        processHandleCreateStreamRequest(streamBean);
+        Stream stream = processHandleCreateStreamRequest(streamBean);
+        streamCommonResponse.setStreamId(stream.getStreamId());
+        streamCommonResponse.setStatus(StreamConst.STATUS_SUCCESS);
+        streamCommonResponse.setNarration(StreamConst.STREAM_CREATE_SUCCESS);
         return streamCommonResponse;
     }
 
@@ -43,6 +51,9 @@ public class StreamHandler implements StreamHandlerI{
     public StreamCommonResponse deleteStream(StreamDeleteRequest streamDeleteRequest){
         StreamCommonResponse streamCommonResponse = new StreamCommonResponse();
         mainValidatorI.deleteStreamValidate(streamDeleteRequest);
+        streamCommonResponse.setStreamId(streamDeleteRequest.getStreamId());
+        streamCommonResponse.setStatus(StreamConst.STATUS_SUCCESS);
+        streamCommonResponse.setNarration(StreamConst.STREAM_DELETE_SUCCESS);
         return streamCommonResponse;
     }
 
@@ -51,6 +62,9 @@ public class StreamHandler implements StreamHandlerI{
         StreamCommonResponse streamCommonResponse = new StreamCommonResponse();
         mainValidatorI.addArticleToStreamValidate(articleToStreamRequest);
         processArticleToStreamAddRequest(articleToStreamRequest);
+        streamCommonResponse.setStreamId(articleToStreamRequest.getStreamId());
+        streamCommonResponse.setStatus(StreamConst.STATUS_SUCCESS);
+        streamCommonResponse.setNarration(StreamConst.ADD_ARTICLES_TO_STREAM_SUCCESS);
         return streamCommonResponse;
     }
 
@@ -77,30 +91,30 @@ public class StreamHandler implements StreamHandlerI{
     private void processArticleToStreamAddRequest(ArticleToStreamRequest articleToStreamRequest){
         List<String> articleList = articleToStreamRequest.getArticleIdList();
         Optional<StreamMapArticles> existingMapArticle =
-                streamDAOI.findByStreamNameAndAndUserName(articleToStreamRequest.getStreamName(), articleToStreamRequest.getUserName());
+                streamDAOI.findByStreamNameAndAndUserName(articleToStreamRequest.getStreamId(), articleToStreamRequest.getUserName());
 
         if (existingMapArticle.isPresent()){
             Map<String, Article> streamMapArticlesMap = existingMapArticle.get().getStreamMapArticlesMap();
             articleList.parallelStream().forEach(
                     articleId -> {
                         Article article = restTemplate.getForObject("http://ARTICLE-SERVICE/article/findArticleDetailsById/"
-                                + articleId,Article.class);
+                                + articleId, Article.class);
                         streamMapArticlesMap.put(articleId, article);
                     }
-
             );
         }
     }
 
-    private void processHandleCreateStreamRequest(StreamBean streamBean){
+    private Stream processHandleCreateStreamRequest(StreamBean streamBean){
         Stream stream = createStream(streamBean);
         createStreamMapArticle(streamBean);
         createUserMappedStream(streamBean, stream);
+        return stream;
     }
 
     private Stream createStream(StreamBean streamBean){
         Stream stream = new Stream();
-        stream.setStreamName(streamBean.getStreamName());
+        stream.setStreamId(streamKeyGenerator.streamKeyGenerator(streamBean.getUserName()));
         stream.setUserName(streamBean.getUserName());
         streamDAOI.saveStream(stream);
         return stream;
@@ -108,7 +122,7 @@ public class StreamHandler implements StreamHandlerI{
 
     private void createStreamMapArticle(StreamBean streamBean){
         StreamMapArticles streamMapArticles = new StreamMapArticles();
-        streamMapArticles.setStreamName(streamBean.getStreamName());
+        streamMapArticles.setStreamId(streamBean.getStreamId());
         streamMapArticles.setUserName(streamBean.getUserName());
         streamDAOI.saveStreamMapArticle(streamMapArticles);
     }
@@ -116,6 +130,6 @@ public class StreamHandler implements StreamHandlerI{
     private void createUserMappedStream(StreamBean streamBean, Stream stream){
         UserMappedStream userMappedStream = new UserMappedStream();
         userMappedStream.setUserName(streamBean.getUserName());
-        userMappedStream.getUserStreamMap().put(stream.getStreamName(), stream);
+        userMappedStream.getUserStreamMap().put(stream.getStreamId(), stream);
     }
 }

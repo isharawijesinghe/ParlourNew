@@ -3,9 +3,7 @@ package com.ss.parlour.articleservice.contorller;
 import com.ss.parlour.articleservice.domain.cassandra.Article;
 import com.ss.parlour.articleservice.service.ArticleServiceI;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
-import com.ss.parlour.articleservice.utils.bean.response.ArticleCommonResponseBean;
-import com.ss.parlour.articleservice.utils.bean.response.ArticleHistoryResponseBean;
-import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
+import com.ss.parlour.articleservice.utils.bean.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +24,14 @@ public class ArticleREST {
 
     @RequestMapping(value = "/addComment", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> addComment(@RequestBody CommentCreateRequestBean commentCreateRequestBean){
-        ArticleCommonResponseBean articleCommonResponseBean = articleServiceI.createComment(commentCreateRequestBean);
-        return ResponseEntity.ok().body(articleCommonResponseBean);
+        CommentCommonResponseBean commentCommonResponseBean = articleServiceI.createComment(commentCreateRequestBean);
+        return ResponseEntity.ok().body(commentCommonResponseBean);
     }
 
     @RequestMapping(value = "/addLike", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> addLike(@RequestBody LikeRequestBean likeRequestBean){
-        ArticleCommonResponseBean articleCommonResponseBean = articleServiceI.addLike(likeRequestBean);
-        return ResponseEntity.ok().body(articleCommonResponseBean);
+        LikeCommonResponseBean likeCommonResponseBean = articleServiceI.addLike(likeRequestBean);
+        return ResponseEntity.ok().body(likeCommonResponseBean);
     }
 
     @RequestMapping(value = "/findArticleById", method = RequestMethod.POST, consumes = {"application/json"})
@@ -56,8 +54,8 @@ public class ArticleREST {
 
     @RequestMapping(value = "/deleteComment", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> deleteComment(@RequestBody CommentDeleteRequestBean commentDeleteRequestBean){
-        ArticleCommonResponseBean articleCommonResponseBean = articleServiceI.deleteComment(commentDeleteRequestBean);;
-        return ResponseEntity.ok().body(articleCommonResponseBean);
+        CommentCommonResponseBean commentCommonResponseBean = articleServiceI.deleteComment(commentDeleteRequestBean);;
+        return ResponseEntity.ok().body(commentCommonResponseBean);
     }
 
     @RequestMapping(value = "/findArticleDetailsById/{id}", method = RequestMethod.GET, consumes = {"application/json"})

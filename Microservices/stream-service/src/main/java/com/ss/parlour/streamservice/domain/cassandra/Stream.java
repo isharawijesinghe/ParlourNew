@@ -1,7 +1,6 @@
 package com.ss.parlour.streamservice.domain.cassandra;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.sql.Timestamp;
@@ -10,15 +9,15 @@ import java.sql.Timestamp;
 public class Stream {
 
     @PrimaryKey
-    private String streamName;
+    private String streamId;
    // @PrimaryKey
     private String userName;
     private String description;
     private Timestamp createdDate;
 
-    public String getStreamName() {return streamName;}
+    public String getStreamId() {return streamId;}
 
-    public void setStreamName(String streamName) {this.streamName = streamName;}
+    public void setStreamId(String streamId) {this.streamId = streamId;}
 
     public String getUserName() {return userName;}
 

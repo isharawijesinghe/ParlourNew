@@ -4,16 +4,16 @@ import java.util.List;
 
 public class ArticleToStreamRequest {
 
-    private String streamName;
+    private String streamId;
     private String userName;
     private List<String> articleIdList;
 
-    public String getStreamName() {
-        return streamName;
+    public String getStreamId() {
+        return streamId;
     }
 
-    public void setStreamName(String streamName) {
-        this.streamName = streamName;
+    public void setStreamId(String streamId) {
+        this.streamId = streamId;
     }
 
     public String getUserName() {
