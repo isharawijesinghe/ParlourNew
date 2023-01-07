@@ -19,10 +19,10 @@ spring:
           lowerCaseServiceId: true
           enabled: true
       routes:
-        - id: MAIN-SERVICE
-          uri: lb://main-service/
+        - id: STREAM-SERVICE
+          uri: lb://stream-service/
           predicates:
-            - Path=/channel/**
+            - Path=/stream/**
           filters:
             TokenRelay=
         - id: ARTICLE-SERVICE

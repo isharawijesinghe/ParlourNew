@@ -1,5 +1,6 @@
 package com.ss.parlour.articleservice.service;
 
+import com.ss.parlour.articleservice.domain.cassandra.Article;
 import com.ss.parlour.articleservice.handler.CommonArticleHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleErrorCodes;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
@@ -92,6 +93,17 @@ public class ArticleService implements ArticleServiceI {
     public ArticleCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean){
         try {
             return commonArticleHandlerI.deleteComment(commentDeleteRequestBean);
+        }catch (ArticleServiceRuntimeException ex){
+            throw ex;
+        }catch (Exception ex){
+            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
+        }
+    }
+
+    @Override
+    public Article findArticleDetailsById(String articleId){
+        try {
+            return commonArticleHandlerI.findArticleDetailsById(articleId);
         }catch (ArticleServiceRuntimeException ex){
             throw ex;
         }catch (Exception ex){

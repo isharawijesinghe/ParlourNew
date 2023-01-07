@@ -1,0 +1,39 @@
+server:
+  port: 9001
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  application:
+    name: stream-service
+  data:
+    cassandra:
+      keyspace-name: parlour
+      contact-points: 127.0.0.1
+      port: 9042
+      schema-action: CREATE_IF_NOT_EXISTS
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://127.0.0.1:9002/.well-known/jwks.json
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty: DEBUG
+
+eureka:
+  instance:
+    hostname: 127.0.0.1
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+#key.location: keys/keystore.jks

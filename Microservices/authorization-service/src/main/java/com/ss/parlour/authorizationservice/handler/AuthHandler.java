@@ -2,7 +2,7 @@ package com.ss.parlour.authorizationservice.handler;
 
 import com.ss.parlour.authorizationservice.configurations.security.UserPrincipal;
 import com.ss.parlour.authorizationservice.configurations.security.oauth2.user.OAuth2UserInfo;
-import com.ss.parlour.authorizationservice.dao.UserDAOI;
+import com.ss.parlour.authorizationservice.dao.cassandra.UserDAOI;
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.util.bean.*;
 import com.ss.parlour.authorizationservice.util.bean.requests.EmailRequestBean;

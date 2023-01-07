@@ -1,5 +1,6 @@
 package com.ss.parlour.articleservice.handler;
 
+import com.ss.parlour.articleservice.domain.cassandra.Article;
 import com.ss.parlour.articleservice.handler.like.LikeHandlerI;
 import com.ss.parlour.articleservice.handler.article.ArticleHandlerI;
 import com.ss.parlour.articleservice.handler.comment.CommentHandlerI;
@@ -75,6 +76,11 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
         articleValidatorI.validateCommentDeleteRequest(commentDeleteRequestBean); //Doing basic initial validations
         commentHandlerI.deleteComment(commentDeleteRequestBean);
         return new ArticleCommonResponseBean(ArticleConst.STATUS_SUCCESS, ArticleConst.SUCCESSFULLY_COMMENT_ADDED);//Return response
+    }
+
+    @Override
+    public Article findArticleDetailsById(String articleId){
+        return articleHandlerI.findArticleDetailsById(articleId);
     }
 
 }

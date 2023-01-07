@@ -1,5 +1,6 @@
 package com.ss.parlour.articleservice.contorller;
 
+import com.ss.parlour.articleservice.domain.cassandra.Article;
 import com.ss.parlour.articleservice.service.ArticleServiceI;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleCommonResponseBean;
@@ -8,10 +9,7 @@ import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController()
 @RequestMapping(path = "/article",consumes= MediaType.APPLICATION_JSON_VALUE)
@@ -61,5 +59,11 @@ public class ArticleREST {
         ArticleCommonResponseBean articleCommonResponseBean = articleServiceI.deleteComment(commentDeleteRequestBean);;
         return ResponseEntity.ok().body(articleCommonResponseBean);
     }
+
+    @RequestMapping(value = "/findArticleDetailsById/{id}", method = RequestMethod.GET, consumes = {"application/json"})
+    public Article findArticleDetailsById(@PathVariable("id") String articleId){
+        return articleServiceI.findArticleDetailsById(articleId);
+    }
+
 
 }

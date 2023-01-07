@@ -1,5 +1,6 @@
 package com.ss.parlour.articleservice.handler;
 
+import com.ss.parlour.articleservice.domain.cassandra.Article;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleCommonResponseBean;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleHistoryResponseBean;
@@ -14,4 +15,5 @@ public interface CommonArticleHandlerI {
     ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean);
     ArticleCommonResponseBean handleArticleDelete(ArticleDeleteRequestBean articleDeleteRequestBean);
     ArticleCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean);
+    Article findArticleDetailsById(String articleId);
 }

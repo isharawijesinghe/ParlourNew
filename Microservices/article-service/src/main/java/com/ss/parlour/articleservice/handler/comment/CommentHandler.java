@@ -1,6 +1,6 @@
 package com.ss.parlour.articleservice.handler.comment;
 
-import com.ss.parlour.articleservice.dao.CommentDAOI;
+import com.ss.parlour.articleservice.dao.cassandra.CommentDAOI;
 import com.ss.parlour.articleservice.domain.cassandra.*;
 import com.ss.parlour.articleservice.handler.LikeTypeHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleConst;
@@ -19,6 +19,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
 
     @Autowired
     private CommentDAOI commentDAOI;
+
 
     //When user add comment on article
     @Override
@@ -90,6 +91,8 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
         }
         return responseComment;
     }
+
+
 
     //Responsible in handling comment persisting
     // 1. Validate existing of comment

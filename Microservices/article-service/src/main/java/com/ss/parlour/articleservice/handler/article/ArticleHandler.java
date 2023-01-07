@@ -1,6 +1,6 @@
 package com.ss.parlour.articleservice.handler.article;
 
-import com.ss.parlour.articleservice.dao.ArticleDAOI;
+import com.ss.parlour.articleservice.dao.cassandra.ArticleDAOI;
 import com.ss.parlour.articleservice.domain.cassandra.*;
 import com.ss.parlour.articleservice.handler.LikeTypeHandlerI;
 import com.ss.parlour.articleservice.handler.comment.CommentHandlerI;
@@ -80,6 +80,15 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
             articleHistoryResponseBean.setArticleHistoryList(existingArticleHistoryBean.get().getOldArticles());
         }
         return articleHistoryResponseBean;
+    }
+
+    @Override
+    public Article findArticleDetailsById(String articleId){
+        Optional<Article> existingArticleBean = articleDAOI.getArticleById(articleId);
+        if (existingArticleBean.isPresent()){
+            return existingArticleBean.get();
+        }
+        return null;
     }
 
     //Update article like / unlike status

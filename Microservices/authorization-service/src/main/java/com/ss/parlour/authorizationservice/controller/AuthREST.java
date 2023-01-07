@@ -1,6 +1,6 @@
 package com.ss.parlour.authorizationservice.controller;
 
-import com.ss.parlour.authorizationservice.dao.UserDAOI;
+import com.ss.parlour.authorizationservice.dao.cassandra.UserDAOI;
 import com.ss.parlour.authorizationservice.repository.cassandra.UserRepositoryI;
 import com.ss.parlour.authorizationservice.service.AuthServiceI;
 import com.ss.parlour.authorizationservice.util.bean.requests.AuthRequestBean;
