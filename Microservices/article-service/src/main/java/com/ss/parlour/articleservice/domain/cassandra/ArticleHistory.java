@@ -6,7 +6,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table("articleHistory")
+@Table("articlehistory")
 public class ArticleHistory {
 
     @PrimaryKey

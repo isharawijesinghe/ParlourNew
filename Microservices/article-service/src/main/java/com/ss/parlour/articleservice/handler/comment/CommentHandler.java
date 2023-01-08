@@ -96,7 +96,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
                     }
             );
             //Return top level comments from the list --> This includes all child entries as well
-            return parentToChildCommentMap.get(ArticleConst.NO_PARENT_COMMENT);
+            return parentToChildCommentMap.get(ArticleConst.ARTICLE_PARENT_COMMENT_NO);
         }
         return responseComment;
     }

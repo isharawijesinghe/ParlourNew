@@ -24,7 +24,7 @@ public interface ArticleConst {
     int COMMENT_ACTIVE = 1;
     int COMMENT_INACTIVE = -1;
 
-    String NO_PARENT_COMMENT = "-1";
+    String ARTICLE_PARENT_COMMENT_NO = "-1";
 
 
 }
