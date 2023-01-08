@@ -1,16 +1,16 @@
 package com.ss.parlour.streamservice.utils.bean.response;
 
-import com.ss.parlour.streamservice.domain.cassandra.StreamMapArticles;
+import com.ss.parlour.streamservice.domain.cassandra.StreamMappedArticles;
 
 public class StreamMappedArticleResponse {
 
-    private StreamMapArticles streamMapArticles;
+    private StreamMappedArticles streamMappedArticles;
 
-    public StreamMapArticles getStreamMapArticles() {
-        return streamMapArticles;
+    public StreamMappedArticles getStreamMapArticles() {
+        return streamMappedArticles;
     }
 
-    public void setStreamMapArticles(StreamMapArticles streamMapArticles) {
-        this.streamMapArticles = streamMapArticles;
+    public void setStreamMapArticles(StreamMappedArticles streamMappedArticles) {
+        this.streamMappedArticles = streamMappedArticles;
     }
 }

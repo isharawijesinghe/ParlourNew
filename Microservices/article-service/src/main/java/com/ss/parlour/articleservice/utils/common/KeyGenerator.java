@@ -11,11 +11,11 @@ public class KeyGenerator {
         return ArticleConst.ARTICLE_TYPE + "_" + userName + "_" +  UUIDs.timeBased();
     }
 
-    public String commentKeyGenerator(String articleId){
-        return ArticleConst.COMMENT_TYPE + "_" +  articleId + "_" +  UUIDs.timeBased();
+    public String commentKeyGenerator(String userName, String articleId){
+        return ArticleConst.COMMENT_TYPE + "_" +  userName + "_" +  articleId + "_" + UUIDs.timeBased();
     }
 
     public String likeKeyGenerator(String articleId, String commentId){
-        return ArticleConst.COMMENT_TYPE + "_" +  articleId + "_" + commentId + "_" + UUIDs.timeBased();
+        return ArticleConst.LIKE_TYPE + "_" +  articleId + "_" + commentId + "_" + UUIDs.timeBased();
     }
 }

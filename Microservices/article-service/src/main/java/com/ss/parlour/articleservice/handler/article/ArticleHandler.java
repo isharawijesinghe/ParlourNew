@@ -33,7 +33,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     //When user post an article
     @Override
     public Article handleArticleRequest(ArticleBean articleBean){
-        if (articleBean.getId() == null){ //New article request
+        if (articleBean.getId() == null || articleBean.getId().isEmpty()){ //New article request
             articleBean.setId(keyGenerator.articleKeyGenerator(articleBean.getAuthorName()));
         } else { //Article update request flow
             Optional<Article> existingArticleBean = articleDAOI.getArticleById(articleBean.getId());
@@ -64,7 +64,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     public void deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean){
         Optional<Article> exitingArticle = articleDAOI.getArticleById(articleDeleteRequestBean.getArticleId());
         if (exitingArticle.isPresent()){
-            //This update article status --> This can be removed from db if required
+            //This update article status >> This can be removed from db if required
             Article existingArticle = exitingArticle.get();
             existingArticle.setStatus(ArticleConst.ARTICLE_INACTIVE);
             articleDAOI.saveArticle(existingArticle);
@@ -152,6 +152,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         article.setContent(articleBean.getContent());
         article.setCreatedDate(articleBean.getCreatedDate());
         article.setModifiedDate(articleBean.getModifiedDate());
+        article.setStatus(ArticleConst.ARTICLE_ACTIVE);
         return article;
     }
 

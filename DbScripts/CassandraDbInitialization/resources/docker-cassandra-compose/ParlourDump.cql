@@ -39,6 +39,13 @@ CREATE TYPE parlour.article(
     modifiedDate timestamp
     );
 
+CREATE TYPE parlour.stream(
+    streamId text,
+    userName text,
+    description text,
+    createdDate timestamp
+    );
+
 // ------------------ Table scripts ------------------- //
 
 CREATE TABLE IF NOT EXISTS parlour.user (
@@ -71,32 +78,18 @@ CREATE TABLE IF NOT EXISTS parlour.userLoginNameEmailMapper (
 --     PRIMARY KEY (token)
 -- );
 
-CREATE TABLE parlour.channel (
-    name text,
-    title text,
-    ownerName text,
-    createdDate timestamp,
-    PRIMARY KEY (name)
-);
-
 CREATE TABLE parlour.article (
     id text,
-    name text,
+    userName text,
     title text,
+    summary text,
     content text,
-    author text,
     status int,
     createdDate timestamp,
     modifiedDate timestamp,
     likedList frozen<set<text>> ,
     unLikedList frozen<set<text>> ,
-    PRIMARY KEY (name)
-);
-
-CREATE TABLE parlour.channelArticles (
-    channelNam text,
-    articleName text,
-    PRIMARY KEY (channelNam,articleName)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE parlour.articleHistory (
@@ -145,24 +138,22 @@ CREATE TABLE parlour.likeByComment (
     PRIMARY KEY ((articleId, commentId))
 );
 
--- INSERT INTO parlour.user (loginName,
---                           firstName ,
---                           lastName ,
---                           email ,
---                           password ,
---                           locked ,
---                           enabled ,
---                           createdDate,
---                           lastUpdatedDate,
---                           activeToken)
--- VALUES
---        ('user1',
---         'user1First',
---         'user1Last',
---         'user1@gmail.com',
---         '$2a$11$cEANSCawfJ7Si2K6fiEJMOMgFBeBFq3HVgZrm.XhHCPzqvgC0ztJi',
---         false,
---         true,
---         '2022-02-15',
---         '2022-02-15',
---         '');
+CREATE TABLE parlour.stream (
+    streamId text,
+    userName text,
+    description text,
+    createdDate timestamp,
+    PRIMARY KEY (streamId)
+);
+
+CREATE TABLE parlour.streammappedarticles (
+    streamId text,
+    likeMap map<text, frozen<article>>,
+    PRIMARY KEY (streamId)
+);
+
+CREATE TABLE parlour.usermappedstream (
+    userName text,
+    userStreamMap map<text, frozen<stream>>,
+    PRIMARY KEY (userName)
+);

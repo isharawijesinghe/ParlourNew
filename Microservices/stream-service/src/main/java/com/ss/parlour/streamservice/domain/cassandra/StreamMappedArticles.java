@@ -7,8 +7,8 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import java.util.HashMap;
 import java.util.Map;
 
-@Table("streammaparticles")
-public class StreamMapArticles {
+@Table("streammappedarticles")
+public class StreamMappedArticles {
 
     @PrimaryKey
     private String streamId;

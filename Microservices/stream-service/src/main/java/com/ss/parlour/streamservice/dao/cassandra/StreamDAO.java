@@ -1,9 +1,9 @@
 package com.ss.parlour.streamservice.dao.cassandra;
 
 import com.ss.parlour.streamservice.domain.cassandra.Stream;
-import com.ss.parlour.streamservice.domain.cassandra.StreamMapArticles;
+import com.ss.parlour.streamservice.domain.cassandra.StreamMappedArticles;
 import com.ss.parlour.streamservice.domain.cassandra.UserMappedStream;
-import com.ss.parlour.streamservice.repository.cassandra.StreamMapArticlesRepositoryI;
+import com.ss.parlour.streamservice.repository.cassandra.StreamMappedArticlesRepositoryI;
 import com.ss.parlour.streamservice.repository.cassandra.StreamRepositoryI;
 import com.ss.parlour.streamservice.repository.cassandra.UserMappedStreamRepositoryI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class StreamDAO implements StreamDAOI{
     private StreamRepositoryI streamRepositoryI;
 
     @Autowired
-    private StreamMapArticlesRepositoryI streamMapArticlesRepositoryI;
+    private StreamMappedArticlesRepositoryI streamMapArticlesRepositoryI;
 
     @Autowired
     private UserMappedStreamRepositoryI userMappedStreamRepositoryI;
@@ -30,13 +30,13 @@ public class StreamDAO implements StreamDAOI{
 
 
     @Override
-    public void saveStreamMapArticle(StreamMapArticles streamMapArticles){
-        streamMapArticlesRepositoryI.save(streamMapArticles);
+    public void saveStreamMapArticle(StreamMappedArticles streamMappedArticles){
+        streamMapArticlesRepositoryI.save(streamMappedArticles);
     }
 
     @Override
-    public Optional<StreamMapArticles> findByStreamNameAndAndUserName(String streamName, String userName){
-        return streamMapArticlesRepositoryI.findByStreamNameAndAndUserName(streamName, userName);
+    public Optional<StreamMappedArticles> findByStreamNameAndAndUserName(String streamName, String userName){
+        return streamMapArticlesRepositoryI.findByStreamIdAndAndUserName(streamName, userName);
     }
 
     @Override

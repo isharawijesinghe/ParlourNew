@@ -28,6 +28,10 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     //When user add comment on article
     @Override
     public Comment handleCommentRequest(CommentBean commentBean){
+        if(commentBean.getId() == null || commentBean.getId().isEmpty()){
+            //Adding new comment id if request do not have comment id >> This is for new comment
+            commentBean.setId(keyGenerator.commentKeyGenerator(commentBean.getAuthorName(), commentBean.getArticleId()));
+        }
         Comment comment = populateComment(commentBean);
         handleComment(comment);
         handleCommentByArticle(comment);
@@ -145,7 +149,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
             //If comment is child of parent then remove it from child list
             String parentCommentId = oldComment.getParentId();
             List<Comment> childCommentList = currentCommentMap.get(parentCommentId);
-            childCommentList.removeIf(childComment -> childComment.getId() == oldComment.getId());
+            childCommentList.removeIf(childComment -> childComment.getId().equals(oldComment.getId()));
 
             //Update comment by article values into db
             updatedCommentByArticle(oldComment.getArticleId(), currentCommentMap);
@@ -190,7 +194,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
             List<Comment> childCommentList = currentCommentMap.get(updatedComment.getParentId());
 
             List<Comment> newChildCommentList = childCommentList.parallelStream()
-                    .map(comment -> comment.getId() == updatedComment.getId() ? updatedComment : comment)
+                    .map(comment -> comment.getId().equals(updatedComment.getId()) ? updatedComment : comment)
                     .collect(Collectors.toList());
             currentCommentMap.put(updatedComment.getParentId(), newChildCommentList);
 
@@ -215,7 +219,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     //Populate and create comment entry in db
     protected Comment populateComment(CommentBean commentBean){
         Comment comment = new Comment();
-        comment.setId(keyGenerator.commentKeyGenerator(comment.getArticleId()));
+        comment.setId(commentBean.getId());
         comment.setArticleId(commentBean.getArticleId());
         comment.setParentId(commentBean.getParentId());
         comment.setUserName(commentBean.getAuthorName());

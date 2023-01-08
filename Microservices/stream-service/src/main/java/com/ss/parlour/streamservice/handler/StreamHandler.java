@@ -2,7 +2,7 @@ package com.ss.parlour.streamservice.handler;
 
 import com.ss.parlour.streamservice.dao.cassandra.StreamDAOI;
 import com.ss.parlour.streamservice.domain.cassandra.Stream;
-import com.ss.parlour.streamservice.domain.cassandra.StreamMapArticles;
+import com.ss.parlour.streamservice.domain.cassandra.StreamMappedArticles;
 import com.ss.parlour.streamservice.domain.cassandra.UserMappedStream;
 import com.ss.parlour.streamservice.utils.bean.Article;
 import com.ss.parlour.streamservice.utils.bean.StreamBean;
@@ -81,7 +81,7 @@ public class StreamHandler implements StreamHandlerI{
     @Override
     public StreamMappedArticleResponse findArticlesByStream(StreamMappedArticleRequest streamMappedArticleRequest){
         StreamMappedArticleResponse streamMappedArticleResponse = new StreamMappedArticleResponse();
-        Optional<StreamMapArticles> existingStreamMappedArticle = streamDAOI.findByStreamNameAndAndUserName(streamMappedArticleRequest.getStreamId(), streamMappedArticleRequest.getUserId());
+        Optional<StreamMappedArticles> existingStreamMappedArticle = streamDAOI.findByStreamNameAndAndUserName(streamMappedArticleRequest.getStreamId(), streamMappedArticleRequest.getUserId());
         if (existingStreamMappedArticle.isPresent()){
             streamMappedArticleResponse.setStreamMapArticles(existingStreamMappedArticle.get());
         }
@@ -90,7 +90,7 @@ public class StreamHandler implements StreamHandlerI{
 
     private void processArticleToStreamAddRequest(ArticleToStreamRequest articleToStreamRequest){
         List<String> articleList = articleToStreamRequest.getArticleIdList();
-        Optional<StreamMapArticles> existingMapArticle =
+        Optional<StreamMappedArticles> existingMapArticle =
                 streamDAOI.findByStreamNameAndAndUserName(articleToStreamRequest.getStreamId(), articleToStreamRequest.getUserName());
 
         if (existingMapArticle.isPresent()){
@@ -121,10 +121,10 @@ public class StreamHandler implements StreamHandlerI{
     }
 
     private void createStreamMapArticle(StreamBean streamBean){
-        StreamMapArticles streamMapArticles = new StreamMapArticles();
-        streamMapArticles.setStreamId(streamBean.getStreamId());
-        streamMapArticles.setUserName(streamBean.getUserName());
-        streamDAOI.saveStreamMapArticle(streamMapArticles);
+        StreamMappedArticles streamMappedArticles = new StreamMappedArticles();
+        streamMappedArticles.setStreamId(streamBean.getStreamId());
+        streamMappedArticles.setUserName(streamBean.getUserName());
+        streamDAOI.saveStreamMapArticle(streamMappedArticles);
     }
 
     private void createUserMappedStream(StreamBean streamBean, Stream stream){

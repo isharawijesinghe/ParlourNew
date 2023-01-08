@@ -7,7 +7,6 @@ public class CommentBean {
     private String id;
     private String articleId;
     private String parentId;
-    private String parentCommentId;
     private String authorName;
     private String content;
     private int status;
@@ -69,14 +68,6 @@ public class CommentBean {
 
     public void setModifiedDate(Timestamp modifiedDate) {
         this.modifiedDate = modifiedDate;
-    }
-
-    public String getParentCommentId() {
-        return parentCommentId;
-    }
-
-    public void setParentCommentId(String parentCommentId) {
-        this.parentCommentId = parentCommentId;
     }
 
     public String getParentId() {
