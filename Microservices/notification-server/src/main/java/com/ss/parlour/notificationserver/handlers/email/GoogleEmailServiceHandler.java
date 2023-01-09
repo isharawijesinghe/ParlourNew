@@ -21,7 +21,8 @@ public class GoogleEmailServiceHandler implements EmailServiceHandlerI {
     @Override
     public EmailResponseBean sendEmailRequest(EmailRequestBean emailRequestBean){
         EmailResponseBean emailResponseBean = new EmailResponseBean();
-        createUserRegistrationEmailRequest(emailRequestBean);
+        SimpleMailMessage simpleMailMessage = createUserRegistrationEmailRequest(emailRequestBean);
+        mailSender.send(simpleMailMessage);
         emailResponseBean.setStatus(NotificationConst.SUCCESS_STATUS);
         emailResponseBean.setNarration(NotificationConst.USER_REGISTER_EMAIL_SEND_SUCCESS_NARRATION);
         return emailResponseBean;

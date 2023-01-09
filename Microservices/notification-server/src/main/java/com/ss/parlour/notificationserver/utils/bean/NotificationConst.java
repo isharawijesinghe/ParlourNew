@@ -2,6 +2,8 @@ package com.ss.parlour.notificationserver.utils.bean;
 
 public class NotificationConst {
 
+    public final static String UNKNOWN_ERROR = "Unknown Error";
+
     public static String EMAIL_TYPE_GOOGLE = " Google";
     public static String EMAIL_TYPE_SNS = "SNS";
 
