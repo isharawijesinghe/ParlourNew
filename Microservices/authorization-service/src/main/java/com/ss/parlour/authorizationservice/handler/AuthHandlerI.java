@@ -12,11 +12,13 @@ import java.util.Map;
 
 public interface AuthHandlerI {
     User loadUserByIdentification(String userName);
-    void createUser(UserRegisterRequestBean userRegisterRequestBean);
+    void signUp(UserRegisterRequestBean userRegisterRequestBean);
+    void signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean);
     void populateUserRegistrationResponseBean(UserRegistrationResponseBean userRegistrationResponseBean);
     User saveUser(User user);
     EmailRequestBean populateEmailRequest(String receiverEmail, String token, String type);
     Map<String, String> createUserClaimMap(Authentication authentication);
     User registerNewSocialUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo);
     User updateExistingSocialUser(User existingUser, OAuth2UserInfo oAuth2UserInfo);
+    void requestForMail(String email, String token, String type);
 }

@@ -40,7 +40,7 @@ public class AuthService implements AuthServiceI{
     private ExternalRestWriterI externalRestWriterI;
 
     @Override
-    public AuthResponseBean userLogin(AuthRequestBean authRequestBean){
+    public AuthResponseBean signIn(AuthRequestBean authRequestBean){
         try{
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -62,13 +62,13 @@ public class AuthService implements AuthServiceI{
     }
 
     @Override
-    public UserRegistrationResponseBean registerUser(UserRegisterRequestBean userRegisterRequestBean){
+    public UserRegistrationResponseBean signUp(UserRegisterRequestBean userRegisterRequestBean){
         UserRegistrationResponseBean userRegistrationResponseBean = new UserRegistrationResponseBean();
         try{
-            authValidatorI.validateCreateUserRequest(userRegisterRequestBean);
-            authHandlerI.createUser(userRegisterRequestBean);
+            authValidatorI.validateSignUpRequest(userRegisterRequestBean);
+            authHandlerI.signUp(userRegisterRequestBean);
             //Asynchronously send email requests + calling notification service
-            requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), AuthorizationConst.USER_ACTION_TYPE_REGISTER);
+            authHandlerI.requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), AuthorizationConst.USER_ACTION_TYPE_REGISTER);
             authHandlerI.populateUserRegistrationResponseBean(userRegistrationResponseBean);
             return userRegistrationResponseBean;
         }catch (AuthorizationRuntimeException ex){
@@ -79,16 +79,21 @@ public class AuthService implements AuthServiceI{
         }
     }
 
-    @Async
     @Override
-    public void requestForMail(String email, String token, String type){
-        try {
-            //If user registration successful then send registration success mail
-            EmailRequestBean emailRequestBean = authHandlerI.populateEmailRequest(email, token, type);
-            externalRestWriterI.sendNotificationMail(emailRequestBean);
+    public UserRegistrationResponseBean signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
+        UserRegistrationResponseBean userRegistrationResponseBean = new UserRegistrationResponseBean();
+        try{
+            authValidatorI.validateSignUpRequest(userRegisterRequestBean);
+            authHandlerI.signUpWithEmail(userRegisterRequestBean);
+            authHandlerI.populateUserRegistrationResponseBean(userRegistrationResponseBean);
+            return userRegistrationResponseBean;
+        }catch (AuthorizationRuntimeException ex){
+            //todo add logger
+            throw ex;
         }catch (Exception ex){
-            //log exception + do not throw exception from here
+            throw new AuthorizationRuntimeException(AuthorizationErrorCodes.UNKNOWN_ERROR, ex);
         }
     }
+
 
 }

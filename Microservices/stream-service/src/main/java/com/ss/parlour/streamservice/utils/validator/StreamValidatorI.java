@@ -5,7 +5,7 @@ import com.ss.parlour.streamservice.utils.bean.requests.ArticleToStreamRequest;
 import com.ss.parlour.streamservice.utils.bean.requests.StreamCreateRequest;
 import com.ss.parlour.streamservice.utils.bean.requests.StreamDeleteRequest;
 
-public interface MainValidatorI {
+public interface StreamValidatorI {
 
     StreamBean streamCreateRequestValidate(StreamCreateRequest streamCreateRequest);
     void deleteStreamValidate(StreamDeleteRequest streamDeleteRequest);

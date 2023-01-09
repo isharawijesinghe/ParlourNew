@@ -23,10 +23,10 @@ public class ExternalRestWriter implements ExternalRestWriterI{
 
         HttpEntity<EmailRequestBean> requestEntity = new HttpEntity<>(emailRequestBean, requestHeaders);
 
-        restTemplate.exchange("http://127.0.0.1:9005/email/sendEmail",
-                HttpMethod.POST,
-                requestEntity,
-                EmailResponseBean.class
+        restTemplate.exchange("http://NOTIFICATION-SERVICE/email/sendEmail",
+                              HttpMethod.POST,
+                              requestEntity,
+                              EmailResponseBean.class
         );
     }
 }

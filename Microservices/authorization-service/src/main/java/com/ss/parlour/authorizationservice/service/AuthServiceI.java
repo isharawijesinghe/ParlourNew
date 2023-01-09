@@ -7,7 +7,7 @@ import com.ss.parlour.authorizationservice.util.bean.response.AuthResponseBean;
 
 public interface AuthServiceI  {
 
-    AuthResponseBean userLogin(AuthRequestBean authRequestBean);
-    UserRegistrationResponseBean registerUser(UserRegisterRequestBean userRegisterRequestBean);
-    void requestForMail(String email, String token, String type);
+    AuthResponseBean signIn(AuthRequestBean authRequestBean);
+    UserRegistrationResponseBean signUp(UserRegisterRequestBean userRegisterRequestBean);
+    UserRegistrationResponseBean signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean);
 }

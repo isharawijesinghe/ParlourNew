@@ -1,4 +1,4 @@
-package com.ss.parlour.notificationserver.bean;
+package com.ss.parlour.notificationserver.utils.bean.request;
 
 public class EmailRequestBean {
 

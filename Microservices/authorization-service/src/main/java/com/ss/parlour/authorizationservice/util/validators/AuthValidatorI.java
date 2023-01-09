@@ -4,5 +4,6 @@ import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterReques
 
 public interface AuthValidatorI {
 
-    void validateCreateUserRequest(UserRegisterRequestBean userRegisterRequestBean);
+    void validateSignUpRequest(UserRegisterRequestBean userRegisterRequestBean);
+    void signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean);
 }

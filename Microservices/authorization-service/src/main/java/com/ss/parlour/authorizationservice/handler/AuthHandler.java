@@ -8,8 +8,11 @@ import com.ss.parlour.authorizationservice.util.bean.*;
 import com.ss.parlour.authorizationservice.util.bean.requests.EmailRequestBean;
 import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
 import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
+import com.ss.parlour.authorizationservice.util.common.TokenGenerator;
 import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeException;
+import com.ss.parlour.authorizationservice.writer.ExternalRestWriterI;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -26,18 +29,30 @@ public class AuthHandler implements AuthHandlerI {
     @Autowired
     private UserDAOI userDAOI;
 
+    @Autowired
+    private ExternalRestWriterI externalRestWriterI;
+
+    @Autowired
+    private TokenGenerator tokenGenerator;
+
     public User loadUserByIdentification(String userName){
         return userDAOI.loadUserByIdentification(userName);
     }
 
     @Transactional
     @Override
-    public void createUser(UserRegisterRequestBean userRegisterRequestBean){
+    public void signUp(UserRegisterRequestBean userRegisterRequestBean){
         try {
             userDAOI.saveUserDetails(userRegisterRequestBean);
         }catch (Exception ex){
             throw new AuthorizationRuntimeException(AuthorizationErrorCodes.USER_SAVE_ERROR);
         }
+    }
+
+    @Override
+    public void signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
+        populateSignUpToken(userRegisterRequestBean);
+        requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), AuthorizationConst.USER_ACTION_TYPE_REGISTER);
     }
 
     @Override
@@ -60,10 +75,9 @@ public class AuthHandler implements AuthHandlerI {
         Map<String, String> claims = new HashMap<>();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         claims.put("username", userPrincipal.getUsername());
-
         String authorities = userPrincipal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+                                          .map(GrantedAuthority::getAuthority)
+                                          .collect(Collectors.joining(","));
         claims.put("authorities", authorities);
         claims.put("userId", userPrincipal.getEmail());
         claims.put("iss", "myApp");
@@ -95,5 +109,21 @@ public class AuthHandler implements AuthHandlerI {
         return userDAOI.saveUser(user);
     }
 
+    @Async
+    @Override
+    public void requestForMail(String email, String token, String type){
+        try {
+            //If user registration successful then send registration success mail
+            EmailRequestBean emailRequestBean = populateEmailRequest(email, token, type);
+            externalRestWriterI.sendNotificationMail(emailRequestBean);
+        }catch (Exception ex){
+            //log exception + do not throw exception from here
+        }
+    }
+
+    protected void populateSignUpToken(UserRegisterRequestBean userRegisterRequestBean){
+        String signUpToken = tokenGenerator.generateLogicSecret();
+        userRegisterRequestBean.setToken(signUpToken);
+    }
 
 }

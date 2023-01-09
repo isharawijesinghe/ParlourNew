@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface StreamMappedArticlesRepositoryI extends CassandraRepository<StreamMappedArticles, String> {
 
     Optional<StreamMappedArticles> findByStreamIdAndAndUserName(String streamId, String userName);
+    Optional<StreamMappedArticles> findByStreamId(String streamId);
 }

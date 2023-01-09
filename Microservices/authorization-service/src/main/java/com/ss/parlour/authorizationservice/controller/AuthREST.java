@@ -1,7 +1,5 @@
 package com.ss.parlour.authorizationservice.controller;
 
-import com.ss.parlour.authorizationservice.dao.cassandra.UserDAOI;
-import com.ss.parlour.authorizationservice.repository.cassandra.UserRepositoryI;
 import com.ss.parlour.authorizationservice.service.AuthServiceI;
 import com.ss.parlour.authorizationservice.util.bean.requests.AuthRequestBean;
 import com.ss.parlour.authorizationservice.util.bean.response.AuthResponseBean;
@@ -23,29 +21,22 @@ public class AuthREST {
     @Autowired
     private AuthServiceI authServiceI;
 
-    @Autowired
-    private UserRepositoryI userRepository;
-
-    @Autowired
-    private UserDAOI userDAOI;
-
-
     @RequestMapping(value = "/version", method = RequestMethod.GET)
     public String hello() {
         return "Hello parlour:0.0.1 " + System.currentTimeMillis();
     }
 
-    @RequestMapping(value = "/auth/login", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<?> login(@RequestBody AuthRequestBean authRequestBean){
+    @RequestMapping(value = "/auth/signIn", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<?> signIn(@RequestBody AuthRequestBean authRequestBean){
         logger.debug("=Login request found: " + authRequestBean);
-        AuthResponseBean authResponseBean = authServiceI.userLogin(authRequestBean);
+        AuthResponseBean authResponseBean = authServiceI.signIn(authRequestBean);
         return ResponseEntity.ok(authResponseBean);
     }
 
-    @RequestMapping(value = "/auth/createUser", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<?> login(@RequestBody UserRegisterRequestBean userRegisterRequestBean){
+    @RequestMapping(value = "/auth/signUp", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<?> signUp(@RequestBody UserRegisterRequestBean userRegisterRequestBean){
         logger.debug("=Create user request found: " + userRegisterRequestBean);
-        UserRegistrationResponseBean userRegistrationResponseBean = authServiceI.registerUser(userRegisterRequestBean);
+        UserRegistrationResponseBean userRegistrationResponseBean = authServiceI.signUp(userRegisterRequestBean);
         return ResponseEntity.ok(userRegistrationResponseBean);
 //        URI location = ServletUriComponentsBuilder
 //                .fromCurrentContextPath().path("/user/me")
@@ -53,6 +44,13 @@ public class AuthREST {
 
 //        return ResponseEntity.created(location)
 //                .body(new UserRegistrationResponseBean(true, "User registered successfully@"));
+    }
+
+    @RequestMapping(value = "/auth/signUpWithEmail", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<?> signUpWithEmail(@RequestBody UserRegisterRequestBean userRegisterRequestBean){
+        logger.debug("=Create user request found: " + userRegisterRequestBean);
+        UserRegistrationResponseBean userRegistrationResponseBean = authServiceI.signUpWithEmail(userRegisterRequestBean);
+        return ResponseEntity.ok(userRegistrationResponseBean);
     }
 
 }

@@ -35,12 +35,39 @@ public class StreamDAO implements StreamDAOI{
     }
 
     @Override
-    public Optional<StreamMappedArticles> findByStreamNameAndAndUserName(String streamName, String userName){
-        return streamMapArticlesRepositoryI.findByStreamIdAndAndUserName(streamName, userName);
+    public Optional<StreamMappedArticles> findByStreamIdAndAndUserName(String streamId, String userName){
+        return streamMapArticlesRepositoryI.findByStreamIdAndAndUserName(streamId, userName);
+    }
+
+    @Override
+    public Optional<StreamMappedArticles> findByStreamId(String streamId){
+        return streamMapArticlesRepositoryI.findByStreamId(streamId);
     }
 
     @Override
     public Optional<UserMappedStream> findUserMappedStreamByUserName(String userName){
         return userMappedStreamRepositoryI.findUserMappedStreamByUserName(userName);
     }
+
+    @Override
+    public Optional<Stream> findStreamById(String streamId){
+        return streamRepositoryI.findById(streamId);
+    }
+
+    @Override
+    public void deleteStreamByStreamId(String streamId){
+        streamRepositoryI.deleteById(streamId);
+    }
+
+    @Override
+    public void deleteStreamMappedArticlesByStreamId(String streamId){
+        streamMapArticlesRepositoryI.deleteById(streamId);
+    }
+
+    @Override
+    public void deleteUserMappedStreamByUserId(String userId){
+        userMappedStreamRepositoryI.deleteById(userId);
+    }
+
+
 }

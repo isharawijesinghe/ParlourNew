@@ -16,15 +16,15 @@ public class AuthValidator implements AuthValidatorI {
     UserDAOI userDAOI;
 
     @Override
-    public void validateCreateUserRequest(UserRegisterRequestBean userRegisterRequestBean) {
+    public void validateSignUpRequest(UserRegisterRequestBean userRegisterRequestBean) {
         validateUserLoginNameExists(userRegisterRequestBean);
         validateUserEmailExists(userRegisterRequestBean);
     }
 
-//    @Override
-//    public void validateChangePwRequest(UserRegisterRequestBean userRegisterRequestBean) {
-//
-//    }
+    @Override
+    public void signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
+
+    }
 
     protected void validateUserLoginNameExists(UserRegisterRequestBean userRegisterRequestBean){
         User existingUser = userDAOI.loadUserByLoginName(userRegisterRequestBean.getLoginName());

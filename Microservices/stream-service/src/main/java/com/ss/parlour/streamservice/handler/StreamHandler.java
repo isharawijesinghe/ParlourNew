@@ -12,7 +12,7 @@ import com.ss.parlour.streamservice.utils.bean.response.StreamCommonResponse;
 import com.ss.parlour.streamservice.utils.bean.response.StreamMappedArticleResponse;
 import com.ss.parlour.streamservice.utils.bean.response.UserMappedStreamResponse;
 import com.ss.parlour.streamservice.utils.common.StreamKeyGenerator;
-import com.ss.parlour.streamservice.utils.validator.MainValidatorI;
+import com.ss.parlour.streamservice.utils.validator.StreamValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +25,7 @@ import java.util.Optional;
 public class StreamHandler implements StreamHandlerI{
 
     @Autowired
-    private MainValidatorI mainValidatorI;
+    private StreamValidatorI streamValidatorI;
 
     @Autowired
     private StreamDAOI streamDAOI;
@@ -39,7 +39,10 @@ public class StreamHandler implements StreamHandlerI{
     @Override
     public StreamCommonResponse createStream(StreamCreateRequest streamCreateRequest){
         StreamCommonResponse streamCommonResponse = new StreamCommonResponse();
-        StreamBean streamBean = mainValidatorI.streamCreateRequestValidate(streamCreateRequest);
+        StreamBean streamBean = streamValidatorI.streamCreateRequestValidate(streamCreateRequest);
+        if (streamCreateRequest.getStreamBean().getStreamId() == null || streamCreateRequest.getStreamBean().getStreamId().isEmpty()){
+            streamCreateRequest.getStreamBean().setStreamId(streamKeyGenerator.streamKeyGenerator(streamBean.getUserName()));
+        }
         Stream stream = processHandleCreateStreamRequest(streamBean);
         streamCommonResponse.setStreamId(stream.getStreamId());
         streamCommonResponse.setStatus(StreamConst.STATUS_SUCCESS);
@@ -50,7 +53,8 @@ public class StreamHandler implements StreamHandlerI{
     @Override
     public StreamCommonResponse deleteStream(StreamDeleteRequest streamDeleteRequest){
         StreamCommonResponse streamCommonResponse = new StreamCommonResponse();
-        mainValidatorI.deleteStreamValidate(streamDeleteRequest);
+        streamValidatorI.deleteStreamValidate(streamDeleteRequest);
+        handleStreamDeleteRequest(streamDeleteRequest);
         streamCommonResponse.setStreamId(streamDeleteRequest.getStreamId());
         streamCommonResponse.setStatus(StreamConst.STATUS_SUCCESS);
         streamCommonResponse.setNarration(StreamConst.STREAM_DELETE_SUCCESS);
@@ -60,7 +64,7 @@ public class StreamHandler implements StreamHandlerI{
     @Override
     public StreamCommonResponse addArticleToStream(ArticleToStreamRequest articleToStreamRequest){
         StreamCommonResponse streamCommonResponse = new StreamCommonResponse();
-        mainValidatorI.addArticleToStreamValidate(articleToStreamRequest);
+        streamValidatorI.addArticleToStreamValidate(articleToStreamRequest);
         processArticleToStreamAddRequest(articleToStreamRequest);
         streamCommonResponse.setStreamId(articleToStreamRequest.getStreamId());
         streamCommonResponse.setStatus(StreamConst.STATUS_SUCCESS);
@@ -81,7 +85,7 @@ public class StreamHandler implements StreamHandlerI{
     @Override
     public StreamMappedArticleResponse findArticlesByStream(StreamMappedArticleRequest streamMappedArticleRequest){
         StreamMappedArticleResponse streamMappedArticleResponse = new StreamMappedArticleResponse();
-        Optional<StreamMappedArticles> existingStreamMappedArticle = streamDAOI.findByStreamNameAndAndUserName(streamMappedArticleRequest.getStreamId(), streamMappedArticleRequest.getUserId());
+        Optional<StreamMappedArticles> existingStreamMappedArticle = streamDAOI.findByStreamId(streamMappedArticleRequest.getStreamId());
         if (existingStreamMappedArticle.isPresent()){
             streamMappedArticleResponse.setStreamMapArticles(existingStreamMappedArticle.get());
         }
@@ -91,7 +95,7 @@ public class StreamHandler implements StreamHandlerI{
     private void processArticleToStreamAddRequest(ArticleToStreamRequest articleToStreamRequest){
         List<String> articleList = articleToStreamRequest.getArticleIdList();
         Optional<StreamMappedArticles> existingMapArticle =
-                streamDAOI.findByStreamNameAndAndUserName(articleToStreamRequest.getStreamId(), articleToStreamRequest.getUserName());
+                streamDAOI.findByStreamId(articleToStreamRequest.getStreamId());
 
         if (existingMapArticle.isPresent()){
             Map<String, Article> streamMapArticlesMap = existingMapArticle.get().getStreamMapArticlesMap();
@@ -106,15 +110,21 @@ public class StreamHandler implements StreamHandlerI{
     }
 
     private Stream processHandleCreateStreamRequest(StreamBean streamBean){
-        Stream stream = createStream(streamBean);
-        createStreamMapArticle(streamBean);
-        createUserMappedStream(streamBean, stream);
-        return stream;
+        Optional<Stream> existingStream = streamDAOI.findStreamById(streamBean.getStreamId());
+        Stream newStream = createStream(streamBean);
+        if (existingStream.isPresent()){
+            //In case of updating stream >> If required log can be added
+        } else {
+            //Creating new stream flow
+            createStreamMapArticle(streamBean);
+            createUserMappedStream(streamBean, newStream);
+        }
+        return newStream;
     }
 
     private Stream createStream(StreamBean streamBean){
         Stream stream = new Stream();
-        stream.setStreamId(streamKeyGenerator.streamKeyGenerator(streamBean.getUserName()));
+        stream.setStreamId(streamBean.getStreamId());
         stream.setUserName(streamBean.getUserName());
         streamDAOI.saveStream(stream);
         return stream;
@@ -131,5 +141,11 @@ public class StreamHandler implements StreamHandlerI{
         UserMappedStream userMappedStream = new UserMappedStream();
         userMappedStream.setUserName(streamBean.getUserName());
         userMappedStream.getUserStreamMap().put(stream.getStreamId(), stream);
+    }
+
+    private void handleStreamDeleteRequest(StreamDeleteRequest streamDeleteRequest){
+        streamDAOI.deleteStreamByStreamId(streamDeleteRequest.getStreamId());
+        streamDAOI.deleteStreamMappedArticlesByStreamId(streamDeleteRequest.getStreamId());
+        streamDAOI.deleteUserMappedStreamByUserId(streamDeleteRequest.getUserName());
     }
 }
