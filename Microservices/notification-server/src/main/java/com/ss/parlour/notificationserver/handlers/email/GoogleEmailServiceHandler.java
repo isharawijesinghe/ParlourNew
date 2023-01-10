@@ -28,12 +28,11 @@ public class GoogleEmailServiceHandler implements EmailServiceHandlerI {
         return emailResponseBean;
     }
 
-
     protected SimpleMailMessage createUserRegistrationEmailRequest(EmailRequestBean emailRequestBean){
         SimpleMailMessage registrationEmail = new SimpleMailMessage();
         registrationEmail.setTo(emailRequestBean.getReceiverEmail());
         registrationEmail.setSubject("Registration Confirmation");
-        registrationEmail.setText("To confirm your e-mail address, please click the link below: " + authServerUrl + "/confirm?token=" + emailRequestBean.getConfirmationToken());
+        registrationEmail.setText("To confirm your email address, please click the link below: " + authServerUrl + "/confirm?token=" + emailRequestBean.getConfirmationToken());
         registrationEmail.setFrom("noreply@domain.com");
         return registrationEmail;
     }
