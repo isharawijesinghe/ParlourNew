@@ -22,7 +22,7 @@ public class AuthValidator implements AuthValidatorI {
     }
 
     @Override
-    public void signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
+    public void validateSignUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
 
     }
 

@@ -4,7 +4,6 @@ import com.ss.parlour.authorizationservice.configurations.security.TokenProvider
 import com.ss.parlour.authorizationservice.handler.AuthHandlerI;
 import com.ss.parlour.authorizationservice.util.bean.*;
 import com.ss.parlour.authorizationservice.util.bean.requests.AuthRequestBean;
-import com.ss.parlour.authorizationservice.util.bean.requests.EmailRequestBean;
 import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
 import com.ss.parlour.authorizationservice.util.bean.response.AuthResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
@@ -12,7 +11,6 @@ import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeEx
 import com.ss.parlour.authorizationservice.util.validators.AuthValidatorI;
 import com.ss.parlour.authorizationservice.writer.ExternalRestWriterI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -83,7 +81,7 @@ public class AuthService implements AuthServiceI{
     public UserRegistrationResponseBean signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
         UserRegistrationResponseBean userRegistrationResponseBean = new UserRegistrationResponseBean();
         try{
-            authValidatorI.validateSignUpRequest(userRegisterRequestBean);
+            authValidatorI.validateSignUpWithEmail(userRegisterRequestBean);
             authHandlerI.signUpWithEmail(userRegisterRequestBean);
             authHandlerI.populateUserRegistrationResponseBean(userRegistrationResponseBean);
             return userRegistrationResponseBean;

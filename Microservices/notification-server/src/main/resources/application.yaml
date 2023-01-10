@@ -2,6 +2,11 @@ server:
   port: 9004
 
 spring:
+  application:
+    name: notification-service
+  cloud:
+    kubernetes:
+      enabled: false
   mail:
     host: smtp.gmail.com
     username: ishara.d.wijesinghe@gmail.com

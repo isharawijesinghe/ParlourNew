@@ -23,7 +23,7 @@ public class ExternalRestWriter implements ExternalRestWriterI{
 
         HttpEntity<EmailRequestBean> requestEntity = new HttpEntity<>(emailRequestBean, requestHeaders);
 
-        restTemplate.exchange("http://NOTIFICATION-SERVICE/email/sendEmail",
+        restTemplate.exchange("http://NOTIFICATION-SERVICE/notification/sendEmailRequest",
                               HttpMethod.POST,
                               requestEntity,
                               EmailResponseBean.class
