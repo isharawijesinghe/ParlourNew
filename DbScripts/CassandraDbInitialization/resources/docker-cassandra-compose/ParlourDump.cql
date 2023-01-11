@@ -72,10 +72,10 @@ CREATE TABLE IF NOT EXISTS parlour.userLoginNameEmailMapper (
 );
 
 CREATE TABLE IF NOT EXISTS parlour.userToken (
-    token text,
-    loginName text,
+    userToken text,
+    userName text,
     actionType text,
-    PRIMARY KEY ((loginName, actionType))
+    PRIMARY KEY ((userName, actionType))
 );
 
 CREATE TABLE IF NOT EXISTS parlour.article (
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS parlour.likeByArticle (
     PRIMARY KEY (articleId)
 );
 
-CREATE TABLEIF NOT EXISTS  parlour.likeByArticle (
+CREATE TABLE IF NOT EXISTS  parlour.likeByArticle (
     articleId text,
     likes list<frozen<like>> ,
     likeMap map<text, frozen<like>>,

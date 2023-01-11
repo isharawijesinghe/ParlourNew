@@ -3,6 +3,7 @@ package com.ss.parlour.authorizationservice.util.bean.response;
 public class UserRegistrationResponseBean {
     private boolean status;
     private String narration;
+    private String actionType;
 
     public UserRegistrationResponseBean(){}
 
@@ -25,5 +26,13 @@ public class UserRegistrationResponseBean {
 
     public void setNarration(String narration) {
         this.narration = narration;
+    }
+
+    public String getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
     }
 }

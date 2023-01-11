@@ -1,25 +1,24 @@
 package com.ss.parlour.authorizationservice.domain.cassandra;
 
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 @Table("usertoken")
 public class UserToken {
 
-    @PrimaryKeyColumn(name = "loginname",ordinal = 0,type = PrimaryKeyType.PARTITIONED)
-    private String loginName;
+    @PrimaryKeyColumn(name = "username",ordinal = 0,type = PrimaryKeyType.PARTITIONED)
+    private String userName;
     @PrimaryKeyColumn(name = "actiontype",ordinal = 0,type = PrimaryKeyType.CLUSTERED)
     private String actionType;
-    private String token;
+    private String userToken;
 
-    public String getLoginName() {
-        return loginName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setLoginName(String loginName) {
-        this.loginName = loginName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getActionType() {
@@ -30,11 +29,11 @@ public class UserToken {
         this.actionType = actionType;
     }
 
-    public String getToken() {
-        return token;
+    public String getUserToken() {
+        return userToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setUserToken(String userToken) {
+        this.userToken = userToken;
     }
 }

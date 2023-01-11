@@ -24,7 +24,6 @@ public class NotificationRest {
 
     @RequestMapping(value = "/sendEmailRequest", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> sendEmailRequest(@RequestBody EmailRequestBean request){
-        logger.debug("==== Send email request found: " + request);
         EmailResponseBean emailResponseBean = notificationServiceI.sendEmailRequest(request);
         return ResponseEntity.ok(emailResponseBean);
     }

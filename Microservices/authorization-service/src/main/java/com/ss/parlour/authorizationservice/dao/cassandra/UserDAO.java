@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.awt.desktop.OpenFilesEvent;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Optional;
@@ -104,9 +103,9 @@ public class UserDAO implements UserDAOI{
 
     @Override
     public User getUserByUserToken(String userName, String actionType){
-        Optional<UserToken> userTokenFromDb = userTokenRepositoryI.findByLoginNameAndActionType(userName, actionType);
+        Optional<UserToken> userTokenFromDb = userTokenRepositoryI.findByUserNameAndActionType(userName, actionType);
         if (userTokenFromDb.isPresent()) {
-            String existingUserLoginName = userTokenFromDb.get().getLoginName();
+            String existingUserLoginName = userTokenFromDb.get().getUserName();
             Optional<User> existingUserFromDb = userRepositoryI.findByLoginName(existingUserLoginName);
             if (existingUserFromDb.isPresent()) {
                 return existingUserFromDb.get();
@@ -127,12 +126,12 @@ public class UserDAO implements UserDAOI{
 
     @Override
     public Optional<UserToken> getUserToken(String userName, String actionType){
-        return userTokenRepositoryI.findByLoginNameAndActionType(userName, actionType);
+        return userTokenRepositoryI.findByUserNameAndActionType(userName, actionType);
     }
 
     @Override
     public void saveUserToken(UserRegisterRequestBean userRegisterRequestBean, String actionType){
-        UserToken userToken = populateUserToken(userRegisterRequestBean, actionType);
+        UserToken userToken = populateUserToken(userRegisterRequestBean.getEmail(), actionType);
         userTokenRepositoryI.insert(userToken);
     }
 
@@ -169,11 +168,11 @@ public class UserDAO implements UserDAOI{
         return loginNameEmailMapper;
     }
 
-    private UserToken populateUserToken(UserRegisterRequestBean userRegisterRequestBean, String actionType){
+    private UserToken populateUserToken(String userName, String actionType){
         UserToken userToken = new UserToken();
-        userToken.setLoginName(userRegisterRequestBean.getLoginName());
+        userToken.setUserName(userName);
         userToken.setActionType(actionType);
-        userToken.setToken(tokenGenerator.generateLogicSecret());
+        userToken.setUserToken(tokenGenerator.generateLogicSecret());
         return userToken;
     }
 

@@ -131,11 +131,22 @@ public class AuthHandler implements AuthHandlerI {
         Optional<UserToken> existingUserToken = userDAOI.getUserToken(tokenConfirmRequest.getUserName(), tokenConfirmRequest.getActionType());
         if (existingUserToken.isPresent()){
             UserToken userToken = existingUserToken.get();
-            if (tokenConfirmRequest.getToken() != null && tokenConfirmRequest.getToken().equals(userToken.getToken())){
+            if (validateTokenExistence(userToken) && validateTokenExpiry(userToken)){
                 tokenConfirmResponseBean.setTokenConfirmSuccess(AuthorizationConst.TRUE);
             }
         }
         return tokenConfirmResponseBean;
+    }
+
+    protected boolean validateTokenExistence(UserToken userToken){
+        if (userToken != null && userToken.equals(userToken.getUserToken())){
+            return AuthorizationConst.TRUE;
+        }
+        return AuthorizationConst.FALSE;
+    }
+
+    protected boolean validateTokenExpiry(UserToken userToken){
+        return AuthorizationConst.TRUE;
     }
 
 
