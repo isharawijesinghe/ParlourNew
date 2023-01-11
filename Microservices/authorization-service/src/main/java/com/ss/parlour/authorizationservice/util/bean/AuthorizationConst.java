@@ -2,6 +2,7 @@ package com.ss.parlour.authorizationservice.util.bean;
 
 public class AuthorizationConst {
 
+    public final static String USER_ACTION_TYPE_PASSWORD_LESS_REGISTER = "Password_Less_Register";
     public final static String USER_ACTION_TYPE_REGISTER = "Register";
 
     public final static int STATUS_SUCCESS=1;

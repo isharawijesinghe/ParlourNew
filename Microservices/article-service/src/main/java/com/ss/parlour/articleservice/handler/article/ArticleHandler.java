@@ -39,13 +39,11 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
             Optional<Article> existingArticleBean = articleDAOI.getArticleById(articleBean.getId());
             if (existingArticleBean.isPresent()){ //Article update flow
                 Article oldArticle = existingArticleBean.get();
-                //Update "ArticleHistory" table
-                updateArticleHistory(oldArticle);
+                updateArticleHistory(oldArticle); //Update "ArticleHistory" table
             }
         }
         Article article = populateArticle(articleBean);
-        //Create or update article >> Update "Article" table
-        updateArticle(article);
+        updateArticle(article); //Create or update article >> Update "Article" table
         return article;
     }
 
@@ -91,6 +89,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         return articleHistoryResponseBean;
     }
 
+    //Find user article by id
     @Override
     public Article findArticleDetailsById(String articleId){
         Optional<Article> existingArticleBean = articleDAOI.getArticleById(articleId);
@@ -168,7 +167,6 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         articleHistory.setArticleId(existingArticleHistoryBean.get().getArticleId());
         articleHistory.setOldArticles(articleHistoriesList);
         articleDAOI.updateArticleHistory(articleHistory);
-
     }
 
 }

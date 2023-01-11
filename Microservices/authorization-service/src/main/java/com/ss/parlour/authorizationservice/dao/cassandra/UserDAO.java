@@ -9,10 +9,12 @@ import com.ss.parlour.authorizationservice.repository.cassandra.UserTokenReposit
 import com.ss.parlour.authorizationservice.util.bean.AuthProvider;
 import com.ss.parlour.authorizationservice.util.bean.AuthorizationConst;
 import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.common.TokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.awt.desktop.OpenFilesEvent;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Optional;
@@ -30,14 +32,16 @@ public class UserDAO implements UserDAOI{
     @Autowired
     private UserTokenRepositoryI userTokenRepositoryI;
 
+    @Autowired
+    private TokenGenerator tokenGenerator;
+
     @Override
     public User loadUserByIdentification(String userIdentification){
         User user = null;
         try {
-            Optional<User> userFromDb= userRepositoryI.findByLoginName(userIdentification);
+            Optional<User> userFromDb = userRepositoryI.findByLoginName(userIdentification);
             if (userFromDb.isEmpty()){
-                Optional<UserLoginNameEmailMapper> loginNameEmailMapperFromDb
-                        = loginNameEmailMapperRepositoryI.findByEmail(userIdentification);
+                Optional<UserLoginNameEmailMapper> loginNameEmailMapperFromDb = loginNameEmailMapperRepositoryI.findByEmail(userIdentification);
                 if (loginNameEmailMapperFromDb.isPresent()){
                     String loginName = loginNameEmailMapperFromDb.get().getLoginName();
                     userFromDb= userRepositoryI.findByLoginName(loginName);
@@ -59,8 +63,7 @@ public class UserDAO implements UserDAOI{
         User user = null;
         Optional<User> userFromDb = null;
         try {
-            Optional<UserLoginNameEmailMapper> loginNameEmailMapperFromDb
-                    = loginNameEmailMapperRepositoryI.findByEmail(email);
+            Optional<UserLoginNameEmailMapper> loginNameEmailMapperFromDb = loginNameEmailMapperRepositoryI.findByEmail(email);
             if (loginNameEmailMapperFromDb.isPresent()){
                 String loginName = loginNameEmailMapperFromDb.get().getLoginName();
                 userFromDb= userRepositoryI.findByLoginName(loginName);
@@ -100,9 +103,8 @@ public class UserDAO implements UserDAOI{
     }
 
     @Override
-    public User getUserByTokenAndType(String token, String type){
-        Optional<UserToken> userTokenFromDb =
-                userTokenRepositoryI.findByTokenAndType(token, type);
+    public User getUserByUserToken(String userName, String actionType){
+        Optional<UserToken> userTokenFromDb = userTokenRepositoryI.findByLoginNameAndActionType(userName, actionType);
         if (userTokenFromDb.isPresent()) {
             String existingUserLoginName = userTokenFromDb.get().getLoginName();
             Optional<User> existingUserFromDb = userRepositoryI.findByLoginName(existingUserLoginName);
@@ -123,22 +125,26 @@ public class UserDAO implements UserDAOI{
         return null;
     }
 
-    private void
-    saveUser(UserRegisterRequestBean userRegisterRequestBean){
+    @Override
+    public Optional<UserToken> getUserToken(String userName, String actionType){
+        return userTokenRepositoryI.findByLoginNameAndActionType(userName, actionType);
+    }
+
+    @Override
+    public void saveUserToken(UserRegisterRequestBean userRegisterRequestBean, String actionType){
+        UserToken userToken = populateUserToken(userRegisterRequestBean, actionType);
+        userTokenRepositoryI.insert(userToken);
+    }
+
+    private void saveUser(UserRegisterRequestBean userRegisterRequestBean){
         userRegisterRequestBean.setToken(UUID.randomUUID().toString());
         User user = populateUserForRegister(userRegisterRequestBean);
         userRepositoryI.insert(user);
     }
 
     private void saveUserLoginNameEmailMapper(UserRegisterRequestBean userRegisterRequestBean){
-        UserLoginNameEmailMapper loginNameEmailMapper =
-                populateLoginNameEmailMapper(userRegisterRequestBean);
+        UserLoginNameEmailMapper loginNameEmailMapper = populateLoginNameEmailMapper(userRegisterRequestBean);
         loginNameEmailMapperRepositoryI.insert(loginNameEmailMapper);
-    }
-
-    private void saveUserToken(UserRegisterRequestBean userRegisterRequestBean, String actionType){
-        UserToken userToken = populateUserToken(userRegisterRequestBean, actionType);
-        userTokenRepositoryI.insert(userToken);
     }
 
     private User populateUserForRegister(UserRegisterRequestBean userRegisterRequestBean){
@@ -166,8 +172,8 @@ public class UserDAO implements UserDAOI{
     private UserToken populateUserToken(UserRegisterRequestBean userRegisterRequestBean, String actionType){
         UserToken userToken = new UserToken();
         userToken.setLoginName(userRegisterRequestBean.getLoginName());
-        userToken.setType(actionType);
-        userToken.setToken(userRegisterRequestBean.getToken());
+        userToken.setActionType(actionType);
+        userToken.setToken(tokenGenerator.generateLogicSecret());
         return userToken;
     }
 

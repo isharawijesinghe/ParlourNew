@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface UserTokenRepositoryI extends CassandraRepository<UserToken, String> {
 
-    Optional<UserToken> findByTokenAndType(String token, String type);
+    Optional<UserToken> findByLoginNameAndActionType(String userName, String actionType);
 }

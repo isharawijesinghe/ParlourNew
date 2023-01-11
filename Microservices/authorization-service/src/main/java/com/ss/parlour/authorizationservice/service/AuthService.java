@@ -4,7 +4,9 @@ import com.ss.parlour.authorizationservice.configurations.security.TokenProvider
 import com.ss.parlour.authorizationservice.handler.AuthHandlerI;
 import com.ss.parlour.authorizationservice.util.bean.*;
 import com.ss.parlour.authorizationservice.util.bean.requests.AuthRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.TokenConfirmResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.AuthResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
 import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeException;
@@ -87,6 +89,18 @@ public class AuthService implements AuthServiceI{
             return userRegistrationResponseBean;
         }catch (AuthorizationRuntimeException ex){
             //todo add logger
+            throw ex;
+        }catch (Exception ex){
+            throw new AuthorizationRuntimeException(AuthorizationErrorCodes.UNKNOWN_ERROR, ex);
+        }
+    }
+
+    @Override
+    public TokenConfirmResponseBean tokenConfirm(TokenConfirmRequest tokenConfirmRequest){
+        try{
+            authValidatorI.validateTokenConfirm(tokenConfirmRequest);
+            return authHandlerI.tokenConfirm(tokenConfirmRequest);
+        }catch (AuthorizationRuntimeException ex){
             throw ex;
         }catch (Exception ex){
             throw new AuthorizationRuntimeException(AuthorizationErrorCodes.UNKNOWN_ERROR, ex);

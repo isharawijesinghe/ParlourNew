@@ -3,7 +3,7 @@ package com.ss.parlour.notificationserver.utils.bean.request;
 public class EmailRequestBean {
 
     private String receiverEmail;
-    private String type;
+    private String actionType;
     private String confirmationToken;
 
     public String getReceiverEmail() {
@@ -14,12 +14,12 @@ public class EmailRequestBean {
         this.receiverEmail = receiverEmail;
     }
 
-    public String getType() {
-        return type;
+    public String getActionType() {
+        return actionType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
     }
 
     public String getConfirmationToken() {

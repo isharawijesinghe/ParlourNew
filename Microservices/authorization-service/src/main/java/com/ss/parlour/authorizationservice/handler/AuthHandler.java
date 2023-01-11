@@ -4,9 +4,12 @@ import com.ss.parlour.authorizationservice.configurations.security.UserPrincipal
 import com.ss.parlour.authorizationservice.configurations.security.oauth2.user.OAuth2UserInfo;
 import com.ss.parlour.authorizationservice.dao.cassandra.UserDAOI;
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
+import com.ss.parlour.authorizationservice.domain.cassandra.UserToken;
 import com.ss.parlour.authorizationservice.util.bean.*;
 import com.ss.parlour.authorizationservice.util.bean.requests.EmailRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.TokenConfirmResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
 import com.ss.parlour.authorizationservice.util.common.TokenGenerator;
 import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeException;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +55,7 @@ public class AuthHandler implements AuthHandlerI {
 
     @Override
     public void signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
-        populateSignUpToken(userRegisterRequestBean);
+        userDAOI.saveUserToken(userRegisterRequestBean, AuthorizationConst.USER_ACTION_TYPE_REGISTER);
         requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), AuthorizationConst.USER_ACTION_TYPE_REGISTER);
     }
 
@@ -65,7 +69,7 @@ public class AuthHandler implements AuthHandlerI {
     public EmailRequestBean populateEmailRequest(String receiverEmail, String token, String type){
         EmailRequestBean emailRequestBean = new EmailRequestBean();
         emailRequestBean.setReceiverEmail(receiverEmail);
-        emailRequestBean.setType(type);
+        emailRequestBean.setActionType(type);
         emailRequestBean.setConfirmationToken(token);
         return emailRequestBean;
     }
@@ -121,9 +125,18 @@ public class AuthHandler implements AuthHandlerI {
         }
     }
 
-    protected void populateSignUpToken(UserRegisterRequestBean userRegisterRequestBean){
-        String signUpToken = tokenGenerator.generateLogicSecret();
-        userRegisterRequestBean.setToken(signUpToken);
+    @Override
+    public TokenConfirmResponseBean tokenConfirm(TokenConfirmRequest tokenConfirmRequest){
+        TokenConfirmResponseBean tokenConfirmResponseBean = new TokenConfirmResponseBean(AuthorizationConst.STATUS_SUCCESS, AuthorizationConst.SUCCESS_NARRATION);
+        Optional<UserToken> existingUserToken = userDAOI.getUserToken(tokenConfirmRequest.getUserName(), tokenConfirmRequest.getActionType());
+        if (existingUserToken.isPresent()){
+            UserToken userToken = existingUserToken.get();
+            if (tokenConfirmRequest.getToken() != null && tokenConfirmRequest.getToken().equals(userToken.getToken())){
+                tokenConfirmResponseBean.setTokenConfirmSuccess(AuthorizationConst.TRUE);
+            }
+        }
+        return tokenConfirmResponseBean;
     }
+
 
 }

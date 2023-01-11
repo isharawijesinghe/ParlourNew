@@ -1,14 +1,17 @@
 package com.ss.parlour.authorizationservice.domain.cassandra;
 
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 @Table("usertoken")
 public class UserToken {
 
-    @PrimaryKey
+    @PrimaryKeyColumn(name = "loginname",ordinal = 0,type = PrimaryKeyType.PARTITIONED)
     private String loginName;
-    private String type;
+    @PrimaryKeyColumn(name = "actiontype",ordinal = 0,type = PrimaryKeyType.CLUSTERED)
+    private String actionType;
     private String token;
 
     public String getLoginName() {
@@ -19,12 +22,12 @@ public class UserToken {
         this.loginName = loginName;
     }
 
-    public String getType() {
-        return type;
+    public String getActionType() {
+        return actionType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
     }
 
     public String getToken() {

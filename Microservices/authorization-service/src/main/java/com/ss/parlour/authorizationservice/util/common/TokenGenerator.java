@@ -10,4 +10,8 @@ public class TokenGenerator {
     public String generateLogicSecret(){
         return "" + UUID.randomUUID();
     }
+
+    public String generateUserTokenKey(String userName, String tokenType){
+        return userName + "_" + tokenType;
+    }
 }

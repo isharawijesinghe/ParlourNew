@@ -5,7 +5,7 @@ import com.ss.parlour.notificationserver.utils.bean.response.EmailResponseBean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SNSEmailHandler  implements EmailServiceHandlerI {
+public class SESEmailHandler implements EmailServiceHandlerI {
 
     @Override
     public EmailResponseBean sendEmailRequest(EmailRequestBean emailRequestBean) {

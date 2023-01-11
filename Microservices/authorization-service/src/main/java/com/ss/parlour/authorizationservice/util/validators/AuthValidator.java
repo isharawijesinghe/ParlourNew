@@ -4,6 +4,7 @@ import com.ss.parlour.authorizationservice.dao.cassandra.UserDAOI;
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.domain.cassandra.UserLoginNameEmailMapper;
 import com.ss.parlour.authorizationservice.util.bean.AuthorizationErrorCodes;
+import com.ss.parlour.authorizationservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
 import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,11 @@ public class AuthValidator implements AuthValidatorI {
 
     @Override
     public void validateSignUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
+
+    }
+
+    @Override
+    public void validateTokenConfirm(TokenConfirmRequest tokenConfirmRequest){
 
     }
 

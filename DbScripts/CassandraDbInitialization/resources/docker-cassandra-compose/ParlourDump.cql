@@ -71,14 +71,14 @@ CREATE TABLE IF NOT EXISTS parlour.userLoginNameEmailMapper (
     PRIMARY KEY (email)
 );
 
--- CREATE TABLE IF NOT EXISTS parlour.userToken (
---     token text,
---     loginName text,
---     type text,
---     PRIMARY KEY (token)
--- );
+CREATE TABLE IF NOT EXISTS parlour.userToken (
+    token text,
+    loginName text,
+    actionType text,
+    PRIMARY KEY ((loginName, actionType))
+);
 
-CREATE TABLE parlour.article (
+CREATE TABLE IF NOT EXISTS parlour.article (
     id text,
     userName text,
     title text,
@@ -92,13 +92,13 @@ CREATE TABLE parlour.article (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE parlour.articleHistory (
+CREATE TABLE IF NOT EXISTS parlour.articleHistory (
     articleId text,
     oldArticles frozen<list<article>> ,
     PRIMARY KEY (articleId)
 );
 
-CREATE TABLE parlour.comment (
+CREATE TABLE IF NOT EXISTS parlour.comment (
     id text,
     articleId text,
     parentId text,
@@ -112,33 +112,33 @@ CREATE TABLE parlour.comment (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE parlour.commentByArticle (
+CREATE TABLE IF NOT EXISTS parlour.commentByArticle (
     articleId text,
     comments frozen<map<text, list<comment>>> ,
     PRIMARY KEY (articleId)
 );
 
-CREATE TABLE parlour.likeByArticle (
+CREATE TABLE IF NOT EXISTS parlour.likeByArticle (
     articleId text,
     likes list<frozen<like>> ,
     PRIMARY KEY (articleId)
 );
 
-CREATE TABLE parlour.likeByArticle (
+CREATE TABLEIF NOT EXISTS  parlour.likeByArticle (
     articleId text,
     likes list<frozen<like>> ,
     likeMap map<text, frozen<like>>,
     PRIMARY KEY (articleId)
 );
 
-CREATE TABLE parlour.likeByComment (
+CREATE TABLE IF NOT EXISTS parlour.likeByComment (
     commentId text,
     articleId text,
     likeMap map<text, frozen<like>>,
     PRIMARY KEY ((articleId, commentId))
 );
 
-CREATE TABLE parlour.stream (
+CREATE TABLE IF NOT EXISTS parlour.stream (
     streamId text,
     userName text,
     description text,
@@ -146,13 +146,13 @@ CREATE TABLE parlour.stream (
     PRIMARY KEY (streamId)
 );
 
-CREATE TABLE parlour.streammappedarticles (
+CREATE TABLE IF NOT EXISTS parlour.streammappedarticles (
     streamId text,
     likeMap map<text, frozen<article>>,
     PRIMARY KEY (streamId)
 );
 
-CREATE TABLE parlour.usermappedstream (
+CREATE TABLE IF NOT EXISTS parlour.usermappedstream (
     userName text,
     userStreamMap map<text, frozen<stream>>,
     PRIMARY KEY (userName)
