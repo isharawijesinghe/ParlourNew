@@ -45,9 +45,9 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan
+      #- name: Terraform Plan
+      #  id: plan
+      #  run: terraform plan
 
       - name: Terraform Apply
         id: apply
@@ -79,9 +79,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan
+      #- name: Terraform Plan
+      #  id: plan
+      #  run: terraform plan
 
       - name: Terraform Destroy
         id: destroy
