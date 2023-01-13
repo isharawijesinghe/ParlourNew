@@ -3,7 +3,9 @@ app:
   env: dev
   name: authorization-service
   container:
-    image: ishara007/authorization-service:latest
+    image:
+      repository: ishara007/authorization-service
+      tag: latest
     imagePullPolicy: Always
     ports:
       containerPort: 9002

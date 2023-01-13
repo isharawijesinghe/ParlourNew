@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: {{.Values.app.name}}
-          image: {{.Values.app.container.image}}
+          image: {{.Values.app.container.image.repository}}:{{.Values.app.container.image.tag}}
           env:
             - name: SPRING_DATA_CASSANDRA_CONTACT-POINTS
               #value: host.minikube.internal

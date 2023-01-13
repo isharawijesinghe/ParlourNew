@@ -3,7 +3,9 @@ app:
   env: dev
   name: article-service
   container:
-    image: ishara007/article-service:latest
+    image:
+      repository: ishara007/article-service
+      tag: latest
     imagePullPolicy: Always
     ports:
       containerPort: 9001

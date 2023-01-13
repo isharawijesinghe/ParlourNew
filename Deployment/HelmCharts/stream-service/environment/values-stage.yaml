@@ -3,7 +3,9 @@ app:
   env: dev
   name: stream-service
   container:
-    image: ishara007/stream-service:latest
+    image:
+      repository: ishara007/stream-service
+      tag: latest
     imagePullPolicy: Always
     ports:
       containerPort: 9003

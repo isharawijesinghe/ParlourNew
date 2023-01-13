@@ -3,7 +3,9 @@ app:
   env: dev
   name: notification-service
   container:
-    image: ishara007/notification-service:latest
+    image:
+      repository: ishara007/notification-service
+      tag: latest
     imagePullPolicy: Always
     ports:
       containerPort: 9004
