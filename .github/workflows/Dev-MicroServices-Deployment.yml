@@ -45,7 +45,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
           cluster-name: eks
-          config-files: Deployment/HelmCharts/authorization-service/environment/values.yaml
+          config-files: Deployment/HelmCharts/authorization-service/environment/values-dev.yaml
           chart-path: Deployment/HelmCharts/authorization-service
           values: app.container.image.tag=latest
           namespace: default
@@ -60,7 +60,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
           cluster-name: eks
-          config-files: Deployment/HelmCharts/stream-service/environment/values.yaml
+          config-files: Deployment/HelmCharts/stream-service/environment/values-dev.yaml
           chart-path: Deployment/HelmCharts/stream-service
           values: app.container.image.tag=latest
           namespace: default
@@ -75,7 +75,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
           cluster-name: eks
-          config-files: Deployment/HelmCharts/article-service/environment/values.yaml
+          config-files: Deployment/HelmCharts/article-service/environment/values-dev.yaml
           chart-path: Deployment/HelmCharts/article-service
           values: app.container.image.tag=latest
           namespace: default
@@ -90,7 +90,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
           cluster-name: eks
-          config-files: Deployment/HelmCharts/notification-service/environment/values.yaml
+          config-files: Deployment/HelmCharts/notification-service/environment/values-dev.yaml
           chart-path: Deployment/HelmCharts/notification-service
           values: app.container.image.tag=latest
           namespace: default
