@@ -47,7 +47,7 @@ jobs:
           cluster-name: eks
           config-files: Deployment/HelmCharts/authorization-service/environment/values.yaml
           chart-path: Deployment/HelmCharts/authorization-service
-          values: app.container.image.tag=v2
+          values: app.container.image.tag=latest
           namespace: default
           name: authorization-service
 
@@ -62,7 +62,7 @@ jobs:
           cluster-name: eks
           config-files: Deployment/HelmCharts/stream-service/environment/values.yaml
           chart-path: Deployment/HelmCharts/stream-service
-          values: app.container.image.tag=v2
+          values: app.container.image.tag=latest
           namespace: default
           name: stream-service
 
@@ -77,7 +77,7 @@ jobs:
           cluster-name: eks
           config-files: Deployment/HelmCharts/article-service/environment/values.yaml
           chart-path: Deployment/HelmCharts/article-service
-          values: app.container.image.tag=v2
+          values: app.container.image.tag=latest
           namespace: default
           name: article-service
 
@@ -92,6 +92,6 @@ jobs:
           cluster-name: eks
           config-files: Deployment/HelmCharts/notification-service/environment/values.yaml
           chart-path: Deployment/HelmCharts/notification-service
-          values: app.container.image.tag=v2
+          values: app.container.image.tag=latest
           namespace: default
           name: notification-service
