@@ -1,0 +1,25 @@
+app:
+  replicas : 1
+  env: dev
+  name: notification-service
+  container:
+    image: ishara007/notification-service:latest
+    imagePullPolicy: Always
+    ports:
+      containerPort: 9004
+  computerc:
+    limits:
+      cpu: "0.2"
+      memory: 500Mi
+    requests:
+      cpu: "0.2"
+      memory: 500Mi
+
+## ---------------------------- Service ----------------------------##
+
+service:
+  name: notification-service
+  type: ClusterIp
+  ports:
+    port: 9004
+    targetPort: 9004

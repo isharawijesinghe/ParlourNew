@@ -20,7 +20,8 @@ spec:
           image: {{.Values.app.container.image}}
           env:
             - name: SPRING_DATA_CASSANDRA_CONTACT-POINTS
-              value: host.minikube.internal
+              #value: host.minikube.internal
+              value: 54.160.242.168
           imagePullPolicy: {{.Values.app.container.imagePullPolicy}}
           ports:
             - containerPort: {{.Values.app.container.ports.containerPort}}
