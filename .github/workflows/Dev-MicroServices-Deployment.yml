@@ -64,7 +64,7 @@ jobs:
           chart-path: Deployment/HelmCharts/stream-service
           values: app.container.image.tag=v2
           namespace: default
-          name: Stream-service
+          name: stream-service
 
       #Deployment of Article Server
       - name: Deploy Helm
