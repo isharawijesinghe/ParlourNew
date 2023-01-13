@@ -17,9 +17,11 @@ app:
       cpu: "0.2"
       memory: 500Mi
 
+## ---------------------------- Service ----------------------------##
+
 service:
   name: api-gateway
   type: LoadBalancer
   ports:
-    port: 80
+    port: 9191
     targetPort: 9191

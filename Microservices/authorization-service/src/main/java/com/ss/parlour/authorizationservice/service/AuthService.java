@@ -68,7 +68,7 @@ public class AuthService implements AuthServiceI{
             authValidatorI.validateSignUpRequest(userRegisterRequestBean);
             authHandlerI.signUp(userRegisterRequestBean);
             //Asynchronously send email requests + calling notification service
-            authHandlerI.requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), AuthorizationConst.USER_ACTION_TYPE_REGISTER);
+            authHandlerI.requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), userRegisterRequestBean.getUserActionType());
             authHandlerI.populateUserRegistrationResponseBean(userRegistrationResponseBean);
             return userRegistrationResponseBean;
         }catch (AuthorizationRuntimeException ex){

@@ -15,9 +15,11 @@ app:
       cpu: "0.2"
       memory: 500Mi
 
+## ---------------------------- Service ----------------------------##
+
 service:
   name: authorization-service
-  type: LoadBalancer
+  type: ClusterIp
   ports:
     port: 9002
     targetPort: 9002

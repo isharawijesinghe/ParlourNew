@@ -8,6 +8,7 @@ public class UserRegisterRequestBean {
     private String email;
     private String password;
     private String token;
+    private String userActionType;
 
 
     public String getLoginName() {
@@ -56,5 +57,13 @@ public class UserRegisterRequestBean {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getUserActionType() {
+        return userActionType;
+    }
+
+    public void setUserActionType(String userActionType) {
+        this.userActionType = userActionType;
     }
 }

@@ -130,8 +130,8 @@ public class UserDAO implements UserDAOI{
     }
 
     @Override
-    public void saveUserToken(UserRegisterRequestBean userRegisterRequestBean, String actionType){
-        UserToken userToken = populateUserToken(userRegisterRequestBean.getEmail(), actionType);
+    public void saveUserToken(UserRegisterRequestBean userRegisterRequestBean){
+        UserToken userToken = populateUserToken(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getUserActionType());
         userTokenRepositoryI.insert(userToken);
     }
 
@@ -155,7 +155,8 @@ public class UserDAO implements UserDAOI{
         user.setPassword(userRegisterRequestBean.getPassword());
         user.setCreatedDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         user.setLastUpdatedDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-        user.setEnabled(AuthorizationConst.FALSE);
+        user.setEnabled(userRegisterRequestBean.getUserActionType().equals(AuthorizationConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER) ?
+                AuthorizationConst.TRUE : AuthorizationConst.FALSE);
         user.setActiveToken(userRegisterRequestBean.getToken());
         user.setProvider(AuthProvider.local);
         return user;

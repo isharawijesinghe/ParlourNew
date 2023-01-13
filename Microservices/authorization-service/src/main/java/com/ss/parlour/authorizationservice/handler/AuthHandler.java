@@ -55,14 +55,15 @@ public class AuthHandler implements AuthHandlerI {
 
     @Override
     public void signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
-        userDAOI.saveUserToken(userRegisterRequestBean, AuthorizationConst.USER_ACTION_TYPE_REGISTER);
-        requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), AuthorizationConst.USER_ACTION_TYPE_REGISTER);
+        userDAOI.saveUserToken(userRegisterRequestBean);
+        requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), userRegisterRequestBean.getUserActionType());
     }
 
     @Override
     public void populateUserRegistrationResponseBean(UserRegistrationResponseBean userRegistrationResponseBean){
         userRegistrationResponseBean.setNarration(AuthorizationConst.USER_REGISTER_SUCCESS_NARRATION);
         userRegistrationResponseBean.setStatus(AuthorizationConst.TRUE);
+        userRegistrationResponseBean.setActionType(userRegistrationResponseBean.getActionType());
     }
 
     @Override
@@ -118,8 +119,10 @@ public class AuthHandler implements AuthHandlerI {
     public void requestForMail(String email, String token, String type){
         try {
             //If user registration successful then send registration success mail
-            EmailRequestBean emailRequestBean = populateEmailRequest(email, token, type);
-            externalRestWriterI.sendNotificationMail(emailRequestBean);
+            if (!type.equals(AuthorizationConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER)){
+                EmailRequestBean emailRequestBean = populateEmailRequest(email, token, type);
+                externalRestWriterI.sendNotificationMail(emailRequestBean);
+            }
         }catch (Exception ex){
             //log exception + do not throw exception from here
         }
@@ -132,6 +135,7 @@ public class AuthHandler implements AuthHandlerI {
         if (existingUserToken.isPresent()){
             UserToken userToken = existingUserToken.get();
             if (validateTokenExistence(userToken) && validateTokenExpiry(userToken)){
+                processTokenConfirmation(tokenConfirmRequest);
                 tokenConfirmResponseBean.setTokenConfirmSuccess(AuthorizationConst.TRUE);
             }
         }
@@ -147,6 +151,19 @@ public class AuthHandler implements AuthHandlerI {
 
     protected boolean validateTokenExpiry(UserToken userToken){
         return AuthorizationConst.TRUE;
+    }
+
+    protected void processTokenConfirmation(TokenConfirmRequest tokenConfirmRequest){
+        switch (tokenConfirmRequest.getActionType()){
+            case AuthorizationConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER:
+                //Do nothing for now
+                break;
+            case AuthorizationConst.USER_ACTION_TYPE_REGISTER:
+                //Update user active status
+                break;
+            default:
+                //Do nothing for now
+        }
     }
 
 

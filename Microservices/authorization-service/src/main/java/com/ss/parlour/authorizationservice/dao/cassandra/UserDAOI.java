@@ -16,6 +16,6 @@ public interface UserDAOI {
     User loadUserByLoginName(String loginName);
     void saveUserDetails(UserRegisterRequestBean userRegisterRequestBean);
     User getUserByUserToken(String token, String type);
-    void saveUserToken(UserRegisterRequestBean userRegisterRequestBean, String actionType);
+    void saveUserToken(UserRegisterRequestBean userRegisterRequestBean);
     Optional<UserToken> getUserToken(String userName, String actionType);
 }

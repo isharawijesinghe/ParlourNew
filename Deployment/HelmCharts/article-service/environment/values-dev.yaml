@@ -1,12 +1,12 @@
 app:
   replicas : 1
   env: dev
-  name: authorization-service
+  name: article-service
   container:
-    image: ishara007/authorization-service:latest
+    image: ishara007/article-service:latest
     imagePullPolicy: Always
     ports:
-      containerPort: 9002
+      containerPort: 9001
   computerc:
     limits:
       cpu: "0.2"
@@ -18,8 +18,8 @@ app:
 ## ---------------------------- Service ----------------------------##
 
 service:
-  name: authorization-service
+  name: article-service
   type: ClusterIp
   ports:
-    port: 9002
-    targetPort: 9002
+    port: 9001
+    targetPort: 9001
