@@ -21,7 +21,7 @@ app:
 
 service:
   name: authorization-service
-  type: ClusterIp
+  type: ClusterIP
   ports:
     port: 9002
     targetPort: 9002

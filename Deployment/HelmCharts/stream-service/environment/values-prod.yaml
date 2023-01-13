@@ -21,7 +21,7 @@ app:
 
 service:
   name: stream-service
-  type: ClusterIp
+  type: ClusterIP
   ports:
     port: 9003
     targetPort: 9003
