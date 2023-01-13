@@ -1,3 +1,8 @@
+provider "aws" {
+  #profile = "terraform"
+  region = "us-east-1"
+}
+
 terraform {
   required_version = ">= 1.0.0, < 2.0.0"
 
@@ -7,11 +12,6 @@ terraform {
       version = "~> 4.0"
     }
   }
-}
-
-provider "aws" {
-  #profile = "terraform"
-  region = "us-east-1"
 }
 
 resource "aws_s3_bucket" "terraform_state" {
