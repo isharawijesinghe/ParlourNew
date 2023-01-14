@@ -2,7 +2,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   namespace: default
-  name: namespace-reader
+  name: auth-namespace-reader
 rules:
   - apiGroups: [""]
     resources: ["configmaps", "pods", "services", "endpoints", "secrets"]
@@ -13,7 +13,7 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: namespace-reader-binding
+  name: auth-namespace-reader-binding
   namespace: default
 subjects:
   - kind: ServiceAccount
