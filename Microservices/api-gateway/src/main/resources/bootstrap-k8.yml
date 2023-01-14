@@ -1,6 +1,6 @@
 spring:
   cloud:
     kubernetes:
-      enabled: false
+      enabled: true
       discovery:
-        enabled: false
+        enabled: true

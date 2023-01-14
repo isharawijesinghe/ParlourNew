@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: authorization-service
-          image: ishara007/authorization-service:latest
+          image: ishara007/authorization-service:v3
           env:
             - name: SPRING_DATA_CASSANDRA_CONTACT-POINTS
               value: host.minikube.internal
