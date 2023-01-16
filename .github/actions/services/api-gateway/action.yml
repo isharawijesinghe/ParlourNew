@@ -24,6 +24,7 @@ runs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build, tag, and push image to Amazon ECR
+      shell: bash
       env:
         ECR_REGISTRY: parlourdev
         ECR_REPOSITORY: api-gateway
