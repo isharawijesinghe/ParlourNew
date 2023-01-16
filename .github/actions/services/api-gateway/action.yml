@@ -18,6 +18,7 @@ runs:
         java-version: '11.0.8'
 
     - name: Build with Maven
+      shell: bash
       run: mvn clean install
 
     - name: Configure AWS credentials
