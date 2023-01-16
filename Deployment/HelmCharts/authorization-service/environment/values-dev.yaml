@@ -1,3 +1,5 @@
+namespace : default
+
 app:
   replicas : 1
   env: dev
@@ -25,3 +27,11 @@ service:
   ports:
     port: 9002
     targetPort: 9002
+
+## ---------------------------- Role & RoleBindings ----------------------------##
+
+role:
+  name: devRole
+
+roleBinding:
+  name: devRoleBinding

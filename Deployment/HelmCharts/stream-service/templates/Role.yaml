@@ -1,0 +1,11 @@
+{{- if not (lookup "rbac.authorization.k8s.io/v1" "Role" "" .Values.role.name) }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: {{.Values.namespace}}
+  name: {{.Values.role.name}}
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "pods", "services", "endpoints", "secrets"]
+    verbs: ["get", "list", "watch"]
+{{- end }}

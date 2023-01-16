@@ -1,0 +1,15 @@
+{{- if not (lookup "rbac.authorization.k8s.io/v1" "RoleBinding" "" .Values.roleBinding.name) }}
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{.Values.roleBinding.name}}
+  namespace: {{.Values.namespace}}
+subjects:
+  - kind: ServiceAccount
+    name: default
+    apiGroup: ""
+roleRef:
+  kind: Role
+  name: {{.Values.role.name}}
+  apiGroup: ""
+{{- end }}

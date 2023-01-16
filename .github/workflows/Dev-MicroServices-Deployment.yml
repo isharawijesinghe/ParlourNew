@@ -30,7 +30,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
           cluster-name: eks
-          config-files: Deployment/HelmCharts/api-gateway/environment/values.yaml
+          config-files: Deployment/HelmCharts/api-gateway/environment/values-dev.yaml
           chart-path: Deployment/HelmCharts/api-gateway
           values: app.container.image.tag=v3
           namespace: default

@@ -1,3 +1,5 @@
+namespace : default
+
 app:
   replicas : 1
   env: dev
@@ -9,13 +11,13 @@ app:
     imagePullPolicy: Always
     ports:
       containerPort: 9001
-  computerc:
-    limits:
-      cpu: "0.2"
-      memory: 500Mi
-    requests:
-      cpu: "0.2"
-      memory: 500Mi
+    computerc:
+      limits:
+        cpu: "0.2"
+        memory: 500Mi
+      requests:
+        cpu: "0.2"
+        memory: 500Mi
 
 ## ---------------------------- Service ----------------------------##
 
@@ -25,3 +27,11 @@ service:
   ports:
     port: 9001
     targetPort: 9001
+
+## ---------------------------- Role & RoleBindings ----------------------------##
+
+role:
+  name: devRole
+
+roleBinding:
+  name: devRoleBinding
