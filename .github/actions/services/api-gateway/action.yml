@@ -30,5 +30,5 @@ runs:
         ECR_REPOSITORY: api-gateway
         IMAGE_TAG: v1
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Microservices/api-gateway
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Microservices/api-gateway/Dockerfile Microservices/api-gateway/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
