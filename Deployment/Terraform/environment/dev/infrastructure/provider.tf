@@ -1,5 +1,5 @@
 provider "aws" {
-  profile = "terraform"
+  //profile = "terraform"
   region = var.aws_region_main
 }
 
@@ -36,7 +36,7 @@ terraform {
 
 terraform {
   backend "s3" {
-    profile = "terraform"
+    //profile = "terraform"
     encrypt        = true
     bucket         = "dev-parlour-terraform-state-bucket"
     key            = "dev/core-infrastructure.tfstate"
