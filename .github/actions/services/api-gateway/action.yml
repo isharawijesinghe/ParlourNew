@@ -21,7 +21,7 @@ runs:
 
     - name: Build with Maven
       shell: bash
-      run: mvn clean install
+      run: mvn -f Microservices/api-gateway/pom.xml clean install
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
