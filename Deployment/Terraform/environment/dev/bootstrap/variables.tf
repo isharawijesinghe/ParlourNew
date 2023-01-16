@@ -1,4 +1,5 @@
 variable "environment" {}
+variable "aws_region_main" {}
 
 variable "core_main_s3_force_destroy" {
   type = string

@@ -34,12 +34,12 @@ terraform {
 
 
 
-#terraform {
-#  backend "s3" {
-#    encrypt        = true
-#    bucket         = "st-terraform-state-dev"
-#    key            = "dev/core-infrastructure.tfstate"
-#    region         = "eu-west-1"
-#    dynamodb_table = "st-terraform-state-lock-dev"
-#  }
-#}
+terraform {
+  backend "s3" {
+    encrypt        = true
+    bucket         = "dev-parlour-terraform-state-bucket"
+    key            = "dev/core-infrastructure.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "dev-parlour-terraform-lock-state-db"
+  }
+}
