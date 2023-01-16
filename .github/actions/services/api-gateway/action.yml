@@ -19,7 +19,7 @@ runs:
 
     - name: Build, tag, and push image to Amazon ECR
       env:
-        ECR_REGISTRY: parlourDev
+        ECR_REGISTRY: parlourdev
         ECR_REPOSITORY: api-gateway
         IMAGE_TAG: v1
       run: |
