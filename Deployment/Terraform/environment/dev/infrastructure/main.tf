@@ -44,6 +44,7 @@ module "core_infrastructure" {
   main_eks_cluster_enable = var.core_main_eks_cluster_enable
   main_ecr_enable = var.core_main_ecr_enable
 
+  force_delete = var.core_main_force_delete
   ecr_name = var.core_ecr_name
   image_mutability = var.core_image_mutability
 

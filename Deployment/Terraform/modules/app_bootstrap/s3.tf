@@ -4,7 +4,7 @@ locals {
 
 module "remote_state_s3" {
   source  = "../../modules/s3"
-  s3_bucket_name = main_s3_name
+  s3_bucket_name = local.main_s3_name
   s3_force_destroy = var.main_s3_force_destroy
   s3_status = var.main_s3_status
   s3_sse_algorithm = var.main_s3_sse_algorithm

@@ -1,4 +1,4 @@
-name: "Terraform-State"
+name: "Eks-Cluster-Deployment"
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
         type: choice
         description: Choose the resource
         options:
-          - Deployment/Terraform/TerraformState
+          - Deployment/Terraform/environment/dev/infrastructure
       # Terraform action you want to perform --> Terraform apply or delete
       action:
         description: 'Terraform Action to Perform'
@@ -36,7 +36,7 @@ jobs:
         id: init
         run: terraform init
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS__KEY_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
@@ -52,7 +52,7 @@ jobs:
         id: apply
         run: terraform apply -auto-approve
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS__KEY_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
@@ -74,7 +74,7 @@ jobs:
         id: init
         run: terraform init
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS__KEY_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
@@ -87,6 +87,6 @@ jobs:
         working-directory: ${{ github.event.inputs.resource }}
         run: terraform destroy -auto-approve
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS__KEY_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1

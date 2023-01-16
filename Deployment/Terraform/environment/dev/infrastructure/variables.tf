@@ -45,3 +45,9 @@ variable "core_image_mutability" {
   type        = string
   default     = "MUTABLE"
 }
+
+variable "core_main_force_delete" {
+  description = "Delete repository forcefully "
+  type        = bool
+  default     = false
+}

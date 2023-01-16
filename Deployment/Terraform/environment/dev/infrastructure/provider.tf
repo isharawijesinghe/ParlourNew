@@ -36,6 +36,7 @@ terraform {
 
 terraform {
   backend "s3" {
+    profile = "terraform"
     encrypt        = true
     bucket         = "dev-parlour-terraform-state-bucket"
     key            = "dev/core-infrastructure.tfstate"

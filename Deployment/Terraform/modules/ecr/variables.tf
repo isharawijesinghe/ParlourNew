@@ -22,3 +22,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "force_delete" {
+  description = "Delete repository forcefully "
+  type        = bool
+  default     = false
+}

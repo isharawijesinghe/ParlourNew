@@ -46,3 +46,9 @@ variable "encrypt_type" {
   type        = string
   default     = "KMS"
 }
+
+variable "force_delete" {
+  description = "Delete repository forcefully "
+  type        = bool
+  default     = false
+}
