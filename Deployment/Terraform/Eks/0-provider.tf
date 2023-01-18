@@ -1,5 +1,5 @@
 provider "aws" {
-  #profile = "terraform"
+  profile = "terraform"
   region  = "us-east-1"
 }
 
@@ -16,7 +16,7 @@ terraform {
     bucket         = "parlour-terraform-dev-state"
     key            = "global/s3/terraform.tfstate"
     region         = "us-east-1"
-    #profile = "terraform"
+    profile = "terraform"
 
     # Replace this with your DynamoDB table name!
     dynamodb_table = "parlour-terraform-dev-state-locks"
