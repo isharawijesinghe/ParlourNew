@@ -1,4 +1,4 @@
-name: Deploy Authorization Service
+name: Deploy Stream Service
 
 inputs:
   AWS_ACCESS_KEY_ID:
@@ -28,7 +28,7 @@ runs:
       uses: mnmandahalf/check-ecr-image-exists@v0.1.4
       with:
         region: us-east-1
-        repository-name: authorization-service
+        repository-name: stream-service
         image-tag: v1
         access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
         secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
@@ -48,17 +48,17 @@ runs:
     - name: Build with Maven
       if: ${{ steps.test-doesnt-exist.outputs.image-exists != 1 }}
       shell: bash
-      run: mvn -f Microservices/authorization-service/pom.xml clean install
+      run: mvn -f Microservices/stream-service/pom.xml clean install
 
     - name: Build, tag, and push image to Amazon ECR
       if: ${{ steps.test-doesnt-exist.outputs.image-exists != 1 }}
       shell: bash
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: authorization-service
+        ECR_REPOSITORY: stream-service
         IMAGE_TAG: v1
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Microservices/authorization-service/Dockerfile Microservices/authorization-service/
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Microservices/stream-service/Dockerfile Microservices/stream-service/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Deploy Helm
@@ -68,8 +68,8 @@ runs:
         aws-secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
         cluster-name: dev-default-eks
-        config-files: Deployment/HelmCharts/authorization-service/environment/values-dev.yaml
-        chart-path: Deployment/HelmCharts/authorization-service
-        values: app.container.image.repository=${{ steps.login-ecr.outputs.registry }}/authorization-service,app.container.image.tag=v1
+        config-files: Deployment/HelmCharts/stream-service/environment/values-dev.yaml
+        chart-path: Deployment/HelmCharts/stream-service
+        values: app.container.image.repository=${{ steps.login-ecr.outputs.registry }}/stream-service,app.container.image.tag=v1
         namespace: default
-        name: authorization-service
+        name: stream-service

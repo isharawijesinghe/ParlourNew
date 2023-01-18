@@ -18,6 +18,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -29,62 +30,34 @@ jobs:
           AWS_ACCESS_KEY_ID : ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY : ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      #Deployment of Auth Server
-      - name: Deploy Helm
+      #Deployment of Authorization Service
+      - name: Deploy Api Gateway
         if: ${{ github.event.inputs.action == 'Auth-Server' }}
-        uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+        uses: ./.github/actions/services/authorization-service
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          cluster-name: eks
-          config-files: Deployment/HelmCharts/authorization-service/environment/values-dev.yaml
-          chart-path: Deployment/HelmCharts/authorization-service
-          values: app.container.image.tag=v3
-          namespace: default
-          name: authorization-service
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       #Deployment of Stream Server
-      - name: Deploy Helm
+      - name: Deploy Stream Server
         if: ${{ github.event.inputs.action == 'Stream-Server' }}
-        uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+        uses: ./.github/actions/services/stream-service
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          cluster-name: eks
-          config-files: Deployment/HelmCharts/stream-service/environment/values-dev.yaml
-          chart-path: Deployment/HelmCharts/stream-service
-          values: app.container.image.tag=latest
-          namespace: default
-          name: stream-service
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       #Deployment of Article Server
-      - name: Deploy Helm
+      - name: Deploy Article Server
         if: ${{ github.event.inputs.action == 'Article-Server' }}
-        uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+        uses: ./.github/actions/services/article-service
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          cluster-name: eks
-          config-files: Deployment/HelmCharts/article-service/environment/values-dev.yaml
-          chart-path: Deployment/HelmCharts/article-service
-          values: app.container.image.tag=latest
-          namespace: default
-          name: article-service
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       #Deployment of Notification Server
-      - name: Deploy Helm
+      - name: Deploy Notification Server
         if: ${{ github.event.inputs.action == 'Notification-Server' }}
-        uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+        uses: ./.github/actions/services/notification-service
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          cluster-name: eks
-          config-files: Deployment/HelmCharts/notification-service/environment/values-dev.yaml
-          chart-path: Deployment/HelmCharts/notification-service
-          values: app.container.image.tag=latest
-          namespace: default
-          name: notification-service
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
