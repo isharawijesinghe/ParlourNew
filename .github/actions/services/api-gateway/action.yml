@@ -34,6 +34,20 @@ runs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
+    - name: Check if Docker image with tag exists in ECR
+      id: test-doesnt-exist
+      uses: mnmandahalf/check-ecr-image-exists@v0.1.4
+      with:
+        region: us-east-1
+        repository-name: ${{ steps.login-ecr.outputs.registry }}/api-gateway
+        image-tag: v1
+        access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Get the output
+      shell: bash
+      run: echo "image-exists=${{ steps.test-doesnt-exist.outputs.image-exists }}"
+
     - name: Build, tag, and push image to Amazon ECR
       shell: bash
       env:
