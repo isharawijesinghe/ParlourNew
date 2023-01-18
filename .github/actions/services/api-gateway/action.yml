@@ -70,6 +70,6 @@ runs:
         cluster-name: dev-default-eks
         config-files: Deployment/HelmCharts/api-gateway/environment/values-dev.yaml
         chart-path: Deployment/HelmCharts/api-gateway
-        values: app.container.image.repository=${{ steps.login-ecr.outputs.registry }}/api-gateway, app.container.image.tag=v1
+        values: app.container.image.repository=${{ steps.login-ecr.outputs.registry }}/api-gateway,app.container.image.tag=v1
         namespace: default
         name: api-gateway
