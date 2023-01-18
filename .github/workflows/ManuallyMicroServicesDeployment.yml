@@ -1,4 +1,4 @@
-name: Dev-MicroServices-Deployment
+  name: Manually Microservices Deploying Process
 
 on:
   workflow_dispatch:
@@ -22,23 +22,12 @@ jobs:
         uses: actions/checkout@v3
 
       #Deployment of API GW
-      - name: Deploy Helm
+      - name: Deploy Api Gateway
         if: ${{ github.event.inputs.action == 'Api-GW' }}
         uses: ./.github/actions/services/api-gateway
         with:
           AWS_ACCESS_KEY_ID : ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY : ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#        uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: us-east-1
-#          cluster-name: eks
-#          config-files: Deployment/HelmCharts/api-gateway/environment/values-dev.yaml
-#          chart-path: Deployment/HelmCharts/api-gateway
-#          values: app.container.image.tag=v3
-#          namespace: default
-#          name: api-gateway
 
       #Deployment of Auth Server
       - name: Deploy Helm
