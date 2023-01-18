@@ -14,6 +14,6 @@ core_main_vpc_one_nat_gateway_per_az = false
 core_main_vpc_single_nat_gateway     = true
 core_main_eks_cluster_enable         = false
 core_main_ecr_enable                 = true
-core_ecr_name                        = ["parlourdev"]
+core_ecr_name                        = ["api-gateway"]
 core_image_mutability                = "IMMUTABLE"
 core_main_force_delete               = true

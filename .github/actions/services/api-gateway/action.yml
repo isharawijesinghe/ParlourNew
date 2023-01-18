@@ -38,7 +38,7 @@ runs:
       shell: bash
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: parlourdev
+        ECR_REPOSITORY: api-gateway
         IMAGE_TAG: v1
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Microservices/api-gateway/Dockerfile Microservices/api-gateway/
@@ -53,6 +53,6 @@ runs:
         cluster-name: eks
         config-files: Deployment/HelmCharts/api-gateway/environment/values-dev.yaml
         chart-path: Deployment/HelmCharts/api-gateway
-        values: app.container.image.tag=v1
+        values: app.container.image.repository=${{ steps.login-ecr.outputs.registry }}/api-gateway, app.container.image.tag=v1
         namespace: default
         name: api-gateway
