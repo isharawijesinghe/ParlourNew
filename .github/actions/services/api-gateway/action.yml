@@ -50,7 +50,7 @@ runs:
         aws-access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
-        cluster-name: eks
+        cluster-name: dev-default-eks
         config-files: Deployment/HelmCharts/api-gateway/environment/values-dev.yaml
         chart-path: Deployment/HelmCharts/api-gateway
         values: app.container.image.repository=${{ steps.login-ecr.outputs.registry }}/api-gateway, app.container.image.tag=v1
