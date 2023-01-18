@@ -1,4 +1,4 @@
-name: "Eks-Cluster-Deployment"
+name: "Manual Infrastructure Creation"
 
 on:
   workflow_dispatch:

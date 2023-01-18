@@ -1,4 +1,4 @@
-name: "Terraform-State"
+name: "Manual Infrastructure Status Creation"
 
 on:
   workflow_dispatch:
