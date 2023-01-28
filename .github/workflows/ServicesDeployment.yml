@@ -1,4 +1,4 @@
-name: "Manually Microservices Deploying Process"
+name: "Service Deployment"
 
 on:
   workflow_dispatch:
