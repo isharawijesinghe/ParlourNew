@@ -14,13 +14,12 @@ on:
         description: 'Terraform Action to Perform'
         type: choice
         options:
-          - Terraform_apply
           - Terraform_destroy
 
 jobs:
-  terraform_apply: #Terraform infrastructure apply
-    name: "Terraform_apply"
-    if: ${{ github.event.inputs.action == 'Terraform_apply' }}
+  terraform_destroy: #Terraform infrastructure destroy
+    name: "Terraform_destroy"
+    if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -40,13 +39,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
-      - name: Terraform Validate #Call terraform validate
-        id: validate
-        run: terraform validate -no-color
-
-      - name: Terraform Apply #Call terraform apply
-        id: apply
-        run: terraform apply -auto-approve
+      - name: Terraform Destroy #Call terraform destroy
+        id: destroy
+        working-directory: ${{ github.event.inputs.resource }}
+        run: terraform destroy -auto-approve
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
