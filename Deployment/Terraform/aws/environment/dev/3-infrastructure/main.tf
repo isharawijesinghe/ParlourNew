@@ -40,6 +40,8 @@ module "core_infrastructure" {
   ecr_name = var.core_ecr_name
   image_mutability = var.core_image_mutability
 
+  enable_app_bastion_host = var.core_enable_app_bastion_host
+
   tags = merge(local.tags, local.environment_metadata_tags)
 
   /***----------------------- DB Infrastructure------------------------------***/

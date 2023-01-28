@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Micro Service To Deploy'
+        description: 'Services To Deploy'
         type: choice
         options:
           - Api-GW
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout code
+      - name: Checkout code #Checkout code
         uses: actions/checkout@v3
 
       #Deployment of API GW

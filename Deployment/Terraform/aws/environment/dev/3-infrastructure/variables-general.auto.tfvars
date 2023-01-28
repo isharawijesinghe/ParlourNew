@@ -19,6 +19,7 @@ core_main_ecr_enable                 = true
 core_ecr_name                        = ["api-gateway"]
 core_image_mutability                = "IMMUTABLE"
 core_main_force_delete               = true
+core_enable_app_bastion_host         = false
 
 /***----------------------- DB Infrastructure------------------------------***/
 

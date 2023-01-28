@@ -89,6 +89,7 @@ variable "db_main_seed_port_config" {
 
 //Bastion Instance Parameters
 variable "db_enable_bastion_host" {default = true}
+variable "enable_app_bastion_host" {default = true}
 variable "db_main_bastion_instance_ami" {default = "ami-089c41d63bb620fa4"}
 variable "db_main_bastion_instance_instance_type" {default = "t1.micro"}
 variable "db_main_bastion_instance_key_name" {default = "Ec2_Key"}

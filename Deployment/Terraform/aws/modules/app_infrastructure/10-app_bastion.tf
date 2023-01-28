@@ -30,6 +30,7 @@ resource "aws_security_group" "sg_1" {
 }
 
 resource "aws_instance" "bastion_instance" {
+  count = var.enable_app_bastion_host ? 1 : 0
   instance_type                = var.db_main_bastion_instance_instance_type
   ami                          = var.db_main_bastion_instance_ami
   key_name                     = var.db_main_bastion_instance_key_name

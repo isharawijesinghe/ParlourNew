@@ -18,7 +18,8 @@ on:
           - Terraform_destroy
 
 jobs:
-  terraform_apply: #Terraform infrastructure apply
+  #Terraform infrastructure apply
+  terraform_apply:
     name: "Terraform_apply"
     if: ${{ github.event.inputs.action == 'Terraform_apply' }}
     runs-on: ubuntu-latest
@@ -26,13 +27,17 @@ jobs:
       run:
         working-directory: ${{ github.event.inputs.resource }}
     steps:
-      - name: Checkout #Checkout project
+
+      #Checkout project
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Terraform #Setup terraform
+      #Setup terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Terraform Init #Call terraform init
+      #Call terraform init
+      - name: Terraform Init
         id: init
         run: terraform init
         env:
@@ -40,11 +45,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
-      - name: Terraform Validate #Call terraform validate
+      #Call terraform validate
+      - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
 
-      - name: Terraform Apply #Call terraform apply
+      #Call terraform apply
+      - name: Terraform Apply
         id: apply
         run: terraform apply -auto-approve
         env:

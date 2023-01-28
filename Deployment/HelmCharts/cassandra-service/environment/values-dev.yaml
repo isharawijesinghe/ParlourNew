@@ -1,0 +1,37 @@
+namespace : default
+
+app:
+  replicas : 1
+  env: dev
+  name: api-gateway
+  container:
+    image:
+      repository: ishara007/api-gateway
+      tag: v3
+    imagePullPolicy: Always
+    ports:
+      containerPort: 9191
+  computerc:
+    limits:
+      cpu: "0.2"
+      memory: 500Mi
+    requests:
+      cpu: "0.2"
+      memory: 500Mi
+
+## ---------------------------- Service ----------------------------##
+
+service:
+  name: api-gateway
+  type: LoadBalancer
+  ports:
+    port: 9191
+    targetPort: 9191
+
+## ---------------------------- Role & RoleBindings ----------------------------##
+
+role:
+  name: apiGatewayDevRole
+
+roleBinding:
+  name: apiGatewayDevRoleBinding

@@ -17,7 +17,8 @@ on:
           - Terraform_destroy
 
 jobs:
-  terraform_destroy: #Terraform infrastructure destroy
+  #Terraform infrastructure destroy
+  terraform_destroy:
     name: "Terraform_destroy"
     if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
     runs-on: ubuntu-latest
@@ -25,13 +26,16 @@ jobs:
       run:
         working-directory: ${{ github.event.inputs.resource }}
     steps:
-      - name: Checkout #Checkout project
+      #Checkout project
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Terraform #Setup terraform
+      #Setup terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Terraform Init #Call terraform init
+      #Call terraform init
+      - name: Terraform Init
         id: init
         run: terraform init
         env:
@@ -39,7 +43,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
-      - name: Terraform Destroy #Call terraform destroy
+      #Call terraform destroy
+      - name: Terraform Destroy
         id: destroy
         working-directory: ${{ github.event.inputs.resource }}
         run: terraform destroy -auto-approve

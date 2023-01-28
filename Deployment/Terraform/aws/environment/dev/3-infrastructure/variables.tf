@@ -54,6 +54,8 @@ variable "core_main_force_delete" {
   default     = false
 }
 
+variable "core_enable_app_bastion_host" {}
+
 /***----------------------- DB Infrastructure------------------------------***/
 
 variable "core_db_main_vpc_enable" { default = true }

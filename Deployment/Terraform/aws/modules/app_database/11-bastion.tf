@@ -4,7 +4,6 @@ locals {
   }
 }
 
-
 module  "bastion_host" {
   count = var.enable_bastion_host ? 1 : 0
   source  = "../ec2"
