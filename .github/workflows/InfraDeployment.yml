@@ -8,7 +8,7 @@ on:
         type: choice
         description: Choose the resource
         options:
-          - Deployment/Terraform/environment/dev/infrastructure
+          - Deployment/Terraform/aws/environment/dev/infrastructure
       # Terraform action you want to perform --> Terraform apply or delete
       action:
         description: 'Terraform Action to Perform'
@@ -18,7 +18,7 @@ on:
           - Terraform_destroy
 
 jobs:
-  terraform_apply:
+  terraform_apply: #Terraform infrastructure apply
     name: "Terraform_apply"
     if: ${{ github.event.inputs.action == 'Terraform_apply' }}
     runs-on: ubuntu-latest
@@ -26,13 +26,13 @@ jobs:
       run:
         working-directory: ${{ github.event.inputs.resource }}
     steps:
-      - name: Checkout
+      - name: Checkout #Checkout project
         uses: actions/checkout@v2
 
-      - name: Setup Terraform
+      - name: Setup Terraform #Setup terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Terraform Init
+      - name: Terraform Init #Call terraform init
         id: init
         run: terraform init
         env:
@@ -40,11 +40,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
-      - name: Terraform Validate
+      - name: Terraform Validate #Call terraform validate
         id: validate
         run: terraform validate -no-color
 
-      - name: Terraform Apply
+      - name: Terraform Apply #Call terraform apply
         id: apply
         run: terraform apply -auto-approve
         env:
@@ -52,7 +52,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
-  terraform_destroy:
+  terraform_destroy: #Terraform infrastructure destroy
     name: "Terraform_destroy"
     if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
     runs-on: ubuntu-latest
@@ -60,13 +60,13 @@ jobs:
       run:
         working-directory: ${{ github.event.inputs.resource }}
     steps:
-      - name: Checkout
+      - name: Checkout #Checkout project
         uses: actions/checkout@v2
 
-      - name: Setup Terraform
+      - name: Setup Terraform #Setup terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Terraform Init
+      - name: Terraform Init #Call terraform init
         id: init
         run: terraform init
         env:
@@ -74,7 +74,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
-      - name: Terraform Destroy
+      - name: Terraform Destroy #Call terraform destroy
         id: destroy
         working-directory: ${{ github.event.inputs.resource }}
         run: terraform destroy -auto-approve

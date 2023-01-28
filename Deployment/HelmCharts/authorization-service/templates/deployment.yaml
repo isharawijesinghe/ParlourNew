@@ -21,7 +21,7 @@ spec:
           env:
             - name: SPRING_DATA_CASSANDRA_CONTACT-POINTS
               #value: host.minikube.internal
-              value: 34.228.18.214
+              value: vpce-0989bcb4da35676c5-nyaj0jk5.vpce-svc-0eaac7976cc56cdb0.us-east-1.vpce.amazonaws.com
           imagePullPolicy: {{.Values.app.container.imagePullPolicy}}
           ports:
             - containerPort: {{.Values.app.container.ports.containerPort}}

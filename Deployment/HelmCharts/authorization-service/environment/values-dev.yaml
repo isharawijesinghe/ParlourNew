@@ -7,7 +7,7 @@ app:
   container:
     image:
       repository: ishara007/authorization-service
-      tag: latest
+      tag: v3
     imagePullPolicy: Always
     ports:
       containerPort: 9002

@@ -8,7 +8,7 @@ on:
         type: choice
         description: Choose the resource
         options:
-          - Deployment/Terraform/environment/dev/bootstrap
+          - Deployment/Terraform/aws/environment/dev/bootstrap
       # Terraform action you want to perform --> Terraform apply or delete
       action:
         description: 'Terraform Action to Perform'
