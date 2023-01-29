@@ -3,10 +3,7 @@ kind: Service
 metadata:
   name: {{.Values.service.name}}
 spec:
-  type: {{.Values.service.type}}
+  type: ClusterIP
   ports:
-    - port: {{.Values.service.ports.port}}
-      targetPort: {{.Values.service.ports.targetPort}}
-      protocol: TCP
-  selector:
-    app: {{.Values.app.name}}
+    - port: 9042
+      targetPort: 9042

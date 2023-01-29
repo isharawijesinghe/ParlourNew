@@ -1,37 +1,30 @@
 namespace : default
 
-app:
-  replicas : 1
-  env: dev
-  name: api-gateway
-  container:
-    image:
-      repository: ishara007/api-gateway
-      tag: v3
-    imagePullPolicy: Always
-    ports:
-      containerPort: 9191
-  computerc:
-    limits:
-      cpu: "0.2"
-      memory: 500Mi
-    requests:
-      cpu: "0.2"
-      memory: 500Mi
-
 ## ---------------------------- Service ----------------------------##
 
 service:
-  name: api-gateway
-  type: LoadBalancer
+  name: cassandra
+  type: ExternalName
+  externalName: mysql–instance1.123456789012.us-east-1.rds.amazonaws.com
   ports:
     port: 9191
     targetPort: 9191
 
+## ---------------------------- Endpoints ----------------------------##
+
+endpoint:
+  name: cassandra
+  subsubsets:
+    addresses:
+      ip: 10.0.0.1
+    ports:
+      port: 9042
+
+
 ## ---------------------------- Role & RoleBindings ----------------------------##
 
 role:
-  name: apiGatewayDevRole
+  name: cassandraDevRole
 
 roleBinding:
-  name: apiGatewayDevRoleBinding
+  name: cassandraDevRoleBinding

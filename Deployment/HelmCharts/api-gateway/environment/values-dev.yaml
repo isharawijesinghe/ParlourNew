@@ -1,5 +1,7 @@
 namespace : default
 
+## ---------------------------- Deployment ----------------------------##
+
 app:
   replicas : 1
   env: dev
