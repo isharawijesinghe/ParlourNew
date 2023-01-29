@@ -37,3 +37,11 @@ role:
 
 roleBinding:
   name: devRoleBinding
+
+## ---------------------------- Config Map ----------------------------##
+
+config:
+  metadata:
+    name: cassandra-db-host
+  data:
+    cassandra_host_dns: vpce-06a2c9ba82e041813-t6k27gow.vpce-svc-0f15aa6939f255dee.us-east-1.vpce.amazonaws.com

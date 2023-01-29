@@ -28,7 +28,6 @@ app:
 
 ## ---------------------------- Service ----------------------------##
 
-
 service:
   ## Service general details
   name: api-gateway
@@ -41,8 +40,10 @@ service:
 
 ## ---------------------------- Role & RoleBindings ----------------------------##
 
+## Role name
 role:
   name: devRole
 
+## Role binding name
 roleBinding:
   name: devRoleBinding
