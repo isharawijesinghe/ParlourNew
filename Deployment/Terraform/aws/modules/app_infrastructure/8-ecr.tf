@@ -5,7 +5,6 @@ locals {
   }
 }
 
-
 module "ecr-repo" {
   count  = var.main_ecr_enable ? 1 : 0 //Do not create ecr if disable
   source           = "../ecr"

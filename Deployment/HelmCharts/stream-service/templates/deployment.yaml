@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{.Values.app.name}}
+  namespace: {{.Values.namespace}}
   labels:
     app: {{.Values.app.name}}
     env: {{.Values.app.env}}
@@ -21,7 +22,10 @@ spec:
           env:
             - name: SPRING_DATA_CASSANDRA_CONTACT-POINTS
               #value: host.minikube.internal
-              value: 54.152.224.61
+              valueFrom:
+                configMapKeyRef:
+                  name: cassandra-db-host
+                  key: cassandra-host-dns
           imagePullPolicy: {{.Values.app.container.imagePullPolicy}}
           ports:
             - containerPort: {{.Values.app.container.ports.containerPort}}

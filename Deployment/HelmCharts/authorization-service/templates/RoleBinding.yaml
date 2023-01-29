@@ -1,4 +1,5 @@
-{{- if not (lookup "rbac.authorization.k8s.io/v1" "RoleBinding" "" .Values.roleBinding.name) }}
+{{- $roleBinding:= (lookup "rbac.authorization.k8s.io/v1" "RoleBinding" .Values.namespace .Values.roleBinding.name)}}
+{{- if not $roleBinding}}
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:

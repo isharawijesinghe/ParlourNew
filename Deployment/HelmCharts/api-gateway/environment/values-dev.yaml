@@ -3,9 +3,12 @@ namespace : default
 ## ---------------------------- Deployment ----------------------------##
 
 app:
+  ## General cluster information like replica count / environment and name of the deployment
   replicas : 1
   env: dev
   name: api-gateway
+
+  ## Container configurations -->  like image / tag / image pull policy / ports
   container:
     image:
       repository: ishara007/api-gateway
@@ -13,6 +16,8 @@ app:
     imagePullPolicy: Always
     ports:
       containerPort: 9191
+
+  ## Deployment compute resources
   computerc:
     limits:
       cpu: "0.2"
@@ -23,9 +28,13 @@ app:
 
 ## ---------------------------- Service ----------------------------##
 
+
 service:
+  ## Service general details
   name: api-gateway
   type: LoadBalancer
+
+  ## Service port details
   ports:
     port: 9191
     targetPort: 9191
@@ -33,7 +42,7 @@ service:
 ## ---------------------------- Role & RoleBindings ----------------------------##
 
 role:
-  name: apiGatewayDevRole
+  name: devRole
 
 roleBinding:
-  name: apiGatewayDevRoleBinding
+  name: devRoleBinding

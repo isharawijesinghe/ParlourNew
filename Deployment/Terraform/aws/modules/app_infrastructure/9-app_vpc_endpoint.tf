@@ -18,7 +18,6 @@ resource "aws_security_group" "vpc_endpoint_sg" {
     protocol                   = "-1"
     cidr_blocks                = ["0.0.0.0/0"]
   }
-
 }
 
 resource "aws_security_group_rule" "allow_tcp_within_vpc" {

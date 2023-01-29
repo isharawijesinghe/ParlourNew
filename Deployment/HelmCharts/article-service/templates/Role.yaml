@@ -1,4 +1,5 @@
-{{- if not (lookup "rbac.authorization.k8s.io/v1" "Role" "" .Values.role.name) }}
+{{- $role:= (lookup "rbac.authorization.k8s.io/v1" "Role" .Values.namespace .Values.role.name)}}
+{{- if not $role}}
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
