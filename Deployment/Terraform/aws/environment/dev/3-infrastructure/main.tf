@@ -15,6 +15,7 @@ module "core_infrastructure" {
   source = "../../../modules/app_infrastructure"
 
   environment = local.environment
+  aws_region =var.aws_region_main
 
   /***----------------------- Application Infrastructure------------------------------***/
 

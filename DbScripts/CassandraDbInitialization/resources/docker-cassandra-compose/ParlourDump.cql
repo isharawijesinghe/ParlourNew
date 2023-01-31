@@ -15,7 +15,7 @@ CREATE TYPE parlour.comment(
     modifiedDate timestamp,
     likedList set<text> ,
     unLikedList set<text> ,
-    );
+);
 
 CREATE TYPE parlour.like(
     key text,
@@ -26,7 +26,7 @@ CREATE TYPE parlour.like(
     status int,
     createdDate timestamp,
     modifiedDate timestamp
-    );
+);
 
 CREATE TYPE parlour.article(
     id text,
@@ -37,14 +37,14 @@ CREATE TYPE parlour.article(
     status int,
     createdDate timestamp,
     modifiedDate timestamp
-    );
+);
 
 CREATE TYPE parlour.stream(
     streamId text,
     userName text,
     description text,
     createdDate timestamp
-    );
+);
 
 // ------------------ Table scripts ------------------- //
 

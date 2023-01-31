@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.security.interfaces.RSAPublicKey;
 
@@ -85,7 +86,11 @@ public class DefaultSecurityConfig  {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/authentication/auth/**", "/login/**", "/auth/**", "/oauth2/**", "/createUser/**", "/authentication/**")
+                .antMatchers(
+                        "/authentication/auth/**",
+                        "/login/**", "/auth/**",
+                        "/oauth2/**", "/createUser/**",
+                        "/authentication/**")
                 .permitAll()
                 .anyRequest()
                 .permitAll()
@@ -111,7 +116,7 @@ public class DefaultSecurityConfig  {
 
 
         // Add our custom Token based authentication filter
-        //http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

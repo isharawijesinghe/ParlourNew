@@ -1,4 +1,5 @@
 module "database_infrastructure" {
+  count = var.enable_db_infrastructure ? 1: 0
   source  = "../app_database"
 
   //General Variables

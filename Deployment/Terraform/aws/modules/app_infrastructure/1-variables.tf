@@ -1,4 +1,5 @@
 variable "environment" {}
+variable "aws_region" {}
 
 /***----------------------- Application Infrastructure------------------------------***/
 
@@ -48,6 +49,7 @@ variable "force_delete" {
 
 /***----------------------- DB Infrastructure------------------------------***/
 
+variable "enable_db_infrastructure" { default = true }
 variable "db_main_vpc_enable" { default = true }
 variable "db_main_vpc_cidr" { default = "" }
 variable "db_main_vpc_az_count_private" { default = 2 }
