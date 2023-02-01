@@ -22,6 +22,9 @@ core_image_mutability                = "IMMUTABLE"
 core_main_force_delete               = true
 core_enable_app_bastion_host         = true
 
+core_k8_name_space = "default"
+core_auth_service_account = "auth_service_name"
+
 /***----------------------- DB Infrastructure (Cassandra Cluster)------------------------------***/
 
 // VPC Parameters

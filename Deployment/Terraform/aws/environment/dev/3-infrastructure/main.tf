@@ -43,6 +43,10 @@ module "core_infrastructure" {
 
   enable_app_bastion_host = var.core_enable_app_bastion_host
 
+  //Kubernetes Parameters
+  k8_name_space = var.core_k8_name_space
+  auth_service_account = var.core_auth_service_account
+
   tags = merge(local.tags, local.environment_metadata_tags)
 
   /***----------------------- DB Infrastructure------------------------------***/
@@ -91,4 +95,5 @@ module "core_infrastructure" {
   db_main_bastion_instance_instance_type = var.core_db_main_bastion_instance_instance_type
   db_main_bastion_instance_key_name = var.core_db_main_bastion_instance_key_name
   db_main_bastion_host_private_ips = var.core_db_main_bastion_host_private_ips
+
 }

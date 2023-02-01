@@ -56,6 +56,9 @@ variable "core_main_force_delete" {
 
 variable "core_enable_app_bastion_host" {}
 
+variable "core_k8_name_space" {}
+variable "core_auth_service_account" {}
+
 /***----------------------- DB Infrastructure------------------------------***/
 
 variable "core_db_main_vpc_enable" { default = true }

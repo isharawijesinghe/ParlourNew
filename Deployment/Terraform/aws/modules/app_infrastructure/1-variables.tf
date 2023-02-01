@@ -96,3 +96,8 @@ variable "db_main_bastion_instance_ami" {default = "ami-089c41d63bb620fa4"}
 variable "db_main_bastion_instance_instance_type" {default = "t1.micro"}
 variable "db_main_bastion_instance_key_name" {default = "Ec2_Key"}
 variable "db_main_bastion_host_private_ips" {}
+
+//Kubernetes Parameters
+variable "k8_name_space" {default = "default"}
+variable "auth_service_account" {}
+
