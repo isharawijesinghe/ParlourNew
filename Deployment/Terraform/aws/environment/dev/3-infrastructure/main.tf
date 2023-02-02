@@ -45,7 +45,7 @@ module "core_infrastructure" {
 
   //Kubernetes Parameters
   k8_name_space = var.core_k8_name_space
-  auth_service_account = var.core_auth_service_account
+  user_service_account = var.core_user_service_account
   gateway_service_account = var.core_gateway_service_account
   article_service_account = var.core_article_service_account
   stream_service_account = var.core_stream_service_account
@@ -99,5 +99,15 @@ module "core_infrastructure" {
   db_main_bastion_instance_instance_type = var.core_db_main_bastion_instance_instance_type
   db_main_bastion_instance_key_name = var.core_db_main_bastion_instance_key_name
   db_main_bastion_host_private_ips = var.core_db_main_bastion_host_private_ips
+
+  /***----------------------- S3 Configurations-----------------------------***/
+
+  main_common_s3_force_destroy = var.core_main_common_s3_force_destroy
+  main_common_s3_status = var.core_main_common_s3_status
+  main_common_s3_sse_algorithmault = var.core_main_common_s3_sse_algorithm
+  main_common_s3_block_public_acls = var.core_main_common_s3_block_public_acls
+  main_common_s3_block_public_policy = var.core_main_common_s3_block_public_policy
+  main_common_s3_ignore_public_acls = var.core_main_common_s3_ignore_public_acls
+  main_common_s3_restrict_public_buckets = var.core_main_common_s3_restrict_public_buckets
 
 }

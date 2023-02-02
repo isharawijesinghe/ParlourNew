@@ -57,7 +57,7 @@ variable "core_main_force_delete" {
 variable "core_enable_app_bastion_host" {}
 
 variable "core_k8_name_space" {}
-variable "core_auth_service_account" {}
+variable "core_user_service_account" {}
 variable "core_gateway_service_account" {}
 variable "core_article_service_account" {}
 variable "core_stream_service_account" {}
@@ -110,3 +110,21 @@ variable "core_db_main_bastion_instance_ami" {default = "ami-089c41d63bb620fa4"}
 variable "core_db_main_bastion_instance_instance_type" {default = "t2.nano"}
 variable "core_db_main_bastion_instance_key_name" {default = "Ec2_Key"}
 variable "core_db_main_bastion_host_private_ips" {default = null}
+
+/***----------------------- S3 Configurations-----------------------------***/
+
+variable "core_main_common_s3_force_destroy" { default = false }
+
+variable "core_main_common_s3_status" {
+  type = string
+  default = "Enabled"
+}
+
+variable "core_main_common_s3_sse_algorithm" {
+  type = string
+  default = "AES256"
+}
+variable "core_main_common_s3_block_public_acls" { default = true }
+variable "core_main_common_s3_block_public_policy" { default = true }
+variable "core_main_common_s3_ignore_public_acls" { default = true }
+variable "core_main_common_s3_restrict_public_buckets" { default = true }

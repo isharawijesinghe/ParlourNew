@@ -28,7 +28,7 @@ public class WebSecurityConfiguration  {
 //                .permitAll()
                 .pathMatchers("/authentication/auth/**", "/login/**", "/auth/**",
                         "/oauth2/**", "/createUser/**", "/authentication/**",
-                        "/userutil/**", "/userutil/upload/**")
+                        "/user/**", "/user/upload/**")
                 .permitAll()
                 .anyExchange().authenticated()
                 .and()

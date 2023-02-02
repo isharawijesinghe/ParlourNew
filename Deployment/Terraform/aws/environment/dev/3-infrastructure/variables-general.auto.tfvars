@@ -16,14 +16,14 @@ core_main_vpc_one_nat_gateway_per_az = false
 core_main_vpc_single_nat_gateway     = true
 core_main_eks_cluster_enable         = true
 core_main_ecr_enable                 = true
-core_ecr_name                        = ["api-gateway", "article-service", "authorization-service",
+core_ecr_name                        = ["api-gateway", "article-service", "user-service",
                                             "notification-service", "stream-service"]
 core_image_mutability                = "IMMUTABLE"
 core_main_force_delete               = true
 core_enable_app_bastion_host         = true
 
 core_k8_name_space = "default"
-core_auth_service_account = "auth-service-name"
+core_auth_service_account = "user-service-name"
 core_gateway_service_account = "gateway-service-name"
 core_article_service_account = "article-service-name"
 core_stream_service_account = "stream-service-name"

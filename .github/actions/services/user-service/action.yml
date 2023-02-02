@@ -1,0 +1,75 @@
+name: Deploy User Service
+
+inputs:
+  AWS_ACCESS_KEY_ID:
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Check if Docker image with tag exists in ECR
+      id: test-doesnt-exist
+      uses: mnmandahalf/check-ecr-image-exists@v0.1.4
+      with:
+        region: us-east-1
+        repository-name: user-service
+        image-tag: v1
+        access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Get the output
+      shell: bash
+      run: echo "image-exists=${{ steps.test-doesnt-exist.outputs.image-exists }}"
+
+    - name: Set up JDK 11 for x64
+      if: ${{ steps.test-doesnt-exist.outputs.image-exists != 1 }}
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+        architecture: x64
+
+    - name: Build with Maven
+      if: ${{ steps.test-doesnt-exist.outputs.image-exists != 1 }}
+      shell: bash
+      run: mvn -f Microservices/user-service/pom.xml clean install
+
+    - name: Build, tag, and push image to Amazon ECR
+      if: ${{ steps.test-doesnt-exist.outputs.image-exists != 1 }}
+      shell: bash
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: user-service
+        IMAGE_TAG: v1
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Microservices/user-service/Dockerfile Microservices/user-service/
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: Deploy Helm
+      uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+      with:
+        aws-access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        cluster-name: dev-default-eks
+        config-files: Deployment/HelmCharts/user-service/environment/values-dev.yaml
+        chart-path: Deployment/HelmCharts/user-service
+        values: app.container.image.repository=${{ steps.login-ecr.outputs.registry }}/user-service,app.container.image.tag=v1
+        namespace: default
+        name: user-service

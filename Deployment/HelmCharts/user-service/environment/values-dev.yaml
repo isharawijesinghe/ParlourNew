@@ -1,0 +1,48 @@
+namespace : default
+
+## ---------------------------- Deployment ----------------------------##
+
+app:
+  replicas : 1
+  env: dev
+  name: user-service
+  serviceAccount: user-service-name
+  container:
+    image:
+      repository: ishara007/user-service
+      tag: v5
+    imagePullPolicy: Always
+    ports:
+      containerPort: 9002
+  computerc:
+    limits:
+      cpu: "0.2"
+      memory: 500Mi
+    requests:
+      cpu: "0.2"
+      memory: 500Mi
+
+## ---------------------------- Service ----------------------------##
+
+service:
+  name: user-service
+  type: ClusterIP
+  ports:
+    port: 9002
+    targetPort: 9002
+
+## ---------------------------- Role & RoleBindings ----------------------------##
+
+role:
+  name: devRole
+
+roleBinding:
+  name: devRoleBinding
+
+## ---------------------------- Config Map ----------------------------##
+
+config:
+  metadata:
+    name: cassandra-db-host
+  data:
+    cassandra_host_dns: vpce-021edffeddf428e40-6rsxop74.vpce-svc-0bd803b5781c000b2.us-east-1.vpce.amazonaws.com
