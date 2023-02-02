@@ -3,8 +3,10 @@ package com.ss.parlour.authorizationservice.handler;
 import com.ss.parlour.authorizationservice.configurations.security.oauth2.user.OAuth2UserInfo;
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.util.bean.requests.EmailRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.PreSignUrlGenerateRequestBean;
 import com.ss.parlour.authorizationservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.PreSignUrlResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.TokenConfirmResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
 import org.springframework.security.core.Authentication;
@@ -24,4 +26,5 @@ public interface AuthHandlerI {
     User updateExistingSocialUser(User existingUser, OAuth2UserInfo oAuth2UserInfo);
     void requestForMail(String email, String token, String type);
     TokenConfirmResponseBean tokenConfirm(TokenConfirmRequest tokenConfirmRequest);
+    PreSignUrlResponseBean generatePreSignUrl(PreSignUrlGenerateRequestBean preSignUrlGenerateRequestBean);
 }

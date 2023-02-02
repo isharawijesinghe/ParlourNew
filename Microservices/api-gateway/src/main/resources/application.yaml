@@ -34,7 +34,7 @@ spring:
         - id: AUTHORIZATION-SERVICE
           uri: lb://authorization-service/
           predicates:
-            - Path=/authentication/**
+            - Path=/authentication/**, /userutil/**
           filters:
             TokenRelay=
   security:

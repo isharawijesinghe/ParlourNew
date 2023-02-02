@@ -1,5 +1,11 @@
 package com.ss.parlour.authorizationservice.handler;
 
+import com.amazonaws.HttpMethod;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.ss.parlour.authorizationservice.configurations.security.UserPrincipal;
 import com.ss.parlour.authorizationservice.configurations.security.oauth2.user.OAuth2UserInfo;
 import com.ss.parlour.authorizationservice.dao.cassandra.UserDAOI;
@@ -7,8 +13,10 @@ import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.domain.cassandra.UserToken;
 import com.ss.parlour.authorizationservice.util.bean.*;
 import com.ss.parlour.authorizationservice.util.bean.requests.EmailRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.PreSignUrlGenerateRequestBean;
 import com.ss.parlour.authorizationservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.PreSignUrlResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.TokenConfirmResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
 import com.ss.parlour.authorizationservice.util.common.TokenGenerator;
@@ -22,6 +30,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -140,6 +149,30 @@ public class AuthHandler implements AuthHandlerI {
             }
         }
         return tokenConfirmResponseBean;
+    }
+
+    @Override
+    public PreSignUrlResponseBean generatePreSignUrl(PreSignUrlGenerateRequestBean preSignUrlGenerateRequestBean){
+        PreSignUrlResponseBean preSignUrlResponseBean = new PreSignUrlResponseBean();
+        String bucketName = "dummy007IwBucket";
+        String objectKey = "ishara";
+        AWSCredentialsProvider provider = new DefaultAWSCredentialsProviderChain();
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(provider).build();
+
+        // Set the pre signed URL to expire after 10 minutes.
+        java.util.Date expiration = new java.util.Date();
+        long expTimeMillis = expiration.getTime();
+        expTimeMillis += 1000 * 60 * 10;
+        expiration.setTime(expTimeMillis);
+
+        // Generate the pre signed URL.
+        System.out.println("Generating pre-signed URL......");
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, objectKey)
+                                                                      .withMethod(HttpMethod.GET)
+                                                                      .withExpiration(expiration);
+        URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
+        preSignUrlResponseBean.setPreSignUrl(url);
+        return preSignUrlResponseBean;
     }
 
     protected boolean validateTokenExistence(UserToken userToken){

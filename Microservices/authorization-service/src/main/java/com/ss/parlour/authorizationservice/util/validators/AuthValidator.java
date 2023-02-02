@@ -4,6 +4,7 @@ import com.ss.parlour.authorizationservice.dao.cassandra.UserDAOI;
 import com.ss.parlour.authorizationservice.domain.cassandra.User;
 import com.ss.parlour.authorizationservice.domain.cassandra.UserLoginNameEmailMapper;
 import com.ss.parlour.authorizationservice.util.bean.AuthorizationErrorCodes;
+import com.ss.parlour.authorizationservice.util.bean.requests.PreSignUrlGenerateRequestBean;
 import com.ss.parlour.authorizationservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
 import com.ss.parlour.authorizationservice.util.exception.AuthorizationRuntimeException;
@@ -31,6 +32,9 @@ public class AuthValidator implements AuthValidatorI {
     public void validateTokenConfirm(TokenConfirmRequest tokenConfirmRequest){
 
     }
+
+    @Override
+    public void validatePreSignUrlRequest(PreSignUrlGenerateRequestBean generatePreSignUrl){}
 
     protected void validateUserLoginNameExists(UserRegisterRequestBean userRegisterRequestBean){
         User existingUser = userDAOI.loadUserByLoginName(userRegisterRequestBean.getLoginName());

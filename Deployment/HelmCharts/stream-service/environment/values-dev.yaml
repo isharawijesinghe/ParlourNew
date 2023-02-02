@@ -3,9 +3,14 @@ namespace : default
 ## ---------------------------- Deployment ----------------------------##
 
 app:
+
+  ## General cluster information like replica count / environment and name of the deployment
   replicas : 1
   env: dev
   name: stream-service
+  serviceAccount: stream-service-name
+
+  ## Container configurations -->  like image / tag / image pull policy / ports
   container:
     image:
       repository: ishara007/stream-service
@@ -13,6 +18,8 @@ app:
     imagePullPolicy: Always
     ports:
       containerPort: 9003
+
+  ## Deployment compute resources
   computerc:
     limits:
       cpu: "0.2"
@@ -24,6 +31,8 @@ app:
 ## ---------------------------- Service ----------------------------##
 
 service:
+
+  ## Service general details
   name: stream-service
   type: ClusterIP
   ports:

@@ -3,9 +3,13 @@ namespace : default
 ## ---------------------------- Deployment ----------------------------##
 
 app:
+  ## General cluster information like replica count / environment and name of the deployment
   replicas : 1
   env: dev
   name: notification-service
+  serviceAccount: notification-service-name
+
+  ## Container configurations -->  like image / tag / image pull policy / ports
   container:
     image:
       repository: ishara007/notification-service
@@ -13,6 +17,8 @@ app:
     imagePullPolicy: Always
     ports:
       containerPort: 9004
+
+  ## Deployment compute resources
   computerc:
     limits:
       cpu: "0.2"
@@ -24,8 +30,12 @@ app:
 ## ---------------------------- Service ----------------------------##
 
 service:
+
+  ## Service general details
   name: notification-service
   type: ClusterIP
+
+  ## Service port details
   ports:
     port: 9004
     targetPort: 9004
@@ -37,3 +47,11 @@ role:
 
 roleBinding:
   name: devRoleBinding
+
+## ---------------------------- Config Map ----------------------------##
+
+config:
+  metadata:
+    name: cassandra-db-host
+  data:
+    cassandra_host_dns: vpce-06a2c9ba82e041813-t6k27gow.vpce-svc-0f15aa6939f255dee.us-east-1.vpce.amazonaws.com

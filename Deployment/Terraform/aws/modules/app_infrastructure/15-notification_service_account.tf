@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "oidc_assume_role_policy" {
     condition {
       test     = "StringEquals"
       variable = "${replace(module.main_eks.eks_cluster_url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:${var.k8_name_space}:${var.auth_service_account}"]
+      values   = ["system:serviceaccount:${var.k8_name_space}:${var.notification_service_account}"]
     }
 
     principals {
@@ -35,11 +35,11 @@ resource "aws_iam_policy" "s3_access_policy" {
 
 //Define user role --> Add assume role as well
 resource "aws_iam_role" "auth_node_iam_role" {
-  name = "${var.auth_service_account}-${var.environment}-aws-node"
+  name = "${var.notification_service_account}-${var.environment}-aws-node"
   assume_role_policy =  data.aws_iam_policy_document.oidc_assume_role_policy.json
   tags = merge(var.tags,
     {
-      "ServiceAccountName"      = var.auth_service_account
+      "ServiceAccountName"      = var.notification_service_account
       "ServiceAccountNameSpace" = var.k8_name_space
     }
   )
@@ -63,7 +63,7 @@ resource "aws_iam_role_policy_attachment" "aws_auth_s3_policy" {
 //Kubernetes service account
 resource "kubernetes_service_account" "eks-service-account" {
   metadata {
-    name = var.auth_service_account
+    name = var.notification_service_account
     namespace = var.k8_name_space
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.auth_node_iam_role.arn

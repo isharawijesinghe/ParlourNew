@@ -4,8 +4,10 @@ import com.ss.parlour.authorizationservice.configurations.security.TokenProvider
 import com.ss.parlour.authorizationservice.handler.AuthHandlerI;
 import com.ss.parlour.authorizationservice.util.bean.*;
 import com.ss.parlour.authorizationservice.util.bean.requests.AuthRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.requests.PreSignUrlGenerateRequestBean;
 import com.ss.parlour.authorizationservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.authorizationservice.util.bean.requests.UserRegisterRequestBean;
+import com.ss.parlour.authorizationservice.util.bean.response.PreSignUrlResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.TokenConfirmResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.AuthResponseBean;
 import com.ss.parlour.authorizationservice.util.bean.response.UserRegistrationResponseBean;
@@ -100,6 +102,18 @@ public class AuthService implements AuthServiceI{
         try{
             authValidatorI.validateTokenConfirm(tokenConfirmRequest);
             return authHandlerI.tokenConfirm(tokenConfirmRequest);
+        }catch (AuthorizationRuntimeException ex){
+            throw ex;
+        }catch (Exception ex){
+            throw new AuthorizationRuntimeException(AuthorizationErrorCodes.UNKNOWN_ERROR, ex);
+        }
+    }
+
+    @Override
+    public PreSignUrlResponseBean generatePreSignUrl(PreSignUrlGenerateRequestBean preSignUrlGenerateRequestBean){
+        try{
+            authValidatorI.validatePreSignUrlRequest(preSignUrlGenerateRequestBean);
+            return authHandlerI.generatePreSignUrl(preSignUrlGenerateRequestBean);
         }catch (AuthorizationRuntimeException ex){
             throw ex;
         }catch (Exception ex){

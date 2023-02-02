@@ -11,9 +11,9 @@ core_main_vpc_az_count_public        = 2 # Need at least 2 for RDSs
 core_main_vpc_public_subnets         = ["172.30.0.0/23", "172.30.2.0/23"]
 core_main_vpc_private_subnets        = ["172.30.4.0/23", "172.30.6.0/23"]
 core_main_vpc_database_subnets       = []
-core_main_vpc_enable_nat_gateway     = false
+core_main_vpc_enable_nat_gateway     = true
 core_main_vpc_one_nat_gateway_per_az = false
-core_main_vpc_single_nat_gateway     = false
+core_main_vpc_single_nat_gateway     = true
 core_main_eks_cluster_enable         = true
 core_main_ecr_enable                 = true
 core_ecr_name                        = ["api-gateway", "article-service", "authorization-service",
@@ -23,7 +23,11 @@ core_main_force_delete               = true
 core_enable_app_bastion_host         = true
 
 core_k8_name_space = "default"
-core_auth_service_account = "auth_service_name"
+core_auth_service_account = "auth-service-name"
+core_gateway_service_account = "gateway-service-name"
+core_article_service_account = "article-service-name"
+core_stream_service_account = "stream-service-name"
+core_notification_service_account = "notification-service-name"
 
 /***----------------------- DB Infrastructure (Cassandra Cluster)------------------------------***/
 

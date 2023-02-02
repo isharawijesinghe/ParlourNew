@@ -13,6 +13,7 @@ output "main_vpc_endpoint_sg_id" { value = module.main_vpc.vpc_endpoint_sg_id }
 output "main_vpc_database_subnet_group" { value = module.main_vpc.vpc_database_subnet_group }
 output "main_vpc_database_subnet_group_name" { value = module.main_vpc.vpc_name }
 output "main_vpc_database_subnet_group_azs" { value = local.azs.main.database }
+output "main_eks_cluster" { value = module.main_eks }
 
 
 

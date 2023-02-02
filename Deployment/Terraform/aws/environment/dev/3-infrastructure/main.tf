@@ -46,6 +46,10 @@ module "core_infrastructure" {
   //Kubernetes Parameters
   k8_name_space = var.core_k8_name_space
   auth_service_account = var.core_auth_service_account
+  gateway_service_account = var.core_gateway_service_account
+  article_service_account = var.core_article_service_account
+  stream_service_account = var.core_stream_service_account
+  notification_service_account = var.core_notification_service_account
 
   tags = merge(local.tags, local.environment_metadata_tags)
 

@@ -6,10 +6,11 @@ app:
   replicas : 1
   env: dev
   name: authorization-service
+  serviceAccount: auth-service-name
   container:
     image:
       repository: ishara007/authorization-service
-      tag: v3
+      tag: v5
     imagePullPolicy: Always
     ports:
       containerPort: 9002
@@ -44,4 +45,4 @@ config:
   metadata:
     name: cassandra-db-host
   data:
-    cassandra_host_dns: vpce-06a2c9ba82e041813-t6k27gow.vpce-svc-0f15aa6939f255dee.us-east-1.vpce.amazonaws.com
+    cassandra_host_dns: vpce-021edffeddf428e40-6rsxop74.vpce-svc-0bd803b5781c000b2.us-east-1.vpce.amazonaws.com

@@ -90,7 +90,8 @@ public class DefaultSecurityConfig  {
                         "/authentication/auth/**",
                         "/login/**", "/auth/**",
                         "/oauth2/**", "/createUser/**",
-                        "/authentication/**")
+                        "/authentication/**",
+                        "/userutil/**", "/userutil/upload/**")
                 .permitAll()
                 .anyRequest()
                 .permitAll()

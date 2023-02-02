@@ -58,6 +58,10 @@ variable "core_enable_app_bastion_host" {}
 
 variable "core_k8_name_space" {}
 variable "core_auth_service_account" {}
+variable "core_gateway_service_account" {}
+variable "core_article_service_account" {}
+variable "core_stream_service_account" {}
+variable "core_notification_service_account" {}
 
 /***----------------------- DB Infrastructure------------------------------***/
 

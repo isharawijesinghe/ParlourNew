@@ -100,4 +100,8 @@ variable "db_main_bastion_host_private_ips" {}
 //Kubernetes Parameters
 variable "k8_name_space" {default = "default"}
 variable "auth_service_account" {}
+variable "gateway_service_account" {}
+variable "article_service_account" {}
+variable "stream_service_account" {}
+variable "notification_service_account" {}
 

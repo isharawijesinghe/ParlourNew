@@ -7,12 +7,13 @@ app:
   replicas : 1
   env: dev
   name: api-gateway
+  serviceAccount: gateway-service-name
 
   ## Container configurations -->  like image / tag / image pull policy / ports
   container:
     image:
       repository: ishara007/api-gateway
-      tag: v3
+      tag: v5
     imagePullPolicy: Always
     ports:
       containerPort: 9191
