@@ -1,5 +1,5 @@
 //Assume role policy
-data "aws_iam_policy_document" "oidc_assume_role_policy" {
+data "aws_iam_policy_document" "user_oidc_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "oidc_assume_role_policy" {
 }
 
 // S3 Access for bucket
-resource "aws_iam_policy" "s3_access_policy" {
+resource "aws_iam_policy" "user_s3_access_policy" {
   name = "AllS3BucketAccess"
 
   policy = jsonencode({
@@ -34,9 +34,9 @@ resource "aws_iam_policy" "s3_access_policy" {
 }
 
 //Define user role --> Add assume role as well
-resource "aws_iam_role" "auth_node_iam_role" {
+resource "aws_iam_role" "user_node_iam_role" {
   name = "${var.user_service_account}-${var.environment}-aws-node"
-  assume_role_policy =  data.aws_iam_policy_document.oidc_assume_role_policy.json
+  assume_role_policy =  data.aws_iam_policy_document.user_oidc_assume_role_policy.json
   tags = merge(var.tags,
     {
       "ServiceAccountName"      = var.user_service_account
@@ -47,26 +47,26 @@ resource "aws_iam_role" "auth_node_iam_role" {
 }
 
 //Attach user role to policy
-resource "aws_iam_role_policy_attachment" "aws_auth_cni_policy" {
-  role       = aws_iam_role.auth_node_iam_role.name
+resource "aws_iam_role_policy_attachment" "aws_user_cni_policy" {
+  role       = aws_iam_role.user_node_iam_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  depends_on = [aws_iam_role.auth_node_iam_role]
+  depends_on = [aws_iam_role.user_node_iam_role]
 }
 
 //Attach S3 Bucket Policy to Role
-resource "aws_iam_role_policy_attachment" "aws_auth_s3_policy" {
-  role       = aws_iam_role.auth_node_iam_role.name
-  policy_arn = aws_iam_policy.s3_access_policy.arn
-  depends_on = [aws_iam_role.auth_node_iam_role]
+resource "aws_iam_role_policy_attachment" "aws_user_s3_policy" {
+  role       = aws_iam_role.user_node_iam_role.name
+  policy_arn = aws_iam_policy.user_s3_access_policy.arn
+  depends_on = [aws_iam_role.user_node_iam_role]
 }
 
 //Kubernetes service account
-resource "kubernetes_service_account" "eks-service-account" {
+resource "kubernetes_service_account" "eks_user_service_account" {
   metadata {
     name = var.user_service_account
     namespace = var.k8_name_space
     annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.auth_node_iam_role.arn
+      "eks.amazonaws.com/role-arn" = aws_iam_role.user_node_iam_role.arn
     }
   }
 }

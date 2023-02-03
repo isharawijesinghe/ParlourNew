@@ -1,7 +1,8 @@
 aws_region_main   = "us-east-1"
 environment = "dev"
 
-/***----------------------- Core Application Infrastructure------------------------------***/
+/***----------------------- ******************************* ------------------------------***/
+/***----------------------- Core Application Infrastructure ------------------------------***/
 
 # Main VPC
 core_main_vpc_cidr                   = "172.30.0.0/21"
@@ -23,13 +24,14 @@ core_main_force_delete               = true
 core_enable_app_bastion_host         = true
 
 core_k8_name_space = "default"
-core_auth_service_account = "user-service-name"
+core_user_service_account = "user-service-name"
 core_gateway_service_account = "gateway-service-name"
 core_article_service_account = "article-service-name"
 core_stream_service_account = "stream-service-name"
 core_notification_service_account = "notification-service-name"
 
-/***----------------------- DB Infrastructure (Cassandra Cluster)------------------------------***/
+/***----------------------- ************************************* -----------------------------***/
+/***----------------------- DB Infrastructure (Cassandra Cluster) -----------------------------***/
 
 // VPC Parameters
 core_db_main_vpc_cidr                   = "172.30.0.0/21"
@@ -74,3 +76,16 @@ core_db_main_bastion_instance_ami = "ami-00874d747dde814fa" //Ubuntu server 22.0
 core_db_main_bastion_instance_instance_type = "t1.micro"
 core_db_main_bastion_instance_key_name= "Ec2_Key"
 core_db_main_bastion_host_private_ips = ["172.30.1.10"]
+
+/***----------------------- ***************** ----------------------------***/
+/***----------------------- S3 Configurations ----------------------------***/
+
+core_user_image_s3_enable = true
+core_pod_logs_s3_enable = true
+
+/***----------------------- ************** ----------------------------***/
+/***----------------------- Fluent Bit Log ----------------------------***/
+
+core_enable_fluent_bit = true
+core_fluent_bit_namespace = "fluent-bit-logs"
+core_fluent_bit_service_account = "fluent-bit-sa"

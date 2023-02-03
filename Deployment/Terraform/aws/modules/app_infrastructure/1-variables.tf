@@ -122,4 +122,10 @@ variable "main_common_s3_block_public_acls" { default = true }
 variable "main_common_s3_block_public_policy" { default = true }
 variable "main_common_s3_ignore_public_acls" { default = true }
 variable "main_common_s3_restrict_public_buckets" { default = true }
+variable "user_image_s3_enable" { default = true }
+variable "pod_logs_s3_enable" { default = true }
+
+variable "enable_fluent_bit" { default = true }
+variable "fluent_bit_namespace" {}
+variable "fluent_bit_service_account" {}
 

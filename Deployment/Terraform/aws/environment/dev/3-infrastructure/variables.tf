@@ -2,7 +2,8 @@ variable "environment" {}
 variable "aws_region_main" {}
 variable "core_project_name" { default = "core-infrastructure" } # TF_VAR_core_project_name
 
-/***----------------------- Application Infrastructure------------------------------***/
+/***----------------------- ******************************* ------------------------------***/
+/***----------------------- Core Application Infrastructure ------------------------------***/
 
 variable "core_enable_all" {
   type        = bool
@@ -63,7 +64,8 @@ variable "core_article_service_account" {}
 variable "core_stream_service_account" {}
 variable "core_notification_service_account" {}
 
-/***----------------------- DB Infrastructure------------------------------***/
+/***----------------------- ************************************* -----------------------------***/
+/***----------------------- DB Infrastructure (Cassandra Cluster) -----------------------------***/
 
 variable "core_db_main_vpc_enable" { default = true }
 variable "core_db_main_vpc_cidr" { default = "" }
@@ -111,7 +113,8 @@ variable "core_db_main_bastion_instance_instance_type" {default = "t2.nano"}
 variable "core_db_main_bastion_instance_key_name" {default = "Ec2_Key"}
 variable "core_db_main_bastion_host_private_ips" {default = null}
 
-/***----------------------- S3 Configurations-----------------------------***/
+/***----------------------- ***************** ----------------------------***/
+/***----------------------- S3 Configurations ----------------------------***/
 
 variable "core_main_common_s3_force_destroy" { default = false }
 
@@ -128,3 +131,12 @@ variable "core_main_common_s3_block_public_acls" { default = true }
 variable "core_main_common_s3_block_public_policy" { default = true }
 variable "core_main_common_s3_ignore_public_acls" { default = true }
 variable "core_main_common_s3_restrict_public_buckets" { default = true }
+variable "core_user_image_s3_enable" { default = true }
+variable "core_pod_logs_s3_enable" { default = true }
+
+/***----------------------- ************** ----------------------------***/
+/***----------------------- Fluent Bit Log ----------------------------***/
+
+variable "core_enable_fluent_bit" { default = true }
+variable "core_fluent_bit_namespace" {}
+variable "core_fluent_bit_service_account" {}
