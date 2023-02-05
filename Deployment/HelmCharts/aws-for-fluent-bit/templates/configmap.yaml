@@ -82,33 +82,24 @@ data:
         Match                 {{ .Values.cloudWatch.match }}
         region                {{ .Values.s3.region }}
         bucket                {{ .Values.s3.bucket }}
-    {{- if .Values.cloudWatch.logStreamName }}
-        log_stream_name       {{ .Values.cloudWatch.logStreamName }}
+    {{- if .Values.s3.logKey }}
+        log_key               {{ .Values.s3.logKey }}
     {{- end }}
-    {{- if .Values.cloudWatch.logStreamPrefix }}
-        log_stream_prefix     {{ .Values.cloudWatch.logStreamPrefix }}
+    {{- if .Values.s3.use_put_object }}
+        use_put_object        {{ .Values.s3.use_put_object }}
     {{- end }}
-    {{- if .Values.cloudWatch.logKey }}
-        log_key               {{ .Values.cloudWatch.logKey }}
+    {{- if .Values.s3.s3_key_format }}
+        s3_key_format    {{ .Values.s3.s3_key_format }}
     {{- end }}
-    {{- if .Values.cloudWatch.logFormat }}
-        log_format            {{ .Values.cloudWatch.logFormat }}
+    {{- if .Values.s3.s3_key_format_tag_delimiters }}
+        s3_key_format_tag_delimiters              {{ .Values.s3.s3_key_format_tag_delimiters }}
     {{- end }}
-    {{- if .Values.cloudWatch.logRetentionDays }}
-        log_retention_days    {{ .Values.cloudWatch.logRetentionDays }}
+    {{- if .Values.s3.total_file_size }}
+        total_file_size     {{ .Values.s3.total_file_size }}
     {{- end }}
-    {{- if .Values.cloudWatch.roleArn }}
-        role_arn              {{ .Values.cloudWatch.roleArn }}
+    {{- if .Values.s3.upload_timeout }}
+        upload_timeout              {{ .Values.s3.upload_timeout }}
     {{- end }}
-    {{- if .Values.cloudWatch.autoCreateGroup }}
-        auto_create_group     {{ .Values.cloudWatch.autoCreateGroup }}
-    {{- end }}
-    {{- if .Values.cloudWatch.endpoint }}
-        endpoint              {{ .Values.cloudWatch.endpoint }}
-    {{- end }}
-    {{- if .Values.cloudWatch.credentialsEndpoint }}
-        credentials_endpoint  {{ toJson .Values.cloudWatch.credentialsEndpoint }}
-    {{- end -}}
 {{- end }}
 
 {{/* ********------Kinesis firehose output configuration------******** */}}
