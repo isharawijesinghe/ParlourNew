@@ -75,13 +75,13 @@ data:
         {{- end -}}
 {{- end }}
 
-    {{/* ********------CloudWatch output configuration------******** */}}
+{{/* ********------S3 output configuration------******** */}}
 {{- if .Values.s3.enabled }}
     [OUTPUT]
-        Name                  cloudwatch
+        Name                  s3
         Match                 {{ .Values.cloudWatch.match }}
-        region                {{ .Values.cloudWatch.region }}
-        log_group_name        {{ .Values.cloudWatch.logGroupName }}
+        region                {{ .Values.s3.region }}
+        bucket                {{ .Values.s3.bucket }}
     {{- if .Values.cloudWatch.logStreamName }}
         log_stream_name       {{ .Values.cloudWatch.logStreamName }}
     {{- end }}
