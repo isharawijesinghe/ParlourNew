@@ -78,7 +78,7 @@ cloudWatch:
   logGroupName: "/aws/eks/fluentbit-cloudwatch/logs"
   logStreamName:
   logStreamPrefix: "fluentbit-"
-  logKey:
+  logKey: log
   logFormat:
   logRetentionDays:
   roleArn:

@@ -6,6 +6,9 @@ metadata:
   labels:
     {{- include "aws-for-fluent-bit.labels" . | nindent 4 }}
 data:
+  parsers.conf: |-
+
+
   fluent-bit.conf: |
     [SERVICE]
 {{- if .Values.service.extraService }}
@@ -17,7 +20,6 @@ data:
 {{- if .Values.service.extraParsers }}
         Parsers_File /fluent-bit/etc/parser_extra.conf
 {{- end }}
-
     [INPUT]
         Name              tail
         Tag               {{ .Values.input.tag }}
@@ -159,7 +161,6 @@ data:
         {{- if .Values.kinesis.compression }}
         compression     {{ .Values.kinesis.compression }}
         {{- end }}
-
         {{- if .Values.kinesis.experimental.concurrency }}
         experimental_concurrency          {{ .Values.kinesis.experimental.concurrency }}
         {{- end }}

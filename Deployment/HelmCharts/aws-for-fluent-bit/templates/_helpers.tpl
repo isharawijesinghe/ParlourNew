@@ -1,15 +1,12 @@
 {{/* vim: set filetype=mustache: */}}
-{{/*
-Expand the name of the chart.
-*/}}
+{{/*  ******************------Expand the name of the chart.------****************** */}}
 {{- define "aws-for-fluent-bit.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/*
-Create a default fully qualified app name.
+{{/* ******************------ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
+If release name contains chart name it will be used as a full name.------******************
 */}}
 {{- define "aws-for-fluent-bit.fullname" -}}
 {{- if .Values.fullnameOverride -}}
@@ -24,16 +21,12 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
+{{/*  ******************------Chart name and version------****************** */}}
 {{- define "aws-for-fluent-bit.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/*
-Common labels
-*/}}
+{{/*   ******************------Common labels------****************** */}}
 {{- define "aws-for-fluent-bit.labels" -}}
 helm.sh/chart: {{ include "aws-for-fluent-bit.chart" . }}
 {{ include "aws-for-fluent-bit.selectorLabels" . }}
@@ -43,24 +36,18 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
-{{/*
-Selector labels
-*/}}
+{{/*   ******************------Selector labels------******************  */}}
 {{- define "aws-for-fluent-bit.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "aws-for-fluent-bit.name" . }}
 app.kubernetes.io/instance: {{ include "aws-for-fluent-bit.fullname" . }}
 {{- end -}}
 
-{{/*
-Create the name of the service account to use
-*/}}
+{{/*  ******************------Service Account Name------****************** */}}
 {{- define "aws-for-fluent-bit.serviceAccountName" -}}
   {{ default (include "aws-for-fluent-bit.fullname" .) .Values.serviceAccount.name }}
 {{- end -}}
 
-{{/*
-Allow the release namespace to be overridden for multi-namespace deployments in combined charts.
-*/}}
+{{/*  ******************------Namespace------****************** */}}
 {{- define "aws-for-fluent-bit.namespace" -}}
   {{- if .Values.global -}}
     {{- if .Values.global.namespaceOverride -}}
