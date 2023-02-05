@@ -12,19 +12,15 @@ service:
         [PARSER]
             Name   logfmt
             Format logfmt
-
 # extra filter to exclude debug logs
 additionalFilters: |
     [FILTER]
         Name    grep
         Match   *
         Exclude log lvl=debug*
-
 firehose:
     enabled: false
-
 kinesis:
     enabled: false
-
 elasticsearch:
     enabled: false

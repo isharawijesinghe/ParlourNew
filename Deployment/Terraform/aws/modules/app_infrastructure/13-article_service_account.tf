@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "article_oidc_assume_role_policy" {
 
 // S3 Access for bucket
 resource "aws_iam_policy" "article_s3_access_policy" {
-  name = "AllS3BucketAccess"
+  name = "ArticleAllS3BucketAccess"
 
   policy = jsonencode({
     Version = "2012-10-17"

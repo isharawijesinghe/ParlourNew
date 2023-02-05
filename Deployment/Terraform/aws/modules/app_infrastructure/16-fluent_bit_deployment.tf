@@ -26,14 +26,16 @@ resource "kubernetes_namespace" "fluent_bit_logs" {
 resource "kubernetes_service_account" "fluent_bit_sa" {
   metadata {
     name      = var.fluent_bit_service_account
-    namespace = kubernetes_namespace.fluent_bit_logs.id
+    namespace = kubernetes_namespace.fluent_bit_logs.metadata.0.name
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
     annotations = {
+      "meta.helm.sh/release-namespace" = var.fluent_bit_namespace
+      "meta.helm.sh/release-name" = "fluent-bit"
       "eks.amazonaws.com/role-arn" = "${aws_iam_role.fluent_bit_node_iam_role.arn}"
     }
   }
-
-  automount_service_account_token = true
-  depends_on                      = [kubernetes_namespace.fluent_bit_logs]
 }
 
 resource "aws_iam_policy" "fluentbit_access_policy" {
@@ -60,7 +62,7 @@ resource "aws_iam_policy" "fluentbit_access_policy" {
 
 //Define user role --> Add assume role as well
 resource "aws_iam_role" "fluent_bit_node_iam_role" {
-  name = "${var.notification_service_account}-${var.environment}-aws-node"
+  name = "${var.fluent_bit_service_account}-${var.environment}-aws-node"
   assume_role_policy =  data.aws_iam_policy_document.fluent_bit_oidc_assume_role_policy.json
   tags = merge(var.tags,
     {
@@ -78,19 +80,60 @@ resource "aws_iam_role_policy_attachment" "aws_fluent_bit_access_policy" {
   depends_on = [aws_iam_role.fluent_bit_node_iam_role]
 }
 
-resource "helm_release" "fluent_bit_helm_release" {
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-for-fluent-bit"
-  version    = "0.1.21" # (17 nov, 2022) # https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
-  name       = "aws-fluent-bit"
-  namespace  = kubernetes_namespace.fluent_bit_logs.id
+#resource "helm_release" "fluent_bit_helm_release" {
+#  repository = "https://aws.github.io/eks-charts"
+#  chart      = "aws-for-fluent-bit"
+#  version    = "0.1.21" # (17 nov, 2022) # https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
+#  name       = "aws-fluent-bit"
+#  namespace  = kubernetes_namespace.fluent_bit_logs.metadata.0.name
+#  cleanup_on_fail = true
+#
+#  values = [
+#    templatefile("${path.module}/fluentbit/aws-fluentbit.tpl", {
+#      logGroupName = "${var.environment}-fluentbit"
+#      region       = var.aws_region
+#    })
+#  ]
+#
+#  depends_on = [kubernetes_namespace.fluent_bit_logs]
+#}
 
-  values = [
-    templatefile("${path.module}/fluentbit/aws-fluentbit.tpl", {
-      logGroupName = "${module.main_eks.eks_name}-fluentbit"
-      region       = var.aws_region
-    })
-  ]
+#resource "helm_release" "fluent_bit_daemonset" {
+#  repository = "https://fluent.github.io/helm-charts"
+#  chart      = "fluent-bit"
+#  version    = "0.15.15"
+#
+#  name       = "fluent-bit"
+#  namespace  = kubernetes_namespace.fluent_bit_logs.metadata.0.name
+#  cleanup_on_fail = true
+#
+#  values = [
+#    templatefile("${path.module}/fluentbit/fluent-bit.yaml", {
+#      service_account_name = var.fluent_bit_service_account
+#      region               = var.aws_region,
+##
+##      log_group_name_application = "applogs"
+##      log_group_name_system      = "systemlogs"
+##      log_retention_days         = 7
+##      region                     = var.aws_region
+#    }),
+#  ]
+#}
 
-  depends_on = [kubernetes_namespace.fluent_bit_logs]
-}
+#resource "helm_release" "fluent_bit_helm_release" {
+#  repository = "https://aws.github.io/eks-charts"
+#  chart      = "aws-for-fluent-bit"
+#  version    = "0.1.21" # (17 nov, 2022) # https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
+#  name       = "aws-fluent-bit"
+#  namespace  = kubernetes_namespace.fluent_bit_logs.metadata.0.name
+#  cleanup_on_fail = true
+#
+#  values = [
+#    templatefile("${path.module}/fluentbit/aws-fluentbit.tpl", {
+#      logGroupName = "${var.environment}-fluentbit"
+#      region       = var.aws_region
+#    })
+#  ]
+#
+#  depends_on = [kubernetes_namespace.fluent_bit_logs]
+#}
