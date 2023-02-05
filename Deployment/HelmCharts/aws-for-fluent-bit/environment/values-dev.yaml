@@ -88,6 +88,18 @@ cloudWatch:
   # extraOutputs: |
   #   ...
 
+s3:
+  enabled: true
+  match: "*"
+  region: "us-east-1"
+  bucket: "dev-parlour-pod-logs"
+  logKey: log
+  use_put_object:
+  s3_key_format: "/$TAG[1]/$TAG[3]/%Y/%m/%d/"
+  s3_key_format_tag_delimiters: "."
+  total_file_size: 5M
+  upload_timeout: 1m
+
 firehose:
   enabled: false
   match: "*"

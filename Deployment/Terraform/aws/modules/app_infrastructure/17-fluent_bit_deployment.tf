@@ -60,6 +60,22 @@ resource "aws_iam_policy" "fluentbit_access_policy" {
   })
 }
 
+// S3 Access for bucket
+resource "aws_iam_policy" "fluentbit_s3_access_policy" {
+  name = "GatewayAllS3BucketAccess"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = ["s3:ListBucket", "s3:GetBucket", "s3:GetObject", "s3:PutObject"]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
 //Define user role --> Add assume role as well
 resource "aws_iam_role" "fluent_bit_node_iam_role" {
   name = "${var.fluent_bit_service_account}-${var.environment}-aws-node"
@@ -73,67 +89,17 @@ resource "aws_iam_role" "fluent_bit_node_iam_role" {
   depends_on = [module.main_eks.eks_open_id_provider_cluster]
 }
 
-//Attach S3 Bucket Policy to Role
+//Attach cloud watch Policy to Role
 resource "aws_iam_role_policy_attachment" "aws_fluent_bit_access_policy" {
   role       = aws_iam_role.fluent_bit_node_iam_role.name
   policy_arn = aws_iam_policy.fluentbit_access_policy.arn
   depends_on = [aws_iam_role.fluent_bit_node_iam_role]
 }
 
-#resource "helm_release" "fluent_bit_helm_release" {
-#  repository = "https://aws.github.io/eks-charts"
-#  chart      = "aws-for-fluent-bit"
-#  version    = "0.1.21" # (17 nov, 2022) # https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
-#  name       = "aws-fluent-bit"
-#  namespace  = kubernetes_namespace.fluent_bit_logs.metadata.0.name
-#  cleanup_on_fail = true
-#
-#  values = [
-#    templatefile("${path.module}/fluentbit/aws-fluentbit.tpl", {
-#      logGroupName = "${var.environment}-fluentbit"
-#      region       = var.aws_region
-#    })
-#  ]
-#
-#  depends_on = [kubernetes_namespace.fluent_bit_logs]
-#}
+//Attach S3 Bucket Policy to Role
+resource "aws_iam_role_policy_attachment" "aws_fluent_bit_access_policy" {
+  role       = aws_iam_role.fluent_bit_node_iam_role.name
+  policy_arn = aws_iam_policy.fluentbit_s3_access_policy.arn
+  depends_on = [aws_iam_role.fluent_bit_node_iam_role]
+}
 
-#resource "helm_release" "fluent_bit_daemonset" {
-#  repository = "https://fluent.github.io/helm-charts"
-#  chart      = "fluent-bit"
-#  version    = "0.15.15"
-#
-#  name       = "fluent-bit"
-#  namespace  = kubernetes_namespace.fluent_bit_logs.metadata.0.name
-#  cleanup_on_fail = true
-#
-#  values = [
-#    templatefile("${path.module}/fluentbit/fluent-bit.yaml", {
-#      service_account_name = var.fluent_bit_service_account
-#      region               = var.aws_region,
-##
-##      log_group_name_application = "applogs"
-##      log_group_name_system      = "systemlogs"
-##      log_retention_days         = 7
-##      region                     = var.aws_region
-#    }),
-#  ]
-#}
-
-#resource "helm_release" "fluent_bit_helm_release" {
-#  repository = "https://aws.github.io/eks-charts"
-#  chart      = "aws-for-fluent-bit"
-#  version    = "0.1.21" # (17 nov, 2022) # https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
-#  name       = "aws-fluent-bit"
-#  namespace  = kubernetes_namespace.fluent_bit_logs.metadata.0.name
-#  cleanup_on_fail = true
-#
-#  values = [
-#    templatefile("${path.module}/fluentbit/aws-fluentbit.tpl", {
-#      logGroupName = "${var.environment}-fluentbit"
-#      region       = var.aws_region
-#    })
-#  ]
-#
-#  depends_on = [kubernetes_namespace.fluent_bit_logs]
-#}
