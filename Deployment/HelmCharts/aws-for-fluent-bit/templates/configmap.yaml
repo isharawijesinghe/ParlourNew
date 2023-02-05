@@ -1,4 +1,5 @@
 {{/* *************-------Create config map-------************* */}}
+{{- if (.Values.fluentBit.enabled)}}  {{/* Run only if fluentbit enabled */}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

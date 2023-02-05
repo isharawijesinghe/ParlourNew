@@ -1,0 +1,23 @@
+name: Deploy FluentBit Log Service
+
+inputs:
+  AWS_ACCESS_KEY_ID:
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Deploy Helm
+      uses: bitovi/github-actions-deploy-eks-helm@v1.0.4
+      with:
+        aws-access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        cluster-name: dev-default-eks
+        config-files: Deployment/HelmCharts/aws-for-fluent-bit/environment/values-dev.yaml
+        chart-path: Deployment/HelmCharts/aws-for-fluent-bit
+        values:
+        namespace: default
+        name: aws-for-fluent-bit

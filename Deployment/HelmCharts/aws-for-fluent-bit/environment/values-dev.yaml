@@ -1,3 +1,6 @@
+fluentBit:
+  enabled: true
+
 global:
 ## Override the deployment namespace
   namespaceOverride: fluent-bit-logs
@@ -95,8 +98,8 @@ s3:
   bucket: "dev-parlour-pod-logs"
   logKey: log
   use_put_object:
-  s3_key_format: "/$TAG[1]/$TAG[3]/%Y/%m/%d/"
-  s3_key_format_tag_delimiters: "."
+  s3_key_format: /k8s_logs/%Y/%m/%d/%H
+  s3_key_format_tag_delimiters:
   total_file_size: 5M
   upload_timeout: 1m
 

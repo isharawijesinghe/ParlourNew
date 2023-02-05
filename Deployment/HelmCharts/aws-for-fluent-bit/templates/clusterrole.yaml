@@ -1,4 +1,5 @@
 {{/* *************-------Cluster role-------************* */}}
+{{- if (.Values.fluentBit.enabled)}}  {{/* Run only if fluentbit enabled */}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:

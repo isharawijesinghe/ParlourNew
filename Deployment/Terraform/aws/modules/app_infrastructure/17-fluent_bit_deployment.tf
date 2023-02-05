@@ -62,7 +62,7 @@ resource "aws_iam_policy" "fluentbit_access_policy" {
 
 // S3 Access for bucket
 resource "aws_iam_policy" "fluentbit_s3_access_policy" {
-  name = "GatewayAllS3BucketAccess"
+  name = "FluentBitAllS3BucketAccess"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -89,17 +89,26 @@ resource "aws_iam_role" "fluent_bit_node_iam_role" {
   depends_on = [module.main_eks.eks_open_id_provider_cluster]
 }
 
-//Attach cloud watch Policy to Role
-resource "aws_iam_role_policy_attachment" "aws_fluent_bit_access_policy" {
+resource "aws_iam_role_policy_attachment" "attachment" {
+  for_each = toset([
+    aws_iam_policy.fluentbit_access_policy.arn,
+    aws_iam_policy.fluentbit_s3_access_policy.arn
+  ])
   role       = aws_iam_role.fluent_bit_node_iam_role.name
-  policy_arn = aws_iam_policy.fluentbit_access_policy.arn
-  depends_on = [aws_iam_role.fluent_bit_node_iam_role]
+  policy_arn = each.value
 }
 
+//Attach cloud watch Policy to Role
+#resource "aws_iam_role_policy_attachment" "aws_fluent_bit_cloud_watch_access_policy" {
+#  role       = aws_iam_role.fluent_bit_node_iam_role.name
+#  policy_arn = aws_iam_policy.fluentbit_access_policy.arn
+#  depends_on = [aws_iam_role.fluent_bit_node_iam_role]
+#}
+
 //Attach S3 Bucket Policy to Role
-resource "aws_iam_role_policy_attachment" "aws_fluent_bit_access_policy" {
-  role       = aws_iam_role.fluent_bit_node_iam_role.name
-  policy_arn = aws_iam_policy.fluentbit_s3_access_policy.arn
-  depends_on = [aws_iam_role.fluent_bit_node_iam_role]
-}
+#resource "aws_iam_role_policy_attachment" "aws_fluent_bit_s3_access_policy" {
+#  role       = aws_iam_role.fluent_bit_node_iam_role.name
+#  policy_arn = aws_iam_policy.fluentbit_s3_access_policy.arn
+#  depends_on = [aws_iam_role.fluent_bit_node_iam_role]
+#}
 

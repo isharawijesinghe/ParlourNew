@@ -1,4 +1,5 @@
 {{/* *************-------Create daemon set-------************* */}}
+{{- if (.Values.fluentBit.enabled)}}  {{/* Run only if fluentbit enabled */}}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
