@@ -60,7 +60,7 @@ resource "aws_iam_role_policy_attachment" "aws_gateway_s3_policy" {
   depends_on = [aws_iam_role.gateway_node_iam_role]
 }
 
-//Kubernetes service account
+//Kubernetes gateway service account
 resource "kubernetes_service_account" "eks_gateway_service_account" {
   metadata {
     name = var.gateway_service_account

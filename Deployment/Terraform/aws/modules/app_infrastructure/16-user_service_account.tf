@@ -60,7 +60,7 @@ resource "aws_iam_role_policy_attachment" "aws_user_s3_policy" {
   depends_on = [aws_iam_role.user_node_iam_role]
 }
 
-//Kubernetes service account
+//Kubernetes user service account
 resource "kubernetes_service_account" "eks_user_service_account" {
   metadata {
     name = var.user_service_account

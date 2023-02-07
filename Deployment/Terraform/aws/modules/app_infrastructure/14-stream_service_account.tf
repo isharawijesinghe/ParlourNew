@@ -60,7 +60,7 @@ resource "aws_iam_role_policy_attachment" "aws_stream_s3_policy" {
   depends_on = [aws_iam_role.stream_node_iam_role]
 }
 
-//Kubernetes service account
+//Kubernetes stream service account
 resource "kubernetes_service_account" "eks_stream_service_account" {
   metadata {
     name = var.stream_service_account

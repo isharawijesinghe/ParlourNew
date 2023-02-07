@@ -60,7 +60,7 @@ resource "aws_iam_role_policy_attachment" "aws_notification_s3_policy" {
   depends_on = [aws_iam_role.notification_node_iam_role]
 }
 
-//Kubernetes service account
+//Kubernetes notification service account
 resource "kubernetes_service_account" "eks_notification_service_account" {
   metadata {
     name = var.notification_service_account
