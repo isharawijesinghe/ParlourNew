@@ -63,5 +63,14 @@ public class ArticleREST {
         return articleServiceI.findArticleDetailsById(articleId);
     }
 
+    @RequestMapping(value = "/createArticleEditRequest", method = RequestMethod.POST, consumes = {"application/json"})
+    public ArticleEditRequestResponse createArticleEditRequest(@RequestBody ArticleEditRequest articleEditRequest){
+        return articleServiceI.createArticleEditRequest(articleEditRequest);
+    }
+
+    @RequestMapping(value = "/approveArticleEditRequest", method = RequestMethod.POST, consumes = {"application/json"})
+    public ArticleEditApproveResponse approveArticleEditRequest(@RequestBody ArticleEditApproveRequest articleEditApproveRequest){
+        return articleServiceI.approveArticleEditRequest(articleEditApproveRequest);
+    }
 
 }

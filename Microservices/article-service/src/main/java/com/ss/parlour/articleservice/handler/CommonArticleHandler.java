@@ -101,4 +101,17 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
         return articleHandlerI.findArticleDetailsById(articleId);
     }
 
+    @Override
+    public ArticleEditRequestResponse createArticleEditRequest(ArticleEditRequest articleEditRequest){
+        ArticleEditRequestResponse articleEditRequestResponse = new ArticleEditRequestResponse();
+
+        return articleEditRequestResponse;
+    }
+
+    @Override
+    public ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest){
+        ArticleEditApproveResponse articleEditApproveResponse = new ArticleEditApproveResponse();
+        return articleEditApproveResponse;
+    }
+
 }

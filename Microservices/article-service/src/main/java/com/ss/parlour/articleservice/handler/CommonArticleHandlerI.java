@@ -14,4 +14,6 @@ public interface CommonArticleHandlerI {
     ArticleCommonResponseBean handleArticleDelete(ArticleDeleteRequestBean articleDeleteRequestBean);
     CommentCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean);
     Article findArticleDetailsById(String articleId);
+    ArticleEditRequestResponse createArticleEditRequest(ArticleEditRequest articleEditRequest);
+    ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest);
 }

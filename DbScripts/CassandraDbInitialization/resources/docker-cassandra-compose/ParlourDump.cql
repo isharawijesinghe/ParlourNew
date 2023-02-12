@@ -46,6 +46,7 @@ CREATE TYPE parlour.stream(
     createdDate timestamp
 );
 
+
 // ------------------ Table scripts ------------------- //
 
 CREATE TABLE IF NOT EXISTS parlour.user (
@@ -156,4 +157,11 @@ CREATE TABLE IF NOT EXISTS parlour.usermappedstream (
     userName text,
     userStreamMap map<text, frozen<stream>>,
     PRIMARY KEY (userName)
+);
+
+CREATE TYPE parlour.articleEditRequest(
+    articleId text,
+    requestUserId text,
+    originalAuthorId text,
+    requestMessage timestamp
 );
