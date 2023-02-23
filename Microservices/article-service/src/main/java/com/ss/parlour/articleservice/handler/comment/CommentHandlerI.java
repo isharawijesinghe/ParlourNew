@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CommentHandlerI {
 
-    Comment handleCommentRequest(CommentBean commentBean);
+    Comment processAddCommentRequest(CommentBean commentBean);
     List<Comment> getCommentListForPost(ArticleRequestBean articleRequestBean);
-    void deleteComment(CommentDeleteRequestBean commentDeleteRequestBean);
+    void processDeleteCommentRequest(CommentDeleteRequestBean commentDeleteRequestBean);
 }

@@ -1,6 +1,6 @@
 package com.ss.parlour.articleservice.domain.cassandra;
 
-import com.ss.parlour.articleservice.utils.bean.ArticleEditBean;
+import com.ss.parlour.articleservice.utils.bean.SharedArticleBean;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Table("editrequestforarticle")
+@Table("sharedarticles")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleEditRequest {
+public class SharedArticles {
 
-    private String articleId;
-    private HashMap<String, ArticleEditBean> articleEditBeanMap = new HashMap<>();
+    private String userId;
+    private HashMap<String, SharedArticleBean> sharedArticleBeanMap = new HashMap<>();
 }

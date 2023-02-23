@@ -13,7 +13,7 @@ public class LikeHandler implements LikeHandlerI{
 
     //When user click on like / unlike button from article or comment
     @Override
-    public void handleLikeRequest(LikeBean likeBean) {
+    public void processAddLikeRequest(LikeBean likeBean) {
         likeHandlerFactoryI.getLikeTypeHandlerI(likeBean.getLikeType()).handleLikeRequest(likeBean);
     }
 

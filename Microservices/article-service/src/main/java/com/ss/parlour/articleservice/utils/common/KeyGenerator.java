@@ -18,4 +18,8 @@ public class KeyGenerator {
     public String likeKeyGenerator(String articleId, String commentId){
         return ArticleConst.LIKE_TYPE + "_" +  articleId + "_" + commentId + "_" + UUIDs.timeBased();
     }
+
+    public String articleEditRequestGenerator(String articleId, String userName){
+        return articleId + "_" + userName + "_" +  UUIDs.timeBased();
+    }
 }

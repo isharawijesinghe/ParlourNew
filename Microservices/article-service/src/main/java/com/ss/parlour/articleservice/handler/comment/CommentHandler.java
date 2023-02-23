@@ -24,10 +24,9 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     @Autowired
     private KeyGenerator keyGenerator;
 
-
     //When user add comment on article
     @Override
-    public Comment handleCommentRequest(CommentBean commentBean){
+    public Comment processAddCommentRequest(CommentBean commentBean){
         if(commentBean.getId() == null || commentBean.getId().isEmpty()){
             //Adding new comment id if request do not have comment id >> This is for new comment
             commentBean.setId(keyGenerator.commentKeyGenerator(commentBean.getAuthorName(), commentBean.getArticleId()));
@@ -41,30 +40,23 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     //When user vote for comment
     @Override
     public void handleLikeRequest(LikeBean likeBean){
-        Optional<Comment> existingCommentBean = commentDAOI.getCommentById(likeBean.getCommentId());
-        if (existingCommentBean.isPresent()){
-            //Update saved comment object in db >> Update "Comment" table
-            Comment updatedComment = updateCommentVote(likeBean, existingCommentBean.get());
-
-            //Update article assign comment map in db >> Update "CommentByArticle" table
-            updatedArticleAssignComment(updatedComment);
+        Optional<Comment> currentComment = commentDAOI.getCommentById(likeBean.getCommentId());
+        if (currentComment.isPresent()){
+            Comment updatedComment = updateCommentVote(likeBean, currentComment.get());//Update saved comment object in db >> Update "Comment" table
+            updatedArticleAssignComment(updatedComment); //Update article assign comment map in db >> Update "CommentByArticle" table
 
         }
     }
 
     //When delete comment
     @Override
-    public void deleteComment(CommentDeleteRequestBean commentDeleteRequestBean){
-        Optional<Comment> existingCommentBean = commentDAOI.getCommentById(commentDeleteRequestBean.getCommentId());
-        if (existingCommentBean.isPresent()){
-
-            //Update comment bean in db --> does require to remove from db ???
-            Comment oldComment = existingCommentBean.get();
+    public void processDeleteCommentRequest(CommentDeleteRequestBean commentDeleteRequestBean){
+        Optional<Comment> currentComment = commentDAOI.getCommentById(commentDeleteRequestBean.getCommentId());
+        if (currentComment.isPresent()){
+            Comment oldComment = currentComment.get();//Update comment bean in db --> does require to remove from db ???
             oldComment.setStatus(ArticleConst.COMMENT_INACTIVE);
             commentDAOI.saveComment(oldComment);
-
-            //Update article assign comment map in db
-            removeArticleAssignComment(oldComment);
+            removeArticleAssignComment(oldComment);//Update article assign comment map in db
         }
     }
 
@@ -72,13 +64,12 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     @Override
     public List<Comment> getCommentListForPost(ArticleRequestBean articleRequestBean){
         //Load all comments for particular article
-        Optional<CommentByArticle> existingCommentByArticle = commentDAOI.getCommentsByArticleId(articleRequestBean.getArticleId());
+        Optional<CommentByArticle> currentCommentByArticle = commentDAOI.getCommentsByArticleId(articleRequestBean.getArticleId());
         List<Comment> responseComment = new ArrayList<>();
-        if (existingCommentByArticle.isPresent()){
-
-            CommentByArticle commentByArticleExisting = existingCommentByArticle.get();
+        if (currentCommentByArticle.isPresent()){
+            CommentByArticle commentByArticleCurrent = currentCommentByArticle.get();
             //Load existing parent comment assign child comment list
-            HashMap<String, List<Comment>> parentToChildCommentMap = commentByArticleExisting.getComments();
+            HashMap<String, List<Comment>> parentToChildCommentMap = commentByArticleCurrent.getComments();
             //Stream over parent child comment map to get list of comments
             List<Comment> listOfComments = parentToChildCommentMap
                                            .values()
@@ -117,17 +108,15 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
 
     //Handle comment list by article id
     protected void handleCommentByArticle(Comment comment){
-        Optional<CommentByArticle> existingCommentByArticle = commentDAOI.getCommentsByArticleId(comment.getArticleId());
+        Optional<CommentByArticle> currentCommentByArticle = commentDAOI.getCommentsByArticleId(comment.getArticleId());
         HashMap<String, List<Comment>> commentMap = new HashMap<>();
 
-        //Process when comments are available for articles >> Adding old one to history / Add audit trail
-        if (existingCommentByArticle.isPresent()){
-            HashMap<String, List<Comment>> existingCommentMap = existingCommentByArticle.get().getComments();
-            commentMap = existingCommentMap;
+        if (currentCommentByArticle.isPresent()){ //Process when comments are available for articles >> Adding old one to history / Add audit trail
+            HashMap<String, List<Comment>> currentCommentMap = currentCommentByArticle.get().getComments();
+            commentMap = currentCommentMap;
         }
 
-        //Update comment map (by article) based on parent id
-        if (!commentMap.containsKey(comment.getParentId())){
+        if (!commentMap.containsKey(comment.getParentId())){ //Update comment map (by article) based on parent id
             commentMap.put(comment.getParentId(), new ArrayList<>());
         }
         commentMap.get(comment.getParentId()).add(comment);
@@ -138,9 +127,9 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
 
     //This will remove article assign comment from stores map when comment deleted
     protected void removeArticleAssignComment(Comment oldComment){
-        Optional<CommentByArticle> existingCommentByArticleBean = commentDAOI.getCommentsByArticleId(oldComment.getArticleId());
-        if (existingCommentByArticleBean.isPresent()){
-            HashMap<String, List<Comment>> currentCommentMap = existingCommentByArticleBean.get().getComments();
+        Optional<CommentByArticle> currentCommentByArticleBean = commentDAOI.getCommentsByArticleId(oldComment.getArticleId());
+        if (currentCommentByArticleBean.isPresent()){
+            HashMap<String, List<Comment>> currentCommentMap = currentCommentByArticleBean.get().getComments();
 
             //If comment itself is parent then remove it, and it's child from map
             String commentId = oldComment.getId();

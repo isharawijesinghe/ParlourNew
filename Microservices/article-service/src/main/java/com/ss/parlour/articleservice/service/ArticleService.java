@@ -2,13 +2,10 @@ package com.ss.parlour.articleservice.service;
 
 import com.ss.parlour.articleservice.domain.cassandra.Article;
 import com.ss.parlour.articleservice.handler.CommonArticleHandlerI;
-import com.ss.parlour.articleservice.utils.bean.ArticleErrorCodes;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.*;
-import com.ss.parlour.articleservice.utils.exception.ArticleServiceRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class ArticleService implements ArticleServiceI {
@@ -19,117 +16,61 @@ public class ArticleService implements ArticleServiceI {
     //Service call for create article
     @Override
     public ArticleCommonResponseBean createArticle(ArticleCreateRequestBean articleCreateRequestBean){
-        try {
-            return commonArticleHandlerI.handleArticleRequest(articleCreateRequestBean);
-        }catch (ArticleServiceRuntimeException ex){
-            throw ex;
-        }catch (Exception ex){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
-        }
+        return commonArticleHandlerI.createArticle(articleCreateRequestBean);
     }
 
     //Service call for creating user comment for article
     @Override
-    public CommentCommonResponseBean createComment(CommentCreateRequestBean commentCreateRequestBean){
-        try {
-            return commonArticleHandlerI.handleCommentRequest(commentCreateRequestBean);
-        }catch (ArticleServiceRuntimeException ex){
-            throw ex;
-        }catch (Exception ex){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
-        }
+    public CommentCommonResponseBean addComment(CommentCreateRequestBean commentCreateRequestBean){
+        return commonArticleHandlerI.addComment(commentCreateRequestBean);
     }
 
     //Service call for add like for user article or comment
     @Override
     public LikeCommonResponseBean addLike(LikeRequestBean likeRequestBean){
-        try {
-            return commonArticleHandlerI.handleLikeRequest(likeRequestBean);
-        }catch (ArticleServiceRuntimeException ex){
-            throw ex;
-        }catch (Exception ex){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
-        }
+        return commonArticleHandlerI.addLike(likeRequestBean);
     }
 
     //Load article details by article id
     @Override
     public ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean){
-        try {
-            return commonArticleHandlerI.findArticleById(articleRequestBean);
-        }catch (ArticleServiceRuntimeException ex){
-            throw ex;
-        }catch (Exception ex){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
-        }
+        return commonArticleHandlerI.findArticleById(articleRequestBean);
     }
 
+    //Find article history by article id
     @Override
     public ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean){
-        try {
-            return commonArticleHandlerI.findArticleHistoryById(articleHistoryRequestBean);
-        }catch (ArticleServiceRuntimeException ex){
-            throw ex;
-        }catch (Exception ex){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
-        }
+        return commonArticleHandlerI.findArticleHistoryById(articleHistoryRequestBean);
     }
 
     //Service call for delete article
     @Override
     public ArticleCommonResponseBean deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean){
-        try {
-            return commonArticleHandlerI.handleArticleDelete(articleDeleteRequestBean);
-        }catch (ArticleServiceRuntimeException ex){
-            throw ex;
-        }catch (Exception ex){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
-        }
+        return commonArticleHandlerI.deleteArticle(articleDeleteRequestBean);
     }
 
     //Service call for delete comment
     @Override
     public CommentCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean){
-        try {
-            return commonArticleHandlerI.deleteComment(commentDeleteRequestBean);
-        }catch (ArticleServiceRuntimeException ex){
-            throw ex;
-        }catch (Exception ex){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
-        }
+        return commonArticleHandlerI.deleteComment(commentDeleteRequestBean);
     }
 
+    //Find article detail by id
     @Override
     public Article findArticleDetailsById(String articleId){
-        try {
-            return commonArticleHandlerI.findArticleDetailsById(articleId);
-        }catch (ArticleServiceRuntimeException ex){
-            throw ex;
-        }catch (Exception ex){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
-        }
+        return commonArticleHandlerI.findArticleDetailsById(articleId);
     }
 
+    //Process article edit request
     @Override
-    public ArticleEditRequestResponse createArticleEditRequest(ArticleEditRequest articleEditRequest){
-        try {
-            return commonArticleHandlerI.createArticleEditRequest(articleEditRequest);
-        }catch (ArticleServiceRuntimeException ex){
-            throw ex;
-        }catch (Exception ex){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
-        }
+    public ArticleEditRequestResponse articleEditRequest(ArticleEditRequestBean articleEditRequestBean){
+        return commonArticleHandlerI.articleEditRequest(articleEditRequestBean);
     }
 
+    //Approve article edit request
     @Override
     public ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest){
-        try {
-            return commonArticleHandlerI.approveArticleEditRequest(articleEditApproveRequest);
-        }catch (ArticleServiceRuntimeException ex){
-            throw ex;
-        }catch (Exception ex){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.UNKNOWN_ERROR , ex);
-        }
+        return commonArticleHandlerI.approveArticleEditRequest(articleEditApproveRequest);
     }
 
 }

@@ -26,5 +26,11 @@ public interface ArticleConst {
 
     String ARTICLE_PARENT_COMMENT_NO = "-1";
 
+    String ARTICLE_EDIT_REQUEST_PENDING = "Pending";
+    String ARTICLE_EDIT_REQUEST_APPROVED = "Edit Approved";
+    String ARTICLE_EDIT_REQUEST_IN_REVIEW = "Review In Progress";
+
+    public final static String AWS_CLOUD_PROVIDER = "AWS";
+
 
 }

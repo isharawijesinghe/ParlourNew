@@ -1,10 +1,10 @@
-package com.ss.parlour.articleservice.service;
+package com.ss.parlour.articleservice.handler.cloud;
 
 import com.ss.parlour.articleservice.utils.bean.requests.PreSignUrlGenerateRequestBean;
-import com.ss.parlour.articleservice.utils.bean.requests.PreSignUrlRequestBean;
 import com.ss.parlour.articleservice.utils.bean.response.PreSignUrlResponseBean;
 
-public interface UtilServiceI {
+public interface CommonCloudHandlerI {
 
     PreSignUrlResponseBean generatePreSignUrl(PreSignUrlGenerateRequestBean preSignUrlGenerateRequestBean);
+
 }

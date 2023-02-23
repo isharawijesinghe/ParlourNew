@@ -163,5 +163,13 @@ CREATE TYPE parlour.articleEditRequest(
     articleId text,
     requestUserId text,
     originalAuthorId text,
-    requestMessage timestamp
+    requestMessage text
+);
+
+CREATE TYPE parlour.sharedArticles(
+    articleId text,
+    requestUserId text,
+    originalAuthorId text,
+    createdTime timestamp,
+    expireTime timestamp
 );

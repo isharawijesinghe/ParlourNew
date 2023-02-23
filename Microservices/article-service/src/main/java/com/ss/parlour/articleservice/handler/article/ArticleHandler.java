@@ -4,12 +4,8 @@ import com.ss.parlour.articleservice.dao.cassandra.ArticleDAOI;
 import com.ss.parlour.articleservice.domain.cassandra.*;
 import com.ss.parlour.articleservice.handler.LikeTypeHandlerI;
 import com.ss.parlour.articleservice.handler.comment.CommentHandlerI;
-import com.ss.parlour.articleservice.utils.bean.ArticleBean;
-import com.ss.parlour.articleservice.utils.bean.ArticleConst;
-import com.ss.parlour.articleservice.utils.bean.LikeBean;
-import com.ss.parlour.articleservice.utils.bean.requests.ArticleDeleteRequestBean;
-import com.ss.parlour.articleservice.utils.bean.requests.ArticleHistoryRequestBean;
-import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
+import com.ss.parlour.articleservice.utils.bean.*;
+import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleHistoryResponseBean;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
 import com.ss.parlour.articleservice.utils.common.KeyGenerator;
@@ -30,43 +26,35 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     @Autowired
     private KeyGenerator keyGenerator;
 
-    //When user post an article
+    //Handle when user request post create
     @Override
-    public Article handleArticleRequest(ArticleBean articleBean){
+    public Article processCreateArticleRequest(ArticleBean articleBean){
         if (articleBean.getId() == null || articleBean.getId().isEmpty()){ //New article request
             articleBean.setId(keyGenerator.articleKeyGenerator(articleBean.getAuthorName()));
-        } else { //Article update request flow
-            Optional<Article> existingArticleBean = articleDAOI.getArticleById(articleBean.getId());
-            if (existingArticleBean.isPresent()){ //Article update flow
-                Article oldArticle = existingArticleBean.get();
-                updateArticleHistory(oldArticle); //Update "ArticleHistory" table
-            }
+        } else { //Article update approve request flow
+            Optional<Article> currentArticle = articleDAOI.getArticleById(articleBean.getId());
+            currentArticle.ifPresent(article -> updateArticle(article)); //Update "ArticleHistory" table
         }
-        Article article = populateArticle(articleBean);
+        Article article = populateArticle(articleBean); //Populate article bean
         updateArticle(article); //Create or update article >> Update "Article" table
         return article;
     }
 
-    //When user like on article
+    //Handle when user add post like
     @Override
     public void handleLikeRequest(LikeBean likeBean){
         Optional<Article> existingArticleBean = articleDAOI.getArticleById(likeBean.getArticleId());
-        if (existingArticleBean.isPresent()){
-            //Update saved article object in db >> Update "Article" table
-            updateArticleVote(likeBean, existingArticleBean.get());
-        }
+        //Update saved article object in db >> Update "Article" table
+        existingArticleBean.ifPresent((article) -> updateArticleVote(likeBean, article));
     }
 
-    //When user delete an article
+    //Handle when user delete an article
     @Override
-    public void deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean){
+    public void processDeleteArticleRequest(ArticleDeleteRequestBean articleDeleteRequestBean){
         Optional<Article> exitingArticle = articleDAOI.getArticleById(articleDeleteRequestBean.getArticleId());
-        if (exitingArticle.isPresent()){
-            //This update article status >> This can be removed from db if required
-            Article existingArticle = exitingArticle.get();
-            existingArticle.setStatus(ArticleConst.ARTICLE_INACTIVE);
-            articleDAOI.saveArticle(existingArticle);
-        }
+        //If delete request article exists --> Then update article status to inactive
+        //If required this can be deleted
+        exitingArticle.ifPresent((article) -> processUpdateArticleStatus(article, ArticleConst.ARTICLE_INACTIVE));
     }
 
     //When user request to find article by id
@@ -82,21 +70,58 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     @Override
     public ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean){
         ArticleHistoryResponseBean articleHistoryResponseBean = new ArticleHistoryResponseBean();
-        Optional<ArticleHistory> existingArticleHistoryBean = articleDAOI.getArticleHistoryByArticleId(articleHistoryRequestBean.getArticleId());
-        if (existingArticleHistoryBean.isPresent()){
-            articleHistoryResponseBean.setArticleHistoryList(existingArticleHistoryBean.get().getOldArticles());
-        }
+        Optional<ArticleHistory> currentArticleHistory = articleDAOI.getArticleHistoryByArticleId(articleHistoryRequestBean.getArticleId());
+        currentArticleHistory.ifPresent((articleHistory -> articleHistoryResponseBean.setArticleHistoryList(articleHistory.getOldArticles())));
         return articleHistoryResponseBean;
     }
 
     //Find user article by id
     @Override
     public Article findArticleDetailsById(String articleId){
-        Optional<Article> existingArticleBean = articleDAOI.getArticleById(articleId);
-        if (existingArticleBean.isPresent()){
-            return existingArticleBean.get();
-        }
+        Optional<Article> currentArticle = articleDAOI.getArticleById(articleId);
+        currentArticle.ifPresent(article -> returnArticle(article));
         return null;
+    }
+
+    //Handle article edit request
+    @Override
+    public void processArticleEditRequest(ArticleEditRequestBean articleEditRequestBean){
+        ArticleEditBean articleEditBean = articleEditRequestBean.getArticleEditBean();
+        String articleEditRequestId = keyGenerator.articleEditRequestGenerator(articleEditBean.getArticleId(), articleEditBean.getRequestUserId());
+        articleEditBean.setEditRequestId(articleEditRequestId); //Update article edit request id (~Generate)
+        //Process article edit request (update article edit request + article edit request for user)
+        processEditRequestForArticle(articleEditBean, ArticleConst.ARTICLE_EDIT_REQUEST_PENDING);
+    }
+
+    //Call article edit approve request
+    //Once article edit approve it should updates article edit beans + insert data into shared article table
+    @Override
+    public void processArticleEditRequestApproval(ArticleEditApproveRequest articleEditApproveRequest){
+        processEditApproveRequestForArticle(articleEditApproveRequest, ArticleConst.ARTICLE_EDIT_REQUEST_APPROVED);
+    }
+
+    //---------------------------********* Article handler provide methods *********---------------------------//
+
+    protected void processEditApproveRequestForArticle(ArticleEditApproveRequest articleEditApproveRequest, String status){
+        updateArticleEditRequestStatus(articleEditApproveRequest,status);
+        updateArticleEditRequestForUserStatus(articleEditApproveRequest,status);
+        updateSharedArticleEntry(articleEditApproveRequest, status);
+    }
+
+    protected void processEditRequestForArticle(ArticleEditBean articleEditBean, String status){
+        ArticleEditBean updatedArticleEditBean =  populateArticleEditBean(articleEditBean, status);
+        updateArticleEditRequest(updatedArticleEditBean);//Add article edit request to database against article id
+        updateArticleEditRequestForUser(updatedArticleEditBean);//Add article edit request to database against user id
+    }
+
+    protected Article returnArticle(Article article){
+        return article;
+    }
+
+    //Update article status
+    protected void processUpdateArticleStatus(Article currentArticle, int status){
+        currentArticle.setStatus(status);
+        articleDAOI.saveArticle(currentArticle);
     }
 
     //Update article like / unlike status
@@ -104,8 +129,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         Set<String> likedUsers = oldArticle.getLikedList();
         Set<String> unLikeUsers = oldArticle.getUnLikedList();
 
-        //Update user like or unlike list based on user input
-        switch (likeBean.getStatus()){
+        switch (likeBean.getStatus()){ //Update user like or unlike list based on user input
             case ArticleConst.USER_LIKED:
                 likedUsers.add(likeBean.getUserName());
                 unLikeUsers.removeIf(username -> username.equals(likeBean.getUserName()));
@@ -168,5 +192,73 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         articleHistory.setOldArticles(articleHistoriesList);
         articleDAOI.updateArticleHistory(articleHistory);
     }
+
+    protected void updateArticleEditRequestStatus(ArticleEditApproveRequest articleEditApproveRequest, String status){
+        Optional<ArticleEditRequest> currentEditRequest = articleDAOI.getArticleEditRequestForArticleId(articleEditApproveRequest.getArticleId());
+        currentEditRequest.ifPresent(articleEditRequest -> {currentEditRequest.get().getArticleEditBeanMap()
+                .get(articleEditApproveRequest.getEditRequestId())
+                .setEditRequestStatus(status);
+        });
+        //Updated db with modified entity
+        articleDAOI.saveArticleEditRequest(currentEditRequest.get());
+    }
+
+    protected void updateArticleEditRequestForUserStatus(ArticleEditApproveRequest articleEditApproveRequest, String status){
+        Optional<ArticleEditRequestForUser> currentEditRequestForUser = articleDAOI.getArticleEditRequestForUserId(articleEditApproveRequest.getOwnerId());
+        currentEditRequestForUser.ifPresent(articleEditRequestForUser -> {currentEditRequestForUser.get().getArticleEditBeanMap()
+                .get(articleEditApproveRequest.getEditRequestId())
+                .setEditRequestStatus(status);
+        });
+        //Updated db with modified entity
+        articleDAOI.saveArticleEditRequestForUser(currentEditRequestForUser.get());
+    }
+
+    protected void updateSharedArticleEntry(ArticleEditApproveRequest articleEditApproveRequest, String status){
+        Optional<SharedArticles> currentShareArticle = articleDAOI.getSharedArticlesForUserId(articleEditApproveRequest.getOwnerId());
+        SharedArticleBean sharedArticleBean = populateShareArticleBean(articleEditApproveRequest, status);
+        SharedArticles sharedArticles = new SharedArticles();
+        sharedArticles.setUserId(articleEditApproveRequest.getOwnerId());
+        if (currentShareArticle.isPresent()){
+            sharedArticles = currentShareArticle.get();
+        }
+        sharedArticles.getSharedArticleBeanMap().put(articleEditApproveRequest.getEditRequestId(), sharedArticleBean);
+        articleDAOI.saveSharedArticles(sharedArticles);
+    }
+
+    protected SharedArticleBean populateShareArticleBean(ArticleEditApproveRequest articleEditApproveRequest, String status){
+        SharedArticleBean sharedArticleBean = new SharedArticleBean();
+        sharedArticleBean.setArticleId(articleEditApproveRequest.getArticleId());
+        sharedArticleBean.setStatus(status);
+        sharedArticleBean.setAuthor(articleEditApproveRequest.getOwnerId());
+        return sharedArticleBean;
+    }
+
+    protected void updateArticleEditRequest(ArticleEditBean articleEditBean){
+        Optional<ArticleEditRequest> currentEditRequest = articleDAOI.getArticleEditRequestForArticleId(articleEditBean.getArticleId());
+        ArticleEditRequest articleEditRequestBean = new ArticleEditRequest();
+        articleEditRequestBean.setArticleId(articleEditBean.getArticleId());
+        if (currentEditRequest.isPresent()){
+            articleEditRequestBean = currentEditRequest.get();
+        }
+        articleEditRequestBean.getArticleEditBeanMap().put(articleEditBean.getEditRequestId(), articleEditBean);
+        articleDAOI.saveArticleEditRequest(articleEditRequestBean);
+    }
+
+    protected void updateArticleEditRequestForUser(ArticleEditBean articleEditBean){
+        Optional<ArticleEditRequestForUser> currentEditRequest = articleDAOI.getArticleEditRequestForUserId(articleEditBean.getOwnerId());
+        ArticleEditRequestForUser articleEditRequestBeanForUser = new ArticleEditRequestForUser();
+        articleEditRequestBeanForUser.setUserId(articleEditBean.getOwnerId());
+        if (currentEditRequest.isPresent()){
+            articleEditRequestBeanForUser = currentEditRequest.get();
+        }
+        articleEditRequestBeanForUser.getArticleEditBeanMap().put(articleEditBean.getEditRequestId(), articleEditBean);
+        articleDAOI.saveArticleEditRequestForUser(articleEditRequestBeanForUser);
+    }
+
+    protected ArticleEditBean populateArticleEditBean(ArticleEditBean articleEditBean, String status){
+        articleEditBean.setEditRequestStatus(status);
+        return articleEditBean;
+    }
+
 
 }

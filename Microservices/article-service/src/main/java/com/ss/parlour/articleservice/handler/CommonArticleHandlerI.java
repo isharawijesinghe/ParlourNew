@@ -6,14 +6,14 @@ import com.ss.parlour.articleservice.utils.bean.response.*;
 
 public interface CommonArticleHandlerI {
 
-    ArticleCommonResponseBean handleArticleRequest(ArticleCreateRequestBean articleCreateRequestBean);
-    CommentCommonResponseBean handleCommentRequest(CommentCreateRequestBean commentCreateRequestBean);
-    LikeCommonResponseBean handleLikeRequest(LikeRequestBean likeRequestBean);
+    ArticleCommonResponseBean createArticle(ArticleCreateRequestBean articleCreateRequestBean);
+    CommentCommonResponseBean addComment(CommentCreateRequestBean commentCreateRequestBean);
+    LikeCommonResponseBean addLike(LikeRequestBean likeRequestBean);
     ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean);
     ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean);
-    ArticleCommonResponseBean handleArticleDelete(ArticleDeleteRequestBean articleDeleteRequestBean);
+    ArticleCommonResponseBean deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean);
     CommentCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean);
     Article findArticleDetailsById(String articleId);
-    ArticleEditRequestResponse createArticleEditRequest(ArticleEditRequest articleEditRequest);
+    ArticleEditRequestResponse articleEditRequest(ArticleEditRequestBean articleEditRequestBean);
     ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest);
 }

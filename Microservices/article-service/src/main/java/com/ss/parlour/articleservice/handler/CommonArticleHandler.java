@@ -31,10 +31,10 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
     private LikeHandlerI likeHandlerI;
 
     @Override
-    public ArticleCommonResponseBean handleArticleRequest(ArticleCreateRequestBean articleCreateRequestBean){
+    public ArticleCommonResponseBean createArticle(ArticleCreateRequestBean articleCreateRequestBean){
         ArticleCommonResponseBean articleCommonResponseBean = new ArticleCommonResponseBean();
         ArticleBean articleBean = articleValidatorI.validateArticleRequest(articleCreateRequestBean);
-        Article article = articleHandlerI.handleArticleRequest(articleBean);
+        Article article = articleHandlerI.processCreateArticleRequest(articleBean);
         articleCommonResponseBean.setArticleId(article.getId());
         articleCommonResponseBean.setStatus(ArticleConst.STATUS_SUCCESS);
         articleCommonResponseBean.setNarration(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);
@@ -42,10 +42,10 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
     }
 
     @Override
-    public CommentCommonResponseBean handleCommentRequest(CommentCreateRequestBean commentCreateRequestBean){
+    public CommentCommonResponseBean addComment(CommentCreateRequestBean commentCreateRequestBean){
         CommentCommonResponseBean commentCommonResponseBean = new CommentCommonResponseBean();
         CommentBean commentBean = articleValidatorI.validateCommentRequest(commentCreateRequestBean); //Doing basic initial validations
-        Comment comment = commentHandlerI.handleCommentRequest(commentBean); //Handle comments related logics
+        Comment comment = commentHandlerI.processAddCommentRequest(commentBean); //Handle comments related logics
         commentCommonResponseBean.setCommentId(comment.getId());
         commentCommonResponseBean.setStatus(ArticleConst.STATUS_SUCCESS);
         commentCommonResponseBean.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_ADDED);
@@ -53,10 +53,10 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
     }
 
     @Override
-    public LikeCommonResponseBean handleLikeRequest(LikeRequestBean likeRequestBean){
+    public LikeCommonResponseBean addLike(LikeRequestBean likeRequestBean){
         LikeCommonResponseBean likeCommonResponseBean  = new LikeCommonResponseBean();
         LikeBean likeBean = articleValidatorI.validateArticleLikeRequest(likeRequestBean); //Doing basic initial validations
-        likeHandlerI.handleLikeRequest(likeBean);
+        likeHandlerI.processAddLikeRequest(likeBean);
         likeCommonResponseBean.setStatus(ArticleConst.STATUS_SUCCESS);
         likeCommonResponseBean.setNarration(ArticleConst.SUCCESSFULLY_LIKE_ADDED);
         return likeCommonResponseBean;
@@ -75,10 +75,10 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
     }
 
     @Override
-    public ArticleCommonResponseBean handleArticleDelete(ArticleDeleteRequestBean articleDeleteRequestBean){
+    public ArticleCommonResponseBean deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean){
         ArticleCommonResponseBean articleCommonResponseBean = new ArticleCommonResponseBean();
         articleValidatorI.validateArticleDeleteRequest(articleDeleteRequestBean); //Doing basic initial validations
-        articleHandlerI.deleteArticle(articleDeleteRequestBean);
+        articleHandlerI.processDeleteArticleRequest(articleDeleteRequestBean);
         articleCommonResponseBean.setArticleId(articleDeleteRequestBean.getArticleId());
         articleCommonResponseBean.setStatus(ArticleConst.STATUS_SUCCESS);
         articleCommonResponseBean.setNarration(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED);
@@ -89,7 +89,7 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
     public CommentCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean){
         CommentCommonResponseBean commentCommonResponseBean = new CommentCommonResponseBean();
         articleValidatorI.validateCommentDeleteRequest(commentDeleteRequestBean); //Doing basic initial validations
-        commentHandlerI.deleteComment(commentDeleteRequestBean);
+        commentHandlerI.processDeleteCommentRequest(commentDeleteRequestBean);
         commentCommonResponseBean.setCommentId(commentDeleteRequestBean.getCommentId());
         commentCommonResponseBean.setStatus(ArticleConst.STATUS_SUCCESS);
         commentCommonResponseBean.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_DELETED);
@@ -102,15 +102,16 @@ public class CommonArticleHandler implements CommonArticleHandlerI {
     }
 
     @Override
-    public ArticleEditRequestResponse createArticleEditRequest(ArticleEditRequest articleEditRequest){
+    public ArticleEditRequestResponse articleEditRequest(ArticleEditRequestBean articleEditRequestBean){
         ArticleEditRequestResponse articleEditRequestResponse = new ArticleEditRequestResponse();
-
+        articleHandlerI.processArticleEditRequest(articleEditRequestBean);
         return articleEditRequestResponse;
     }
 
     @Override
     public ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest){
         ArticleEditApproveResponse articleEditApproveResponse = new ArticleEditApproveResponse();
+        articleHandlerI.processArticleEditRequestApproval(articleEditApproveRequest);
         return articleEditApproveResponse;
     }
 

@@ -4,5 +4,5 @@ import com.ss.parlour.articleservice.utils.bean.LikeBean;
 
 public interface LikeHandlerI {
 
-    void handleLikeRequest(LikeBean likeBean);
+    void processAddLikeRequest(LikeBean likeBean);
 }
