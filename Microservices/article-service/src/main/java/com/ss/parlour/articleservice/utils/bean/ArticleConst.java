@@ -12,6 +12,7 @@ public interface ArticleConst {
     String SUCCESSFULLY_LIKE_ADDED = "Successfully like added";
     String SUCCESSFULLY_ARTICLE_DELETED = "Successfully article deleted";
     String SUCCESSFULLY_COMMENT_DELETED = "Successfully comment deleted";
+    String SUCCESSFULLY_PLACE_EDIT_REQUEST = "Edit request successful";
     String SEPARATOR = "~";
 
     int USER_LIKED = 1;

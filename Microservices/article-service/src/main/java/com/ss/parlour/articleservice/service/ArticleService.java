@@ -1,9 +1,17 @@
 package com.ss.parlour.articleservice.service;
 
 import com.ss.parlour.articleservice.domain.cassandra.Article;
-import com.ss.parlour.articleservice.handler.CommonArticleHandlerI;
+import com.ss.parlour.articleservice.domain.cassandra.Comment;
+import com.ss.parlour.articleservice.handler.article.ArticleHandlerI;
+import com.ss.parlour.articleservice.handler.comment.CommentHandlerI;
+import com.ss.parlour.articleservice.handler.like.LikeHandlerI;
+import com.ss.parlour.articleservice.utils.bean.ArticleBean;
+import com.ss.parlour.articleservice.utils.bean.ArticleConst;
+import com.ss.parlour.articleservice.utils.bean.CommentBean;
+import com.ss.parlour.articleservice.utils.bean.LikeBean;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.*;
+import com.ss.parlour.articleservice.utils.validator.ArticleValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,66 +19,103 @@ import org.springframework.stereotype.Service;
 public class ArticleService implements ArticleServiceI {
 
     @Autowired
-    private CommonArticleHandlerI commonArticleHandlerI;
+    private ArticleHandlerI articleHandlerI;
 
-    //Service call for create article
+    @Autowired
+    private CommentHandlerI commentHandlerI;
+
+    @Autowired
+    private ArticleValidatorI articleValidatorI;
+
+    @Autowired
+    private LikeHandlerI likeHandlerI;
+
     @Override
     public ArticleCommonResponseBean createArticle(ArticleCreateRequestBean articleCreateRequestBean){
-        return commonArticleHandlerI.createArticle(articleCreateRequestBean);
+        ArticleCommonResponseBean articleCommonResponseBean = new ArticleCommonResponseBean();
+        ArticleBean articleBean = articleValidatorI.validateArticleRequest(articleCreateRequestBean);
+        Article article = articleHandlerI.processCreateArticleRequest(articleBean);
+        articleCommonResponseBean.setArticleId(article.getId());
+        articleCommonResponseBean.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleCommonResponseBean.setNarration(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);
+        return articleCommonResponseBean;
     }
 
-    //Service call for creating user comment for article
     @Override
     public CommentCommonResponseBean addComment(CommentCreateRequestBean commentCreateRequestBean){
-        return commonArticleHandlerI.addComment(commentCreateRequestBean);
+        CommentCommonResponseBean commentCommonResponseBean = new CommentCommonResponseBean();
+        CommentBean commentBean = articleValidatorI.validateCommentRequest(commentCreateRequestBean); //Doing basic initial validations
+        Comment comment = commentHandlerI.processAddCommentRequest(commentBean); //Handle comments related logics
+        commentCommonResponseBean.setCommentId(comment.getId());
+        commentCommonResponseBean.setStatus(ArticleConst.STATUS_SUCCESS);
+        commentCommonResponseBean.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_ADDED);
+        return commentCommonResponseBean;
     }
 
-    //Service call for add like for user article or comment
     @Override
     public LikeCommonResponseBean addLike(LikeRequestBean likeRequestBean){
-        return commonArticleHandlerI.addLike(likeRequestBean);
+        LikeCommonResponseBean likeCommonResponseBean  = new LikeCommonResponseBean();
+        LikeBean likeBean = articleValidatorI.validateArticleLikeRequest(likeRequestBean); //Doing basic initial validations
+        likeHandlerI.processAddLikeRequest(likeBean);
+        likeCommonResponseBean.setStatus(ArticleConst.STATUS_SUCCESS);
+        likeCommonResponseBean.setNarration(ArticleConst.SUCCESSFULLY_LIKE_ADDED);
+        return likeCommonResponseBean;
     }
 
-    //Load article details by article id
     @Override
     public ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean){
-        return commonArticleHandlerI.findArticleById(articleRequestBean);
+        ArticleResponseBean articleResponseBean = articleHandlerI.findArticleById(articleRequestBean);
+        return articleResponseBean;
     }
 
-    //Find article history by article id
     @Override
     public ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean){
-        return commonArticleHandlerI.findArticleHistoryById(articleHistoryRequestBean);
+        ArticleHistoryResponseBean articleHistoryResponseBean = articleHandlerI.findArticleHistoryById(articleHistoryRequestBean);
+        return articleHistoryResponseBean;
     }
 
-    //Service call for delete article
     @Override
     public ArticleCommonResponseBean deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean){
-        return commonArticleHandlerI.deleteArticle(articleDeleteRequestBean);
+        ArticleCommonResponseBean articleCommonResponseBean = new ArticleCommonResponseBean();
+        articleValidatorI.validateArticleDeleteRequest(articleDeleteRequestBean); //Doing basic initial validations
+        articleHandlerI.processDeleteArticleRequest(articleDeleteRequestBean);
+        articleCommonResponseBean.setArticleId(articleDeleteRequestBean.getArticleId());
+        articleCommonResponseBean.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleCommonResponseBean.setNarration(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED);
+        return articleCommonResponseBean;//Return response
     }
 
-    //Service call for delete comment
     @Override
     public CommentCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean){
-        return commonArticleHandlerI.deleteComment(commentDeleteRequestBean);
+        CommentCommonResponseBean commentCommonResponseBean = new CommentCommonResponseBean();
+        articleValidatorI.validateCommentDeleteRequest(commentDeleteRequestBean); //Doing basic initial validations
+        commentHandlerI.processDeleteCommentRequest(commentDeleteRequestBean);
+        commentCommonResponseBean.setCommentId(commentDeleteRequestBean.getCommentId());
+        commentCommonResponseBean.setStatus(ArticleConst.STATUS_SUCCESS);
+        commentCommonResponseBean.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_DELETED);
+        return commentCommonResponseBean;//Return response
     }
 
-    //Find article detail by id
     @Override
     public Article findArticleDetailsById(String articleId){
-        return commonArticleHandlerI.findArticleDetailsById(articleId);
+        return articleHandlerI.findArticleDetailsById(articleId);
     }
 
-    //Process article edit request
     @Override
     public ArticleEditRequestResponse articleEditRequest(ArticleEditRequestBean articleEditRequestBean){
-        return commonArticleHandlerI.articleEditRequest(articleEditRequestBean);
+        ArticleEditRequestResponse articleEditRequestResponse = new ArticleEditRequestResponse();
+        String articleEditReqId = articleHandlerI.processArticleEditRequest(articleEditRequestBean);
+        articleEditRequestResponse.setEditRequestId(articleEditReqId);
+        articleEditRequestResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleEditRequestResponse.setNarration(ArticleConst.SUCCESSFULLY_PLACE_EDIT_REQUEST);
+        return articleEditRequestResponse;
     }
 
-    //Approve article edit request
     @Override
     public ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest){
-        return commonArticleHandlerI.approveArticleEditRequest(articleEditApproveRequest);
+        ArticleEditApproveResponse articleEditApproveResponse = new ArticleEditApproveResponse();
+        articleHandlerI.processArticleEditRequestApproval(articleEditApproveRequest);
+        return articleEditApproveResponse;
     }
 
 }

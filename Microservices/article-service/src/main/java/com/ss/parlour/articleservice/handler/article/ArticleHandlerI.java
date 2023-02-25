@@ -13,6 +13,6 @@ public interface ArticleHandlerI {
     ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean);
     ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean);
     Article findArticleDetailsById(String articleId);
-    void processArticleEditRequest(ArticleEditRequestBean articleEditRequestBean);
+    String processArticleEditRequest(ArticleEditRequestBean articleEditRequestBean);
     void processArticleEditRequestApproval(ArticleEditApproveRequest articleEditApproveRequest);
 }

@@ -48,3 +48,9 @@ amazon:
     secret-key: ""
     access-key: ""
 
+cloud:
+  provider: AWS
+
+aws:
+  bucket:
+    user-image-upload: dev-parlour-user-images

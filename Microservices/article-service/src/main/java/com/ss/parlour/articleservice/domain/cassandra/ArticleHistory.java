@@ -1,5 +1,8 @@
 package com.ss.parlour.articleservice.domain.cassandra;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
@@ -7,23 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Table("articlehistory")
+@Getter
+@Setter
+@NoArgsConstructor
 public class ArticleHistory {
 
     @PrimaryKey
     private String articleId;
     private List<Article> oldArticles = new ArrayList<>();
 
-    public String getArticleId() {
-        return articleId;
-    }
-
-    public void setArticleId(String articleId) {
-        this.articleId = articleId;
-    }
-
-    public List<Article> getOldArticles() {return oldArticles;}
-
-    public void setOldArticles(List<Article> oldArticles) {
-        this.oldArticles = oldArticles;
-    }
 }

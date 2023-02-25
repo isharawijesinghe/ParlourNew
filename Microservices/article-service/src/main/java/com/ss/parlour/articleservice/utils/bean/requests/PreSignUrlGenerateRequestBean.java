@@ -1,14 +1,14 @@
 package com.ss.parlour.articleservice.utils.bean.requests;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class PreSignUrlGenerateRequestBean {
 
     private String extension;
 
-    public String getExtension() {
-        return extension;
-    }
-
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
 }

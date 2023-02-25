@@ -1,14 +1,12 @@
 package com.ss.parlour.articleservice.domain.cassandra;
 
-import com.ss.parlour.articleservice.utils.bean.SharedArticleBean;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @Table("sharedarticles")
 @Getter
@@ -16,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SharedArticles {
 
+    @PrimaryKey
     private String userId;
     private HashMap<String, SharedArticleBean> sharedArticleBeanMap = new HashMap<>();
 }

@@ -46,6 +46,22 @@ CREATE TYPE parlour.stream(
     createdDate timestamp
 );
 
+CREATE TYPE parlour.articleeditbean(
+    editRequestId text,
+    articleId text,
+    title text,
+    requesterId text,
+    description text,
+    editRequestStatus text,
+    ownerId text
+);
+
+CREATE TYPE parlour.sharedarticles(
+    articleId text,
+    status text,
+    author text
+);
+
 
 // ------------------ Table scripts ------------------- //
 
@@ -159,17 +175,20 @@ CREATE TABLE IF NOT EXISTS parlour.usermappedstream (
     PRIMARY KEY (userName)
 );
 
-CREATE TYPE parlour.articleEditRequest(
-    articleId text,
-    requestUserId text,
-    originalAuthorId text,
-    requestMessage text
+CREATE TABLE IF NOT EXISTS parlour.ArticleEditRequest (
+   articleId text,
+   articleEditBeanMap map<text, frozen<articleeditbean>>,
+   PRIMARY KEY (articleId)
 );
 
-CREATE TYPE parlour.sharedArticles(
-    articleId text,
-    requestUserId text,
-    originalAuthorId text,
-    createdTime timestamp,
-    expireTime timestamp
+CREATE TABLE IF NOT EXISTS parlour.ArticleEditRequestForUser (
+   userId text,
+   articleEditBeanMapForUser map<text, frozen<articleeditbean>>,
+   PRIMARY KEY (userId)
+);
+
+CREATE TABLE IF NOT EXISTS parlour.SharedArticles (
+   userId text,
+   sharedArticleBeanMap map<text, frozen<sharedarticles>>,
+   PRIMARY KEY (userId)
 );

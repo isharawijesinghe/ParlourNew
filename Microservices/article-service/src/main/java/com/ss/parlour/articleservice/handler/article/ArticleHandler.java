@@ -33,10 +33,10 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
             articleBean.setId(keyGenerator.articleKeyGenerator(articleBean.getAuthorName()));
         } else { //Article update approve request flow
             Optional<Article> currentArticle = articleDAOI.getArticleById(articleBean.getId());
-            currentArticle.ifPresent(article -> updateArticle(article)); //Update "ArticleHistory" table
+            currentArticle.ifPresent(article -> updateArticle(article)); //Update ArticleHistory table
         }
         Article article = populateArticle(articleBean); //Populate article bean
-        updateArticle(article); //Create or update article >> Update "Article" table
+        updateArticle(article); //Create or update article >> Update Article table
         return article;
     }
 
@@ -44,7 +44,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     @Override
     public void handleLikeRequest(LikeBean likeBean){
         Optional<Article> existingArticleBean = articleDAOI.getArticleById(likeBean.getArticleId());
-        //Update saved article object in db >> Update "Article" table
+        //Update saved article object in db >> Update Article table
         existingArticleBean.ifPresent((article) -> updateArticleVote(likeBean, article));
     }
 
@@ -85,12 +85,13 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
 
     //Handle article edit request
     @Override
-    public void processArticleEditRequest(ArticleEditRequestBean articleEditRequestBean){
+    public String processArticleEditRequest(ArticleEditRequestBean articleEditRequestBean){
         ArticleEditBean articleEditBean = articleEditRequestBean.getArticleEditBean();
-        String articleEditRequestId = keyGenerator.articleEditRequestGenerator(articleEditBean.getArticleId(), articleEditBean.getRequestUserId());
+        String articleEditRequestId = keyGenerator.articleEditRequestGenerator(articleEditBean.getArticleId(), articleEditBean.getRequesterId());
         articleEditBean.setEditRequestId(articleEditRequestId); //Update article edit request id (~Generate)
         //Process article edit request (update article edit request + article edit request for user)
         processEditRequestForArticle(articleEditBean, ArticleConst.ARTICLE_EDIT_REQUEST_PENDING);
+        return articleEditRequestId;
     }
 
     //Call article edit approve request
@@ -205,7 +206,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
 
     protected void updateArticleEditRequestForUserStatus(ArticleEditApproveRequest articleEditApproveRequest, String status){
         Optional<ArticleEditRequestForUser> currentEditRequestForUser = articleDAOI.getArticleEditRequestForUserId(articleEditApproveRequest.getOwnerId());
-        currentEditRequestForUser.ifPresent(articleEditRequestForUser -> {currentEditRequestForUser.get().getArticleEditBeanMap()
+        currentEditRequestForUser.ifPresent(articleEditRequestForUser -> {currentEditRequestForUser.get().getArticleEditBeanMapForUser()
                 .get(articleEditApproveRequest.getEditRequestId())
                 .setEditRequestStatus(status);
         });
@@ -251,7 +252,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         if (currentEditRequest.isPresent()){
             articleEditRequestBeanForUser = currentEditRequest.get();
         }
-        articleEditRequestBeanForUser.getArticleEditBeanMap().put(articleEditBean.getEditRequestId(), articleEditBean);
+        articleEditRequestBeanForUser.getArticleEditBeanMapForUser().put(articleEditBean.getEditRequestId(), articleEditBean);
         articleDAOI.saveArticleEditRequestForUser(articleEditRequestBeanForUser);
     }
 
