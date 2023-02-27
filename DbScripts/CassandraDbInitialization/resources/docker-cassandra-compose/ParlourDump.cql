@@ -175,6 +175,17 @@ CREATE TABLE IF NOT EXISTS parlour.usermappedstream (
     PRIMARY KEY (userName)
 );
 
+CREATE TABLE IF NOT EXISTS parlour.EditRequest (
+    editRequestId text,
+    articleId text,
+    title text,
+    requesterId text,
+    description text,
+    editRequestStatus text,
+    ownerId text,
+    PRIMARY KEY (editRequestId)
+);
+
 CREATE TABLE IF NOT EXISTS parlour.ArticleEditRequest (
    articleId text,
    articleEditBeanMap map<text, frozen<articleeditbean>>,

@@ -8,13 +8,18 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.HashMap;
 
-@Table("articleeditrequest")
+@Table("editrequestbyarticle")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleEditRequest {
+public class EditRequestByArticle {
 
     @PrimaryKey
     private String articleId;
-    private HashMap<String, ArticleEditBean> articleEditBeanMap = new HashMap<>();
+    private HashMap<String, EditRequest> editRequestByArticleMap = new HashMap<>();
+
+    public EditRequestByArticle(String articleId, HashMap<String, EditRequest> editRequestByArticleMap){
+        this.articleId = articleId;
+        this.editRequestByArticleMap = editRequestByArticleMap;
+    }
 }

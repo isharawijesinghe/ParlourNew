@@ -86,11 +86,12 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     //Handle article edit request
     @Override
     public String processArticleEditRequest(ArticleEditRequestBean articleEditRequestBean){
-        ArticleEditBean articleEditBean = articleEditRequestBean.getArticleEditBean();
+        EditRequest articleEditBean = articleEditRequestBean.getArticleEditRequest();
         String articleEditRequestId = keyGenerator.articleEditRequestGenerator(articleEditBean.getArticleId(), articleEditBean.getRequesterId());
         articleEditBean.setEditRequestId(articleEditRequestId); //Update article edit request id (~Generate)
+        articleEditBean.setEditRequestStatus(ArticleConst.ARTICLE_EDIT_REQUEST_PENDING); //Update article edit request status to pending
         //Process article edit request (update article edit request + article edit request for user)
-        processEditRequestForArticle(articleEditBean, ArticleConst.ARTICLE_EDIT_REQUEST_PENDING);
+        processEditRequestForArticle(articleEditBean);
         return articleEditRequestId;
     }
 
@@ -103,16 +104,19 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
 
     //---------------------------********* Article handler provide methods *********---------------------------//
 
-    protected void processEditApproveRequestForArticle(ArticleEditApproveRequest articleEditApproveRequest, String status){
-        updateArticleEditRequestStatus(articleEditApproveRequest,status);
-        updateArticleEditRequestForUserStatus(articleEditApproveRequest,status);
-        updateSharedArticleEntry(articleEditApproveRequest, status);
+    protected void processEditRequestForArticle(EditRequest articleEditRequest){
+        EditRequestHelperBean editRequestHelperBean =  populateEditRequestHelperBean(articleEditRequest);//Populate article edit request
+        populateEditRequestByArticle(editRequestHelperBean);//Populate article edit request for article
+        populateEditRequestByUser(editRequestHelperBean);//Populate article  edit request for user
+        articleDAOI.saveArticleEditRequest(editRequestHelperBean);//Save entries into db
     }
 
-    protected void processEditRequestForArticle(ArticleEditBean articleEditBean, String status){
-        ArticleEditBean updatedArticleEditBean =  populateArticleEditBean(articleEditBean, status);
-        updateArticleEditRequest(updatedArticleEditBean);//Add article edit request to database against article id
-        updateArticleEditRequestForUser(updatedArticleEditBean);//Add article edit request to database against user id
+    protected void processEditApproveRequestForArticle(ArticleEditApproveRequest articleEditApproveRequest, String status){
+        EditRequestHelperBean editRequestHelperBean =  populateEditRequestHelperBeanForApproval(articleEditApproveRequest, status);
+        populateEditRequestByArticleForApproval(editRequestHelperBean);
+        populateEditRequestByUserForApproval(editRequestHelperBean);
+        populateSharedArticleForEditApproval(editRequestHelperBean);
+        articleDAOI.saveArticleApprovalRequest(editRequestHelperBean);
     }
 
     protected Article returnArticle(Article article){
@@ -194,72 +198,96 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         articleDAOI.updateArticleHistory(articleHistory);
     }
 
-    protected void updateArticleEditRequestStatus(ArticleEditApproveRequest articleEditApproveRequest, String status){
-        Optional<ArticleEditRequest> currentEditRequest = articleDAOI.getArticleEditRequestForArticleId(articleEditApproveRequest.getArticleId());
-        currentEditRequest.ifPresent(articleEditRequest -> {currentEditRequest.get().getArticleEditBeanMap()
-                .get(articleEditApproveRequest.getEditRequestId())
-                .setEditRequestStatus(status);
-        });
-        //Updated db with modified entity
-        articleDAOI.saveArticleEditRequest(currentEditRequest.get());
+    protected EditRequestHelperBean populateEditRequestHelperBean(EditRequest editRequest){
+        EditRequestHelperBean editRequestHelperBean = new EditRequestHelperBean();
+        editRequestHelperBean.setEditRequest(editRequest);
+        return editRequestHelperBean;
     }
 
-    protected void updateArticleEditRequestForUserStatus(ArticleEditApproveRequest articleEditApproveRequest, String status){
-        Optional<ArticleEditRequestForUser> currentEditRequestForUser = articleDAOI.getArticleEditRequestForUserId(articleEditApproveRequest.getOwnerId());
-        currentEditRequestForUser.ifPresent(articleEditRequestForUser -> {currentEditRequestForUser.get().getArticleEditBeanMapForUser()
-                .get(articleEditApproveRequest.getEditRequestId())
-                .setEditRequestStatus(status);
+    protected void populateEditRequestByArticle(EditRequestHelperBean editRequestHelperBean){
+        EditRequest editRequest = editRequestHelperBean.getEditRequest();
+        EditRequestByArticle editRequestByArticleBean = new EditRequestByArticle();
+        editRequestByArticleBean.setArticleId(editRequest.getArticleId());
+        Optional<EditRequestByArticle> currentEditRequest = articleDAOI.getArticleEditRequestForArticleId(editRequest.getArticleId());
+        currentEditRequest.ifPresent(editRequestByArticle -> {
+            editRequestByArticleBean.setEditRequestByArticleMap(editRequestByArticle.getEditRequestByArticleMap());
         });
-        //Updated db with modified entity
-        articleDAOI.saveArticleEditRequestForUser(currentEditRequestForUser.get());
+        editRequestByArticleBean.getEditRequestByArticleMap().put(editRequest.getEditRequestId(), editRequest);
+        editRequestHelperBean.setEditRequestByArticle(editRequestByArticleBean);
     }
 
-    protected void updateSharedArticleEntry(ArticleEditApproveRequest articleEditApproveRequest, String status){
-        Optional<SharedArticles> currentShareArticle = articleDAOI.getSharedArticlesForUserId(articleEditApproveRequest.getOwnerId());
-        SharedArticleBean sharedArticleBean = populateShareArticleBean(articleEditApproveRequest, status);
+    protected void populateEditRequestByUser(EditRequestHelperBean editRequestHelperBean){
+        EditRequest editRequest = editRequestHelperBean.getEditRequest();
+        EditRequestByUser articleEditRequestBeanForUser = new EditRequestByUser();
+        articleEditRequestBeanForUser.setUserId(editRequest.getOwnerId());
+        Optional<EditRequestByUser> currentEditRequest = articleDAOI.getArticleEditRequestForUserId(editRequest.getOwnerId());
+        currentEditRequest.ifPresent(editRequestByUser -> {
+            articleEditRequestBeanForUser.setEditRequestByUserMap(editRequestByUser.getEditRequestByUserMap());
+        });
+        articleEditRequestBeanForUser.getEditRequestByUserMap().put(editRequest.getEditRequestId(), editRequest);
+        editRequestHelperBean.setEditRequestByUser(articleEditRequestBeanForUser);
+    }
+
+    protected void populateEditRequestByArticleForApproval(EditRequestHelperBean editRequestHelperBean){
+        EditRequest editRequest = editRequestHelperBean.getEditRequest();
+        Optional<EditRequestByArticle> currentEditRequest = articleDAOI.getArticleEditRequestForArticleId(editRequest.getArticleId());
+        currentEditRequest.ifPresent(editRequestByArticle -> {
+            processEditRequestByArticleForApproval(editRequestHelperBean, editRequestByArticle);
+        });
+    }
+
+    protected void populateEditRequestByUserForApproval(EditRequestHelperBean editRequestHelperBean){
+        EditRequest editRequest = editRequestHelperBean.getEditRequest();
+        Optional<EditRequestByUser> currentEditRequestForUser = articleDAOI.getArticleEditRequestForUserId(editRequest.getOwnerId());
+        currentEditRequestForUser.ifPresent(editRequestByUser -> {
+            processEditRequestByUserForApproval(editRequestHelperBean, editRequestByUser);
+        });
+    }
+
+    protected void processEditRequestByArticleForApproval(EditRequestHelperBean editRequestHelperBean, EditRequestByArticle editRequestByArticle){
+        EditRequest editRequest = editRequestHelperBean.getEditRequest();
+        HashMap<String, EditRequest> articleEditBeanMap = editRequestByArticle.getEditRequestByArticleMap();
+        articleEditBeanMap.put(editRequest.getEditRequestId(), editRequest);
+        editRequestByArticle.setEditRequestByArticleMap(articleEditBeanMap);
+        editRequestHelperBean.setEditRequestByArticle(editRequestByArticle);
+    }
+
+    protected void processEditRequestByUserForApproval(EditRequestHelperBean editRequestHelperBean, EditRequestByUser editRequestByUser){
+        EditRequest editRequest = editRequestHelperBean.getEditRequest();
+        HashMap<String, EditRequest> articleEditBeanMap = editRequestByUser.getEditRequestByUserMap();
+        articleEditBeanMap.put(editRequest.getEditRequestId(), editRequest);
+        editRequestByUser.setEditRequestByUserMap(articleEditBeanMap);
+        editRequestHelperBean.setEditRequestByUser(editRequestByUser);
+    }
+
+    protected EditRequestHelperBean populateEditRequestHelperBeanForApproval(ArticleEditApproveRequest articleEditApproveRequest, String status)  {
+        var currentEditRequest = articleDAOI.getArticleEditRequest(articleEditApproveRequest.getEditRequestId())
+                .orElseThrow();
+        currentEditRequest.setEditRequestStatus(status);
+        EditRequestHelperBean editRequestHelperBean = new EditRequestHelperBean();
+        editRequestHelperBean.setEditRequest(currentEditRequest);
+        return editRequestHelperBean;
+    }
+
+    protected void populateSharedArticleForEditApproval(EditRequestHelperBean editRequestHelperBean){
+        EditRequest editRequest = editRequestHelperBean.getEditRequest();
         SharedArticles sharedArticles = new SharedArticles();
-        sharedArticles.setUserId(articleEditApproveRequest.getOwnerId());
-        if (currentShareArticle.isPresent()){
-            sharedArticles = currentShareArticle.get();
-        }
-        sharedArticles.getSharedArticleBeanMap().put(articleEditApproveRequest.getEditRequestId(), sharedArticleBean);
+        sharedArticles.setUserId(editRequest.getOwnerId());
+        Optional<SharedArticles> shareArticleInDb = articleDAOI.getSharedArticlesForUserId(editRequest.getOwnerId());
+        shareArticleInDb.ifPresent(currentSharedArticles -> {
+            sharedArticles.setSharedArticleBeanMap(currentSharedArticles.getSharedArticleBeanMap());
+        });
+        SharedArticleBean sharedArticleBean = populateShareArticleBean(editRequest);
+        sharedArticles.getSharedArticleBeanMap().put(editRequest.getEditRequestId(), sharedArticleBean);
         articleDAOI.saveSharedArticles(sharedArticles);
     }
 
-    protected SharedArticleBean populateShareArticleBean(ArticleEditApproveRequest articleEditApproveRequest, String status){
+    protected SharedArticleBean populateShareArticleBean(EditRequest editRequest){
         SharedArticleBean sharedArticleBean = new SharedArticleBean();
-        sharedArticleBean.setArticleId(articleEditApproveRequest.getArticleId());
-        sharedArticleBean.setStatus(status);
-        sharedArticleBean.setAuthor(articleEditApproveRequest.getOwnerId());
+        sharedArticleBean.setArticleId(editRequest.getArticleId());
+        sharedArticleBean.setStatus(editRequest.getEditRequestStatus());
+        sharedArticleBean.setAuthor(editRequest.getOwnerId());
         return sharedArticleBean;
     }
-
-    protected void updateArticleEditRequest(ArticleEditBean articleEditBean){
-        Optional<ArticleEditRequest> currentEditRequest = articleDAOI.getArticleEditRequestForArticleId(articleEditBean.getArticleId());
-        ArticleEditRequest articleEditRequestBean = new ArticleEditRequest();
-        articleEditRequestBean.setArticleId(articleEditBean.getArticleId());
-        if (currentEditRequest.isPresent()){
-            articleEditRequestBean = currentEditRequest.get();
-        }
-        articleEditRequestBean.getArticleEditBeanMap().put(articleEditBean.getEditRequestId(), articleEditBean);
-        articleDAOI.saveArticleEditRequest(articleEditRequestBean);
-    }
-
-    protected void updateArticleEditRequestForUser(ArticleEditBean articleEditBean){
-        Optional<ArticleEditRequestForUser> currentEditRequest = articleDAOI.getArticleEditRequestForUserId(articleEditBean.getOwnerId());
-        ArticleEditRequestForUser articleEditRequestBeanForUser = new ArticleEditRequestForUser();
-        articleEditRequestBeanForUser.setUserId(articleEditBean.getOwnerId());
-        if (currentEditRequest.isPresent()){
-            articleEditRequestBeanForUser = currentEditRequest.get();
-        }
-        articleEditRequestBeanForUser.getArticleEditBeanMapForUser().put(articleEditBean.getEditRequestId(), articleEditBean);
-        articleDAOI.saveArticleEditRequestForUser(articleEditRequestBeanForUser);
-    }
-
-    protected ArticleEditBean populateArticleEditBean(ArticleEditBean articleEditBean, String status){
-        articleEditBean.setEditRequestStatus(status);
-        return articleEditBean;
-    }
-
 
 }

@@ -1,9 +1,11 @@
 package com.ss.parlour.articleservice.dao.cassandra;
 
-import com.netflix.discovery.converters.Auto;
 import com.ss.parlour.articleservice.domain.cassandra.*;
 import com.ss.parlour.articleservice.repository.cassandra.*;
+import com.ss.parlour.articleservice.utils.bean.EditRequestHelperBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.core.CassandraBatchOperations;
+import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -21,13 +23,19 @@ public class ArticleDAO implements ArticleDAOI {
     private ArticleHistoryRepositoryI articleHistoryRepositoryI;
 
     @Autowired
-    private ArticleEditRequestForUserRepositoryI articleEditRequestForUserRepositoryI;
+    private EditRequestByUserRepositoryI editRequestByUserRepositoryI;
 
     @Autowired
-    private ArticleEditRequestRepositoryI articleEditRequestRepositoryI;
+    private EditRequestByArticleRepositoryI editRequestByArticleRepositoryI;
 
     @Autowired
     private SharedArticlesRepositoryI sharedArticlesRepositoryI;
+
+    @Autowired
+    private EditRequestRepositoryI editRequestRepositoryI;
+
+    @Autowired
+    private  CassandraTemplate cassandraTemplate;
 
     @Override
     public Optional<Article> getArticleById(String articleId){
@@ -51,23 +59,28 @@ public class ArticleDAO implements ArticleDAOI {
     public Optional<ArticleHistory> getArticleHistoryByArticleId(String articleId){return articleHistoryRepositoryI.findById(articleId);}
 
     @Override
-    public void saveArticleEditRequest(ArticleEditRequest articleEditRequest){
-        articleEditRequestRepositoryI.save(articleEditRequest);
+    public Optional<EditRequest> getArticleEditRequest(String editRequestId){
+        return editRequestRepositoryI.findEditRequestByEditRequestId(editRequestId);
     }
 
     @Override
-    public void saveArticleEditRequestForUser(ArticleEditRequestForUser articleEditRequest){
-        articleEditRequestForUserRepositoryI.save(articleEditRequest);
+    public void saveArticleEditRequest(EditRequestByArticle editRequestByArticle){
+        editRequestByArticleRepositoryI.save(editRequestByArticle);
     }
 
     @Override
-    public Optional<ArticleEditRequest> getArticleEditRequestForArticleId(String articleId){
-        return articleEditRequestRepositoryI.findById(articleId);
+    public void saveArticleEditRequestForUser(EditRequestByUser articleEditRequest){
+        editRequestByUserRepositoryI.save(articleEditRequest);
     }
 
     @Override
-    public Optional<ArticleEditRequestForUser> getArticleEditRequestForUserId(String userId){
-        return articleEditRequestForUserRepositoryI.findById(userId);
+    public Optional<EditRequestByArticle> getArticleEditRequestForArticleId(String articleId){
+        return editRequestByArticleRepositoryI.findById(articleId);
+    }
+
+    @Override
+    public Optional<EditRequestByUser> getArticleEditRequestForUserId(String userId){
+        return editRequestByUserRepositoryI.findById(userId);
     }
 
     @Override
@@ -78,6 +91,33 @@ public class ArticleDAO implements ArticleDAOI {
     @Override
     public Optional<SharedArticles> getSharedArticlesForUserId(String userId){
         return sharedArticlesRepositoryI.findById(userId);
+    }
+
+    @Override
+    public void saveArticleEditRequest(EditRequestHelperBean editRequestHelperBean){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        insertArticleEditRequestInBatch(editRequestHelperBean, batchOps);
+    }
+
+    @Override
+    public void saveArticleApprovalRequest(EditRequestHelperBean editRequestHelperBean){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        insertArticleEditApprovalRequestInBatch(editRequestHelperBean, batchOps);
+    }
+
+    private void insertArticleEditRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(editRequestHelperBean.getEditRequest());
+        batchOps.insert(editRequestHelperBean.getEditRequestByArticle());
+        batchOps.insert(editRequestHelperBean.getEditRequestByUser());
+        batchOps.execute();
+    }
+
+    private void insertArticleEditApprovalRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(editRequestHelperBean.getEditRequest());
+        batchOps.insert(editRequestHelperBean.getEditRequestByArticle());
+        batchOps.insert(editRequestHelperBean.getEditRequestByUser());
+        batchOps.insert(editRequestHelperBean.getSharedArticles());
+        batchOps.execute();
     }
 
 }
