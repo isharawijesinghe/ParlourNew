@@ -16,4 +16,5 @@ public class UserConst {
 
     public final static String AWS_CLOUD_PROVIDER = "AWS";
 
+    public final static String USER_INFO_UPDATE_SUCCESSFUL  = "User info updated successfully";
 }

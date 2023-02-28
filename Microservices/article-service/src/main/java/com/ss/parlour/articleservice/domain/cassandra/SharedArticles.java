@@ -8,10 +8,10 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.HashMap;
 
-@Table("sharedarticles")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table("shared_articles")
 public class SharedArticles {
 
     @PrimaryKey

@@ -115,6 +115,9 @@ public class ArticleService implements ArticleServiceI {
     public ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest){
         ArticleEditApproveResponse articleEditApproveResponse = new ArticleEditApproveResponse();
         articleHandlerI.processArticleEditRequestApproval(articleEditApproveRequest);
+        articleEditApproveResponse.setEditRequestId(articleEditApproveRequest.getEditRequestId());
+        articleEditApproveResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleEditApproveResponse.setNarration(ArticleConst.SUCCESSFULLY_APPROVED_EDIT_REQUEST);
         return articleEditApproveResponse;
     }
 

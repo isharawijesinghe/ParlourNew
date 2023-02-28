@@ -4,12 +4,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@UserDefinedType
+@UserDefinedType("edit_request")
+@Table("edit_request")
 public class EditRequest {
 
     @PrimaryKey

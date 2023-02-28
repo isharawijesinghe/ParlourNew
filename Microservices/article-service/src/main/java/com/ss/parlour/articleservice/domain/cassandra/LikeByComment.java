@@ -8,7 +8,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.HashMap;
 
-@Table("likebycomment")
+@Table("like_by_comment")
 @Getter
 @Setter
 @NoArgsConstructor

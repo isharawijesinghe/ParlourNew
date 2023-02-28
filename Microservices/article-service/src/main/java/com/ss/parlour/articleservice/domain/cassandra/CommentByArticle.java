@@ -6,11 +6,10 @@ import lombok.Setter;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Table("commentbyarticle")
+@Table("comment_by_article")
 @Getter
 @Setter
 @NoArgsConstructor

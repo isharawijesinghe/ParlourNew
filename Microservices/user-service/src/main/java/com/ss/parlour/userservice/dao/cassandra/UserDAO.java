@@ -1,13 +1,16 @@
 package com.ss.parlour.userservice.dao.cassandra;
 
 import com.ss.parlour.userservice.domain.cassandra.User;
+import com.ss.parlour.userservice.domain.cassandra.UserInfo;
 import com.ss.parlour.userservice.domain.cassandra.UserLoginNameEmailMapper;
 import com.ss.parlour.userservice.domain.cassandra.UserToken;
 import com.ss.parlour.userservice.repository.cassandra.LoginNameEmailMapperRepositoryI;
+import com.ss.parlour.userservice.repository.cassandra.UserInfoRepositoryI;
 import com.ss.parlour.userservice.repository.cassandra.UserRepositoryI;
 import com.ss.parlour.userservice.repository.cassandra.UserTokenRepositoryI;
 import com.ss.parlour.userservice.util.bean.AuthProvider;
 import com.ss.parlour.userservice.util.bean.UserConst;
+import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserRegisterRequestBean;
 import com.ss.parlour.userservice.util.common.TokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,9 @@ public class UserDAO implements UserDAOI{
 
     @Autowired
     private TokenGenerator tokenGenerator;
+
+    @Autowired
+    private UserInfoRepositoryI userInfoRepositoryI;
 
     @Override
     public User loadUserByIdentification(String userIdentification){
@@ -133,6 +139,16 @@ public class UserDAO implements UserDAOI{
     public void saveUserToken(UserRegisterRequestBean userRegisterRequestBean){
         UserToken userToken = populateUserToken(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getUserActionType());
         userTokenRepositoryI.insert(userToken);
+    }
+
+    @Override
+    public void saveUserInfo(UserInfo userInfo){
+        userInfoRepositoryI.save(userInfo);
+    }
+
+    @Override
+    public Optional<UserInfo> getUserInfoFromDb(UserInfoRequestBean userInfoRequestBean){
+        return userInfoRepositoryI.findUserInfoByLoginName(userInfoRequestBean.getLoginName());
     }
 
     private void saveUser(UserRegisterRequestBean userRegisterRequestBean){

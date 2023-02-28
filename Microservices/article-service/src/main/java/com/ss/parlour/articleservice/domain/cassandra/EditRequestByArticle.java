@@ -8,7 +8,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.HashMap;
 
-@Table("editrequestbyarticle")
+@Table("edit_request_by_article")
 @Getter
 @Setter
 @NoArgsConstructor

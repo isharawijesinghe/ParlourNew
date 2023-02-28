@@ -46,7 +46,7 @@ CREATE TYPE parlour.stream(
     createdDate timestamp
 );
 
-CREATE TYPE parlour.articleeditbean(
+CREATE TYPE parlour.edit_request(
     editRequestId text,
     articleId text,
     title text,
@@ -56,7 +56,7 @@ CREATE TYPE parlour.articleeditbean(
     ownerId text
 );
 
-CREATE TYPE parlour.sharedarticles(
+CREATE TYPE parlour.shared_articles(
     articleId text,
     status text,
     author text
@@ -79,6 +79,19 @@ CREATE TABLE IF NOT EXISTS parlour.user (
     provider text,
     imageUrl text,
     providerId text,
+    PRIMARY KEY (loginName)
+);
+
+CREATE TABLE IF NOT EXISTS parlour.user_info (
+    loginName text,
+    firstName text,
+    lastName text,
+    country text,
+    jobTitle text,
+    company text,
+    experience text,
+    profileImage text,
+    description text,
     PRIMARY KEY (loginName)
 );
 
@@ -109,7 +122,7 @@ CREATE TABLE IF NOT EXISTS parlour.article (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS parlour.articleHistory (
+CREATE TABLE IF NOT EXISTS parlour.article_history (
     articleId text,
     oldArticles frozen<list<article>> ,
     PRIMARY KEY (articleId)
@@ -129,26 +142,26 @@ CREATE TABLE IF NOT EXISTS parlour.comment (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS parlour.commentByArticle (
+CREATE TABLE IF NOT EXISTS parlour.comment_by_article (
     articleId text,
     comments frozen<map<text, list<comment>>> ,
     PRIMARY KEY (articleId)
 );
 
-CREATE TABLE IF NOT EXISTS parlour.likeByArticle (
+CREATE TABLE IF NOT EXISTS parlour.like_by_article (
     articleId text,
     likes list<frozen<like>> ,
     PRIMARY KEY (articleId)
 );
 
-CREATE TABLE IF NOT EXISTS  parlour.likeByArticle (
+CREATE TABLE IF NOT EXISTS  parlour.like_by_article (
     articleId text,
     likes list<frozen<like>> ,
     likeMap map<text, frozen<like>>,
     PRIMARY KEY (articleId)
 );
 
-CREATE TABLE IF NOT EXISTS parlour.likeByComment (
+CREATE TABLE IF NOT EXISTS parlour.like_by_comment (
     commentId text,
     articleId text,
     likeMap map<text, frozen<like>>,
@@ -175,7 +188,7 @@ CREATE TABLE IF NOT EXISTS parlour.usermappedstream (
     PRIMARY KEY (userName)
 );
 
-CREATE TABLE IF NOT EXISTS parlour.EditRequest (
+CREATE TABLE IF NOT EXISTS parlour.edit_request (
     editRequestId text,
     articleId text,
     title text,
@@ -186,20 +199,20 @@ CREATE TABLE IF NOT EXISTS parlour.EditRequest (
     PRIMARY KEY (editRequestId)
 );
 
-CREATE TABLE IF NOT EXISTS parlour.ArticleEditRequest (
+CREATE TABLE IF NOT EXISTS parlour.edit_request_by_article (
    articleId text,
-   articleEditBeanMap map<text, frozen<articleeditbean>>,
+   editRequestByArticleMap map<text, frozen<edit_request>>,
    PRIMARY KEY (articleId)
 );
 
-CREATE TABLE IF NOT EXISTS parlour.ArticleEditRequestForUser (
+CREATE TABLE IF NOT EXISTS parlour.edit_request_by_user (
    userId text,
-   articleEditBeanMapForUser map<text, frozen<articleeditbean>>,
+   editRequestByUserMap map<text, frozen<edit_request>>,
    PRIMARY KEY (userId)
 );
 
-CREATE TABLE IF NOT EXISTS parlour.SharedArticles (
+CREATE TABLE IF NOT EXISTS parlour.shared_articles (
    userId text,
-   sharedArticleBeanMap map<text, frozen<sharedarticles>>,
+   sharedArticleBeanMap map<text, frozen<shared_articles>>,
    PRIMARY KEY (userId)
 );

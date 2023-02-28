@@ -10,8 +10,5 @@ import lombok.Setter;
 public class ArticleEditApproveRequest {
 
     private String editRequestId;
-    private String articleId;
-    private String title;
-    private String requestUserId;
-    private String ownerId;
+
 }
