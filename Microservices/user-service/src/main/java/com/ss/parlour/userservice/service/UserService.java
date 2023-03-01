@@ -40,7 +40,7 @@ public class UserService implements UserServiceI{
 
     @Override
     public UserInfoResponseBean getUserInfo(UserInfoRequestBean userInfoRequestBean){
-        UserInfoResponseBean userInfoResponseBean = new UserInfoResponseBean();
+        UserInfoResponseBean userInfoResponseBean = userHandlerI.getUserInfo(userInfoRequestBean);
         return userInfoResponseBean;
     }
 }

@@ -10,6 +10,7 @@ import com.ss.parlour.userservice.configurations.security.UserPrincipal;
 import com.ss.parlour.userservice.configurations.security.oauth2.user.OAuth2UserInfo;
 import com.ss.parlour.userservice.dao.cassandra.UserDAOI;
 import com.ss.parlour.userservice.domain.cassandra.User;
+import com.ss.parlour.userservice.domain.cassandra.UserLoginNameEmailMapper;
 import com.ss.parlour.userservice.domain.cassandra.UserToken;
 import com.ss.parlour.userservice.util.bean.*;
 import com.ss.parlour.userservice.util.bean.requests.EmailRequestBean;
@@ -31,9 +32,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,31 +49,49 @@ public class AuthHandler implements AuthHandlerI {
     @Autowired
     private TokenGenerator tokenGenerator;
 
+    @Override
     public User loadUserByIdentification(String userName){
-        return userDAOI.loadUserByIdentification(userName);
+        AtomicReference<User> dbLoggedUserValue = new AtomicReference<>();
+        Optional<User> userFromDb = userDAOI.findUserByLoginName(userName);
+        userFromDb.ifPresentOrElse(
+                currentUser -> {dbLoggedUserValue.set(currentUser);},
+                () ->{
+                    Optional<UserLoginNameEmailMapper> loginNameEmailMapperFromDb = userDAOI.findUserByEmail(userName);
+                    loginNameEmailMapperFromDb.ifPresent(
+                            userLoginNameEmailMapper -> {
+                                String loginName = userLoginNameEmailMapper.getLoginName();
+                                Optional<User> mappedUser = userDAOI.findUserByLoginName(loginName);
+                                mappedUser.ifPresent(dbMappedUser -> {dbLoggedUserValue.set(dbMappedUser);;});
+                            }
+                    );
+                }
+        );
+        return dbLoggedUserValue.get();
     }
 
-    @Transactional
     @Override
-    public void signUp(UserRegisterRequestBean userRegisterRequestBean){
-        try {
-            userDAOI.saveUserDetails(userRegisterRequestBean);
-        }catch (Exception ex){
-            throw new UserRuntimeException(UserErrorCodes.USER_SAVE_ERROR);
-        }
-    }
-
-    @Override
-    public void signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
-        userDAOI.saveUserToken(userRegisterRequestBean);
-        requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), userRegisterRequestBean.getUserActionType());
-    }
-
-    @Override
-    public void populateUserRegistrationResponseBean(UserRegistrationResponseBean userRegistrationResponseBean){
+    public UserRegistrationResponseBean signUp(UserRegisterRequestBean userRegisterRequestBean){
+        UserRegistrationResponseBean userRegistrationResponseBean = new UserRegistrationResponseBean();
+        UserSignupHelperBean userSignupHelperBean = new UserSignupHelperBean();
+        populateSignUpUserBean(userSignupHelperBean, userRegisterRequestBean);
+        populateUserLoginNameEmailMapper(userSignupHelperBean, userRegisterRequestBean);
+        userDAOI.saveUserSignUpDataBeans(userSignupHelperBean);
         userRegistrationResponseBean.setNarration(UserConst.USER_REGISTER_SUCCESS_NARRATION);
         userRegistrationResponseBean.setStatus(UserConst.TRUE);
-        userRegistrationResponseBean.setActionType(userRegistrationResponseBean.getActionType());
+        userRegistrationResponseBean.setActionType(userRegisterRequestBean.getUserActionType());
+        return userRegistrationResponseBean;
+    }
+
+    @Override
+    public UserRegistrationResponseBean signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
+        UserRegistrationResponseBean userRegistrationResponseBean = new UserRegistrationResponseBean();
+        UserToken userToken = populateUserToken(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getUserActionType());
+        userDAOI.saveUserToken(userToken);
+        requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), userRegisterRequestBean.getUserActionType());
+        userRegistrationResponseBean.setNarration(UserConst.USER_REGISTER_SUCCESS_NARRATION);
+        userRegistrationResponseBean.setStatus(UserConst.TRUE);
+        userRegistrationResponseBean.setActionType(userRegisterRequestBean.getUserActionType());
+        return userRegistrationResponseBean;
     }
 
     @Override
@@ -89,8 +108,7 @@ public class AuthHandler implements AuthHandlerI {
         Map<String, String> claims = new HashMap<>();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         claims.put("username", userPrincipal.getUsername());
-        String authorities = userPrincipal.getAuthorities().stream()
-                                          .map(GrantedAuthority::getAuthority)
+        String authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                                           .collect(Collectors.joining(","));
         claims.put("authorities", authorities);
         claims.put("userId", userPrincipal.getEmail());
@@ -126,14 +144,10 @@ public class AuthHandler implements AuthHandlerI {
     @Async
     @Override
     public void requestForMail(String email, String token, String type){
-        try {
-            //If user registration successful then send registration success mail
-            if (!type.equals(UserConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER)){
-                EmailRequestBean emailRequestBean = populateEmailRequest(email, token, type);
-                externalRestWriterI.sendNotificationMail(emailRequestBean);
-            }
-        }catch (Exception ex){
-            //log exception + do not throw exception from here
+        //If user registration successful then send registration success mail
+        if (!type.equals(UserConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER)){
+            EmailRequestBean emailRequestBean = populateEmailRequest(email, token, type);
+            externalRestWriterI.sendNotificationMail(emailRequestBean);
         }
     }
 
@@ -149,6 +163,48 @@ public class AuthHandler implements AuthHandlerI {
             }
         }
         return tokenConfirmResponseBean;
+    }
+
+    protected void populateUserLoginNameEmailMapper(UserSignupHelperBean userSignupHelperBean, UserRegisterRequestBean userRegisterRequestBean){
+        UserLoginNameEmailMapper loginNameEmailMapper = populateLoginNameEmailMapper(userRegisterRequestBean);
+        userSignupHelperBean.setLoginNameEmailMapper(loginNameEmailMapper);
+    }
+
+    protected UserLoginNameEmailMapper populateLoginNameEmailMapper(UserRegisterRequestBean userRegisterRequestBean){
+        UserLoginNameEmailMapper loginNameEmailMapper = new UserLoginNameEmailMapper();
+        loginNameEmailMapper.setEmail(userRegisterRequestBean.getEmail());
+        loginNameEmailMapper.setLoginName(userRegisterRequestBean.getEmail());
+        return loginNameEmailMapper;
+    }
+
+    protected void populateSignUpUserBean(UserSignupHelperBean userSignupHelperBean, UserRegisterRequestBean userRegisterRequestBean){
+        userRegisterRequestBean.setToken(UUID.randomUUID().toString());
+        User user = populateUserForRegister(userRegisterRequestBean);
+        userSignupHelperBean.setUser(user);
+    }
+
+    protected User populateUserForRegister(UserRegisterRequestBean userRegisterRequestBean){
+        User user = new User();
+        user.setFirstName(userRegisterRequestBean.getFirstName());
+        user.setLastName(userRegisterRequestBean.getLastName());
+        user.setLoginName(userRegisterRequestBean.getLoginName());
+        user.setEmail(userRegisterRequestBean.getEmail());
+        user.setPassword(userRegisterRequestBean.getPassword());
+        user.setCreatedDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        user.setLastUpdatedDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        user.setEnabled(userRegisterRequestBean.getUserActionType().equals(UserConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER) ?
+                UserConst.TRUE : UserConst.FALSE);
+        user.setActiveToken(userRegisterRequestBean.getToken());
+        user.setProvider(AuthProvider.local);
+        return user;
+    }
+
+    protected UserToken populateUserToken(String userName, String actionType){
+        UserToken userToken = new UserToken();
+        userToken.setUserName(userName);
+        userToken.setActionType(actionType);
+        userToken.setUserToken(tokenGenerator.generateLogicSecret());
+        return userToken;
     }
 
     protected boolean validateTokenExistence(UserToken userToken){

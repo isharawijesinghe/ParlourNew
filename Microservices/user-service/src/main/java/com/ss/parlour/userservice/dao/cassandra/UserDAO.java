@@ -10,10 +10,13 @@ import com.ss.parlour.userservice.repository.cassandra.UserRepositoryI;
 import com.ss.parlour.userservice.repository.cassandra.UserTokenRepositoryI;
 import com.ss.parlour.userservice.util.bean.AuthProvider;
 import com.ss.parlour.userservice.util.bean.UserConst;
+import com.ss.parlour.userservice.util.bean.UserSignupHelperBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserRegisterRequestBean;
 import com.ss.parlour.userservice.util.common.TokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.core.CassandraBatchOperations;
+import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -35,55 +38,19 @@ public class UserDAO implements UserDAOI{
     private UserTokenRepositoryI userTokenRepositoryI;
 
     @Autowired
-    private TokenGenerator tokenGenerator;
-
-    @Autowired
     private UserInfoRepositoryI userInfoRepositoryI;
 
+    @Autowired
+    private CassandraTemplate cassandraTemplate;
+
     @Override
-    public User loadUserByIdentification(String userIdentification){
-        User user = null;
-        try {
-            Optional<User> userFromDb = userRepositoryI.findByLoginName(userIdentification);
-            if (userFromDb.isEmpty()){
-                Optional<UserLoginNameEmailMapper> loginNameEmailMapperFromDb = loginNameEmailMapperRepositoryI.findByEmail(userIdentification);
-                if (loginNameEmailMapperFromDb.isPresent()){
-                    String loginName = loginNameEmailMapperFromDb.get().getLoginName();
-                    userFromDb= userRepositoryI.findByLoginName(loginName);
-                    if (userFromDb.isPresent()){
-                        user = userFromDb.get();
-                    }
-                }
-            } else {
-                user = userFromDb.get();
-            }
-        }catch (Exception ex){
-            throw ex;
-        }
-        return user;
+    public Optional<User> findUserByLoginName(String userIdentification){
+        return userRepositoryI.findByLoginName(userIdentification);
     }
 
     @Override
-    public User loadUserByIdentificationEmail(String email){
-        User user = null;
-        Optional<User> userFromDb = null;
-        try {
-            Optional<UserLoginNameEmailMapper> loginNameEmailMapperFromDb = loginNameEmailMapperRepositoryI.findByEmail(email);
-            if (loginNameEmailMapperFromDb.isPresent()){
-                String loginName = loginNameEmailMapperFromDb.get().getLoginName();
-                userFromDb= userRepositoryI.findByLoginName(loginName);
-                if (userFromDb.isPresent()){
-                    user = userFromDb.get();
-                } else {
-                    new UsernameNotFoundException("User not found with email : " + email);
-                }
-            } else {
-                new UsernameNotFoundException("User not found with email : " + email);
-            }
-            return user;
-        }catch (Exception ex){
-            throw ex;
-        }
+    public Optional<UserLoginNameEmailMapper> findUserByEmail(String userIdentification){
+        return loginNameEmailMapperRepositoryI.findByEmail(userIdentification);
     }
 
     @Override
@@ -98,13 +65,6 @@ public class UserDAO implements UserDAOI{
     @Override
     public User saveUser(User user){
         return userRepositoryI.save(user);
-    }
-
-    @Override
-    public void saveUserDetails(UserRegisterRequestBean userRegisterRequestBean){
-        saveUser(userRegisterRequestBean);
-        saveUserLoginNameEmailMapper(userRegisterRequestBean);
-       // saveUserToken(userRegisterRequestBean, UserConst.USER_ACTION_TYPE_REGISTER);
     }
 
     @Override
@@ -136,8 +96,7 @@ public class UserDAO implements UserDAOI{
     }
 
     @Override
-    public void saveUserToken(UserRegisterRequestBean userRegisterRequestBean){
-        UserToken userToken = populateUserToken(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getUserActionType());
+    public void saveUserToken(UserToken userToken){
         userTokenRepositoryI.insert(userToken);
     }
 
@@ -151,46 +110,15 @@ public class UserDAO implements UserDAOI{
         return userInfoRepositoryI.findUserInfoByLoginName(userInfoRequestBean.getLoginName());
     }
 
-    private void saveUser(UserRegisterRequestBean userRegisterRequestBean){
-        userRegisterRequestBean.setToken(UUID.randomUUID().toString());
-        User user = populateUserForRegister(userRegisterRequestBean);
-        userRepositoryI.insert(user);
+    @Override
+    public void saveUserSignUpDataBeans(UserSignupHelperBean userSignupHelperBean){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        insertUserSignUpDataBeansInBatch(userSignupHelperBean, batchOps);
     }
 
-    private void saveUserLoginNameEmailMapper(UserRegisterRequestBean userRegisterRequestBean){
-        UserLoginNameEmailMapper loginNameEmailMapper = populateLoginNameEmailMapper(userRegisterRequestBean);
-        loginNameEmailMapperRepositoryI.insert(loginNameEmailMapper);
-    }
-
-    private User populateUserForRegister(UserRegisterRequestBean userRegisterRequestBean){
-        User user = new User();
-        user.setFirstName(userRegisterRequestBean.getFirstName());
-        user.setLastName(userRegisterRequestBean.getLastName());
-        user.setLoginName(userRegisterRequestBean.getLoginName());
-        user.setEmail(userRegisterRequestBean.getEmail());
-        user.setPassword(userRegisterRequestBean.getPassword());
-        user.setCreatedDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-        user.setLastUpdatedDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-        user.setEnabled(userRegisterRequestBean.getUserActionType().equals(UserConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER) ?
-                UserConst.TRUE : UserConst.FALSE);
-        user.setActiveToken(userRegisterRequestBean.getToken());
-        user.setProvider(AuthProvider.local);
-        return user;
-    }
-
-    private UserLoginNameEmailMapper populateLoginNameEmailMapper(UserRegisterRequestBean userRegisterRequestBean){
-        UserLoginNameEmailMapper loginNameEmailMapper = new UserLoginNameEmailMapper();
-        loginNameEmailMapper.setEmail(userRegisterRequestBean.getEmail());
-        loginNameEmailMapper.setLoginName(userRegisterRequestBean.getEmail());
-        return loginNameEmailMapper;
-    }
-
-    private UserToken populateUserToken(String userName, String actionType){
-        UserToken userToken = new UserToken();
-        userToken.setUserName(userName);
-        userToken.setActionType(actionType);
-        userToken.setUserToken(tokenGenerator.generateLogicSecret());
-        return userToken;
+    protected void insertUserSignUpDataBeansInBatch(UserSignupHelperBean userSignupHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(userSignupHelperBean.getUser());
+        batchOps.insert(userSignupHelperBean.getLoginNameEmailMapper());
     }
 
 

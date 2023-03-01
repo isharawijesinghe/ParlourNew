@@ -38,12 +38,6 @@ public class AuthREST {
     public ResponseEntity<?> signUp(@RequestBody UserRegisterRequestBean userRegisterRequestBean){
         UserRegistrationResponseBean userRegistrationResponseBean = authServiceI.signUp(userRegisterRequestBean);
         return ResponseEntity.ok(userRegistrationResponseBean);
-//        URI location = ServletUriComponentsBuilder
-//                .fromCurrentContextPath().path("/user/me")
-//                .buildAndExpand(result.getUsername()).toUri();
-
-//        return ResponseEntity.created(location)
-//                .body(new UserRegistrationResponseBean(true, "User registered successfully@"));
     }
 
     @RequestMapping(value = "/auth/signUpWithEmail", method = RequestMethod.POST, consumes = {"application/json"})

@@ -16,9 +16,8 @@ import java.util.Map;
 
 public interface AuthHandlerI {
     User loadUserByIdentification(String userName);
-    void signUp(UserRegisterRequestBean userRegisterRequestBean);
-    void signUpWithEmail(UserRegisterRequestBean userRegisterRequestBeane);
-    void populateUserRegistrationResponseBean(UserRegistrationResponseBean userRegistrationResponseBean);
+    UserRegistrationResponseBean signUp(UserRegisterRequestBean userRegisterRequestBean);
+    UserRegistrationResponseBean signUpWithEmail(UserRegisterRequestBean userRegisterRequestBeane);
     User saveUser(User user);
     EmailRequestBean populateEmailRequest(String receiverEmail, String token, String type);
     Map<String, String> createUserClaimMap(Authentication authentication);
