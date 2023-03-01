@@ -51,8 +51,6 @@ public class AuthService implements AuthServiceI{
     public UserRegistrationResponseBean signUp(UserRegisterRequestBean userRegisterRequestBean){
         authValidatorI.validateSignUpRequest(userRegisterRequestBean);
         UserRegistrationResponseBean userRegistrationResponseBean = authHandlerI.signUp(userRegisterRequestBean);
-        //Asynchronously send email requests + calling notification service
-        authHandlerI.requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), userRegisterRequestBean.getUserActionType());
         return userRegistrationResponseBean;
     }
 

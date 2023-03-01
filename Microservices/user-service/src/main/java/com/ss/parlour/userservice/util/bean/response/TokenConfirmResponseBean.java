@@ -1,5 +1,12 @@
 package com.ss.parlour.userservice.util.bean.response;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class TokenConfirmResponseBean {
 
     private int status;
@@ -11,27 +18,4 @@ public class TokenConfirmResponseBean {
         this.setNarration(narration);
     }
 
-    public int isStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getNarration() {
-        return narration;
-    }
-
-    public void setNarration(String narration) {
-        this.narration = narration;
-    }
-
-    public boolean isTokenConfirmSuccess() {
-        return isTokenConfirmSuccess;
-    }
-
-    public void setTokenConfirmSuccess(boolean tokenConfirmSuccess) {
-        isTokenConfirmSuccess = tokenConfirmSuccess;
-    }
 }

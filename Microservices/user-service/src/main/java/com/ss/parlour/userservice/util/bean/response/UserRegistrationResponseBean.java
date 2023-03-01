@@ -1,5 +1,12 @@
 package com.ss.parlour.userservice.util.bean.response;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserRegistrationResponseBean {
     private boolean status;
     private String narration;
@@ -12,23 +19,4 @@ public class UserRegistrationResponseBean {
         this.setNarration(narration);
     }
 
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public String getNarration() {
-        return narration;
-    }
-
-    public void setNarration(String narration) {
-        this.narration = narration;
-    }
-
-    public String getActionType() {return actionType;}
-
-    public void setActionType(String actionType) {this.actionType = actionType;}
 }

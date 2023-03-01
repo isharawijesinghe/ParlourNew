@@ -67,6 +67,8 @@ app:
       keystore-password : password
       key-alias : jwtsigning
       private-key-passphrase : password
+  general:
+    signup-email-verification: false
 
 cloud:
   provider: AWS

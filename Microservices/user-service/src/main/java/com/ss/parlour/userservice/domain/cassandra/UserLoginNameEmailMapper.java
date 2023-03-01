@@ -1,8 +1,14 @@
 package com.ss.parlour.userservice.domain.cassandra;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Table("userloginnameemailmapper")
 public class UserLoginNameEmailMapper {
 
@@ -11,19 +17,4 @@ public class UserLoginNameEmailMapper {
     @PrimaryKey
     private String email;
 
-    public String getLoginName() {
-        return loginName;
-    }
-
-    public void setLoginName(String loginName) {
-        this.loginName = loginName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

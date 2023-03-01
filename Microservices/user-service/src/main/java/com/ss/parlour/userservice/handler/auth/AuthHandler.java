@@ -1,11 +1,5 @@
 package com.ss.parlour.userservice.handler.auth;
 
-import com.amazonaws.HttpMethod;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.ss.parlour.userservice.configurations.security.UserPrincipal;
 import com.ss.parlour.userservice.configurations.security.oauth2.user.OAuth2UserInfo;
 import com.ss.parlour.userservice.dao.cassandra.UserDAOI;
@@ -14,24 +8,20 @@ import com.ss.parlour.userservice.domain.cassandra.UserLoginNameEmailMapper;
 import com.ss.parlour.userservice.domain.cassandra.UserToken;
 import com.ss.parlour.userservice.util.bean.*;
 import com.ss.parlour.userservice.util.bean.requests.EmailRequestBean;
-import com.ss.parlour.userservice.util.bean.requests.PreSignUrlGenerateRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.userservice.util.bean.requests.UserRegisterRequestBean;
-import com.ss.parlour.userservice.util.bean.response.PreSignUrlResponseBean;
 import com.ss.parlour.userservice.util.bean.response.TokenConfirmResponseBean;
 import com.ss.parlour.userservice.util.bean.response.UserRegistrationResponseBean;
 import com.ss.parlour.userservice.util.common.TokenGenerator;
-import com.ss.parlour.userservice.util.exception.UserRuntimeException;
 import com.ss.parlour.userservice.writer.ExternalRestWriterI;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URL;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -48,6 +38,9 @@ public class AuthHandler implements AuthHandlerI {
 
     @Autowired
     private TokenGenerator tokenGenerator;
+
+    @Value("${app.general.signup-email-verification}")
+    private boolean signupEmailVerification;
 
     @Override
     public User loadUserByIdentification(String userName){
@@ -76,6 +69,8 @@ public class AuthHandler implements AuthHandlerI {
         populateSignUpUserBean(userSignupHelperBean, userRegisterRequestBean);
         populateUserLoginNameEmailMapper(userSignupHelperBean, userRegisterRequestBean);
         userDAOI.saveUserSignUpDataBeans(userSignupHelperBean);
+        //Asynchronously send email requests + calling notification service
+        requestForSignUpMail(userRegisterRequestBean);
         userRegistrationResponseBean.setNarration(UserConst.USER_REGISTER_SUCCESS_NARRATION);
         userRegistrationResponseBean.setStatus(UserConst.TRUE);
         userRegistrationResponseBean.setActionType(userRegisterRequestBean.getUserActionType());
@@ -87,7 +82,7 @@ public class AuthHandler implements AuthHandlerI {
         UserRegistrationResponseBean userRegistrationResponseBean = new UserRegistrationResponseBean();
         UserToken userToken = populateUserToken(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getUserActionType());
         userDAOI.saveUserToken(userToken);
-        requestForMail(userRegisterRequestBean.getEmail(), userRegisterRequestBean.getToken(), userRegisterRequestBean.getUserActionType());
+        requestForSignUpMail(userRegisterRequestBean);
         userRegistrationResponseBean.setNarration(UserConst.USER_REGISTER_SUCCESS_NARRATION);
         userRegistrationResponseBean.setStatus(UserConst.TRUE);
         userRegistrationResponseBean.setActionType(userRegisterRequestBean.getUserActionType());
@@ -95,21 +90,11 @@ public class AuthHandler implements AuthHandlerI {
     }
 
     @Override
-    public EmailRequestBean populateEmailRequest(String receiverEmail, String token, String type){
-        EmailRequestBean emailRequestBean = new EmailRequestBean();
-        emailRequestBean.setReceiverEmail(receiverEmail);
-        emailRequestBean.setActionType(type);
-        emailRequestBean.setConfirmationToken(token);
-        return emailRequestBean;
-    }
-
-    @Override
     public Map<String, String> createUserClaimMap(Authentication authentication){
         Map<String, String> claims = new HashMap<>();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         claims.put("username", userPrincipal.getUsername());
-        String authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                                          .collect(Collectors.joining(","));
+        String authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
         claims.put("authorities", authorities);
         claims.put("userId", userPrincipal.getEmail());
         claims.put("iss", "myApp");
@@ -141,16 +126,6 @@ public class AuthHandler implements AuthHandlerI {
         return userDAOI.saveUser(user);
     }
 
-    @Async
-    @Override
-    public void requestForMail(String email, String token, String type){
-        //If user registration successful then send registration success mail
-        if (!type.equals(UserConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER)){
-            EmailRequestBean emailRequestBean = populateEmailRequest(email, token, type);
-            externalRestWriterI.sendNotificationMail(emailRequestBean);
-        }
-    }
-
     @Override
     public TokenConfirmResponseBean tokenConfirm(TokenConfirmRequest tokenConfirmRequest){
         TokenConfirmResponseBean tokenConfirmResponseBean = new TokenConfirmResponseBean(UserConst.STATUS_SUCCESS, UserConst.SUCCESS_NARRATION);
@@ -164,6 +139,32 @@ public class AuthHandler implements AuthHandlerI {
         }
         return tokenConfirmResponseBean;
     }
+
+    protected EmailRequestBean populateSignUpEmailRequest(UserRegisterRequestBean userRegisterRequestBean){
+        EmailRequestBean emailRequestBean = new EmailRequestBean();
+        emailRequestBean.setReceiverEmail(userRegisterRequestBean.getEmail());
+        emailRequestBean.setActionType(userRegisterRequestBean.getUserActionType());
+        emailRequestBean.setConfirmationToken(userRegisterRequestBean.getToken());
+        return emailRequestBean;
+    }
+
+    @Async
+    protected void requestForSignUpMail(UserRegisterRequestBean userRegisterRequestBean){
+        //If user registration successful then send registration success mail
+        if (isEligibleToSendSignUpEmail(userRegisterRequestBean)){
+            EmailRequestBean emailRequestBean = populateSignUpEmailRequest(userRegisterRequestBean);
+            externalRestWriterI.sendNotificationMail(emailRequestBean);
+        }
+    }
+
+    protected boolean isEligibleToSendSignUpEmail(UserRegisterRequestBean userRegisterRequestBean){
+        if (userRegisterRequestBean.getUserActionType().equals(UserConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER)
+                || (userRegisterRequestBean.getUserActionType().equals(UserConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER) && signupEmailVerification)){
+            return UserConst.TRUE;
+        }
+        return UserConst.FALSE;
+    }
+
 
     protected void populateUserLoginNameEmailMapper(UserSignupHelperBean userSignupHelperBean, UserRegisterRequestBean userRegisterRequestBean){
         UserLoginNameEmailMapper loginNameEmailMapper = populateLoginNameEmailMapper(userRegisterRequestBean);

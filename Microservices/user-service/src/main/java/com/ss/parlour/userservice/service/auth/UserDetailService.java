@@ -32,7 +32,7 @@ public class UserDetailService implements UserDetailsService, UserDetailServiceI
         return UserPrincipal.create(user);
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(List<String> roles) {
+    protected Collection<? extends GrantedAuthority> getAuthorities(List<String> roles) {
         List<GrantedAuthority>  authorities = new ArrayList<>();
         if(roles != null){
             for(String role: roles) {

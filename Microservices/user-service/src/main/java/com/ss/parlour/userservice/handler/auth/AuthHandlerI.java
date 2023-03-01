@@ -19,11 +19,9 @@ public interface AuthHandlerI {
     UserRegistrationResponseBean signUp(UserRegisterRequestBean userRegisterRequestBean);
     UserRegistrationResponseBean signUpWithEmail(UserRegisterRequestBean userRegisterRequestBeane);
     User saveUser(User user);
-    EmailRequestBean populateEmailRequest(String receiverEmail, String token, String type);
     Map<String, String> createUserClaimMap(Authentication authentication);
     User registerNewSocialUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo);
     User updateExistingSocialUser(User existingUser, OAuth2UserInfo oAuth2UserInfo);
-    void requestForMail(String email, String token, String type);
     TokenConfirmResponseBean tokenConfirm(TokenConfirmRequest tokenConfirmRequest);
 
 }

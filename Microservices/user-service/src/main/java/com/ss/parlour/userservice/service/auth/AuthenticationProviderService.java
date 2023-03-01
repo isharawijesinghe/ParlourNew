@@ -27,7 +27,7 @@ public class AuthenticationProviderService implements AuthenticationProvider {
         return checkPassword(user,password);
     }
 
-    private Authentication checkPassword(UserDetails user, String rawPassword) {
+    protected Authentication checkPassword(UserDetails user, String rawPassword) {
         if(passwordEncoder.matches(rawPassword, user.getPassword())) {
             return new UsernamePasswordAuthenticationToken(user,
                     user.getPassword(),
