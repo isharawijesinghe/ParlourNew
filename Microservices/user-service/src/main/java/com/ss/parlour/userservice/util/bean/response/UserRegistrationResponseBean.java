@@ -12,8 +12,6 @@ public class UserRegistrationResponseBean {
     private String narration;
     private String actionType;
 
-    public UserRegistrationResponseBean(){}
-
     public UserRegistrationResponseBean(boolean status, String narration) {
         this.setStatus(status);
         this.setNarration(narration);

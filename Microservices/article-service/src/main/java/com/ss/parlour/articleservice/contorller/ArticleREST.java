@@ -64,18 +64,21 @@ public class ArticleREST {
     }
 
     @RequestMapping(value = "/articleEditRequest", method = RequestMethod.POST, consumes = {"application/json"})
-    public ArticleEditRequestResponse articleEditRequest(@RequestBody ArticleEditRequestBean articleEditRequestBean){
-        return articleServiceI.articleEditRequest(articleEditRequestBean);
+    public ResponseEntity<Object> articleEditRequest(@RequestBody ArticleEditRequestBean articleEditRequestBean){
+        ArticleEditRequestResponse articleEditRequestResponse = articleServiceI.articleEditRequest(articleEditRequestBean);
+        return ResponseEntity.ok().body(articleEditRequestResponse);
     }
 
     @RequestMapping(value = "/approveArticleEditRequest", method = RequestMethod.POST, consumes = {"application/json"})
-    public ArticleEditApproveResponse approveArticleEditRequest(@RequestBody ArticleEditApproveRequest articleEditApproveRequest){
-        return articleServiceI.approveArticleEditRequest(articleEditApproveRequest);
+    public ResponseEntity<Object> approveArticleEditRequest(@RequestBody ArticleEditApproveRequest articleEditApproveRequest){
+        ArticleEditApproveResponse articleEditApproveResponse = articleServiceI.approveArticleEditRequest(articleEditApproveRequest);
+        return ResponseEntity.ok().body(articleEditApproveResponse);
     }
 
     @RequestMapping(value = "/findShareArticles", method = RequestMethod.POST, consumes = {"application/json"})
-    public ArticleEditApproveResponse findShareArticles(@RequestBody ArticleEditApproveRequest articleEditApproveRequest){
-        return articleServiceI.approveArticleEditRequest(articleEditApproveRequest);
+    public ResponseEntity<Object> findShareArticles(@RequestBody ArticleEditApproveRequest articleEditApproveRequest){
+        ArticleEditApproveResponse articleEditApproveResponse = articleServiceI.approveArticleEditRequest(articleEditApproveRequest);
+        return ResponseEntity.ok().body(articleEditApproveResponse);
     }
 
 }

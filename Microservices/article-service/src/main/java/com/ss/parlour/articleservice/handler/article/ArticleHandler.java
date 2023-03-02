@@ -180,7 +180,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         article.setContent(articleBean.getContent());
         article.setCreatedDate(articleBean.getCreatedDate());
         article.setModifiedDate(articleBean.getModifiedDate());
-        article.setStatus(ArticleConst.ARTICLE_ACTIVE);
+        article.setStatus(articleBean.getStatus());
         return article;
     }
 
