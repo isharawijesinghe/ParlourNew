@@ -4,15 +4,14 @@ import com.ss.parlour.userservice.service.UserServiceI;
 import com.ss.parlour.userservice.util.bean.requests.PreSignUrlGenerateRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
+import com.ss.parlour.userservice.util.bean.response.AuthorDetailResponseBean;
 import com.ss.parlour.userservice.util.bean.response.PreSignUrlResponseBean;
+import com.ss.parlour.userservice.util.bean.response.UserInfoResponseBean;
 import com.ss.parlour.userservice.util.bean.response.UserInfoUpdateResponseBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController()
 @RequestMapping(path = "/user",consumes= MediaType.APPLICATION_JSON_VALUE)
@@ -34,9 +33,14 @@ public class UserRest {
         return ResponseEntity.ok(userInfoUpdateResponseBean);
     }
 
-    @RequestMapping(value = "/getUserInfo", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<UserInfoUpdateResponseBean> getUserInfo(@RequestBody UserInfoRequestBean userInfoRequestBean){
-        UserInfoUpdateResponseBean userInfoUpdateResponseBean = new UserInfoUpdateResponseBean();
-        return ResponseEntity.ok(userInfoUpdateResponseBean);
+    @RequestMapping(value = "/findUserInfoByUser", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<UserInfoResponseBean> findUserInfoByUser(@RequestBody UserInfoRequestBean userInfoRequestBean){
+        UserInfoResponseBean userInfoResponseBean = userServiceI.findUserInfoByUser(userInfoRequestBean);
+        return ResponseEntity.ok(userInfoResponseBean);
+    }
+
+    @RequestMapping(value = "/findAuthorDetailsByLoginName/{loginName}", method = RequestMethod.GET, consumes = {"application/json"})
+    public AuthorDetailResponseBean findAuthorDetailsById(@PathVariable("loginName") String loginName){
+        return userServiceI.findAuthorDetailsById(loginName);
     }
 }

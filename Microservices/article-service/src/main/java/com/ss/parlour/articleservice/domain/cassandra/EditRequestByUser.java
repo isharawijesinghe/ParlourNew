@@ -18,9 +18,4 @@ public class EditRequestByUser {
     private String userId;
     private HashMap<String, EditRequest> editRequestByUserMap = new HashMap<>();
 
-    public EditRequestByUser(String userId, HashMap<String, EditRequest> editRequestByUserMap){
-        this.userId = userId;
-        this.editRequestByUserMap = editRequestByUserMap;
-    }
-
 }

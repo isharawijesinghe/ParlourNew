@@ -6,6 +6,7 @@ import com.ss.parlour.userservice.handler.user.UserHandlerI;
 import com.ss.parlour.userservice.util.bean.requests.PreSignUrlGenerateRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
+import com.ss.parlour.userservice.util.bean.response.AuthorDetailResponseBean;
 import com.ss.parlour.userservice.util.bean.response.PreSignUrlResponseBean;
 import com.ss.parlour.userservice.util.bean.response.UserInfoResponseBean;
 import com.ss.parlour.userservice.util.bean.response.UserInfoUpdateResponseBean;
@@ -39,8 +40,14 @@ public class UserService implements UserServiceI{
     }
 
     @Override
-    public UserInfoResponseBean getUserInfo(UserInfoRequestBean userInfoRequestBean){
-        UserInfoResponseBean userInfoResponseBean = userHandlerI.getUserInfo(userInfoRequestBean);
+    public UserInfoResponseBean findUserInfoByUser(UserInfoRequestBean userInfoRequestBean){
+        UserInfoResponseBean userInfoResponseBean = userHandlerI.findUserInfoByUser(userInfoRequestBean);
         return userInfoResponseBean;
+    }
+
+    @Override
+    public AuthorDetailResponseBean findAuthorDetailsById(String loginName){
+        AuthorDetailResponseBean authorDetailResponseBean = userHandlerI.findAuthorDetailsById(loginName);
+        return authorDetailResponseBean;
     }
 }

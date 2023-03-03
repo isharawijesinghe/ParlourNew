@@ -34,5 +34,11 @@ public interface ArticleConst {
 
     public final static String AWS_CLOUD_PROVIDER = "AWS";
 
+    public final static String ARTICLE_STATUS_DRAFT = "Draft";
+    public final static String ARTICLE_STATUS_UNDER_REVIEW = "Under review";
+    public final static String ARTICLE_STATUS_REVIEW_IN_PROGRESS = "Review in progress";
+    public final static String ARTICLE_STATUS_ACCEPTED = "Accepted";
+    public final static String ARTICLE_STATUS_PUBLISHED = "Published";
+
 
 }

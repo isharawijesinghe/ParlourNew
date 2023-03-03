@@ -5,6 +5,7 @@ import com.ss.parlour.userservice.domain.cassandra.UserInfo;
 import com.ss.parlour.userservice.util.bean.UserConst;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
+import com.ss.parlour.userservice.util.bean.response.AuthorDetailResponseBean;
 import com.ss.parlour.userservice.util.bean.response.UserInfoResponseBean;
 import com.ss.parlour.userservice.util.bean.response.UserInfoUpdateResponseBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,19 @@ public class UserHandler implements UserHandlerI{
     }
 
     @Override
-    public UserInfoResponseBean getUserInfo(UserInfoRequestBean userInfoRequestBean){
+    public UserInfoResponseBean findUserInfoByUser(UserInfoRequestBean userInfoRequestBean){
         UserInfoResponseBean userInfoResponseBean = new UserInfoResponseBean();
-        Optional<UserInfo> currentUserInfoFromDb=  userDAOI.getUserInfoFromDb(userInfoRequestBean);
+        Optional<UserInfo> currentUserInfoFromDb=  userDAOI.getUserInfoFromDb(userInfoRequestBean.getLoginName());
         currentUserInfoFromDb.ifPresent(userInfo -> populateUserInfoResponseBean(userInfoResponseBean, userInfo));
         return userInfoResponseBean;
+    }
+
+    @Override
+    public AuthorDetailResponseBean findAuthorDetailsById(String loginName){
+        AuthorDetailResponseBean authorDetailResponseBean = new AuthorDetailResponseBean();
+        Optional<UserInfo> currentUserInfoFromDb =  userDAOI.getUserInfoFromDb(loginName);
+        currentUserInfoFromDb.ifPresent(userInfo -> {populateAuthorInfo(authorDetailResponseBean, userInfo);});
+        return authorDetailResponseBean;
     }
 
     protected UserInfo populateUserInfoDataBean(UserInfoUpdateRequestBean userInfoUpdateRequestBean){
@@ -48,6 +57,11 @@ public class UserHandler implements UserHandlerI{
         userInfo.setProfileImage(userInfoUpdateRequestBean.getProfileImage());
         userInfo.setDescription(userInfoUpdateRequestBean.getDescription());
         return userInfo;
+    }
+
+    protected void populateAuthorInfo(AuthorDetailResponseBean authorDetailResponseBean, UserInfo userInfo){
+        authorDetailResponseBean.setName(userInfo.getFirstName());
+        authorDetailResponseBean.setProfileImageUrl(userInfo.getProfileImage());
     }
 
     protected void populateUserInfoResponseBean(UserInfoResponseBean userInfoResponseBean, UserInfo userInfo){

@@ -16,6 +16,7 @@ public class ArticleBean {
     private String summary;
     private int status;
     private String content;
+    private String categoryId;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
 

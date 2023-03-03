@@ -16,5 +16,6 @@ public class ArticleResponseBean {
 
     private Article article;
     private List<Comment> articleComments = new ArrayList<>();
+    private AuthorDetailResponseBean authorDetails;
 
 }

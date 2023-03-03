@@ -221,14 +221,9 @@ public class AuthHandler implements AuthHandlerI {
 
     protected void processTokenConfirmation(TokenConfirmRequest tokenConfirmRequest){
         switch (tokenConfirmRequest.getActionType()){
-            case UserConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER:
-                //Do nothing for now
-                break;
-            case UserConst.USER_ACTION_TYPE_REGISTER:
-                //Update user active status
-                break;
-            default:
-                //Do nothing for now
+            case UserConst.USER_ACTION_TYPE_PASSWORD_LESS_REGISTER -> System.out.println("Password less confirmation");
+            case UserConst.USER_ACTION_TYPE_REGISTER -> System.out.println("Password confirmation");
+            default -> System.out.println("");
         }
     }
 

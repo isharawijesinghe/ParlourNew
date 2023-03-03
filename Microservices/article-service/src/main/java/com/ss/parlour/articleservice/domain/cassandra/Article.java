@@ -22,6 +22,7 @@ public class Article {
     private String summary;
     private String content;
     private int status;
+    private String categoryId;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
     private Set<String> likedList = new HashSet<>();

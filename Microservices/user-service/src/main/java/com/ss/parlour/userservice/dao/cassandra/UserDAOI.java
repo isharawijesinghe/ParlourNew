@@ -21,6 +21,6 @@ public interface UserDAOI {
     void saveUserToken(UserToken userToken);
     Optional<UserToken> getUserToken(String userName, String actionType);
     void saveUserInfo(UserInfo userInfo);
-    Optional<UserInfo> getUserInfoFromDb(UserInfoRequestBean userInfoRequestBean);
+    Optional<UserInfo> getUserInfoFromDb(String loginName);
     void saveUserSignUpDataBeans(UserSignupHelperBean userSignupHelperBean);
 }

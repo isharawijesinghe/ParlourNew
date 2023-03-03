@@ -173,7 +173,9 @@
 							<version>1.18.22</version>
 						</path>
 					</annotationProcessorPaths>
-				</configuration>
+                    <source>14</source>
+                    <target>14</target>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>

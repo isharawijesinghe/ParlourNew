@@ -35,6 +35,7 @@ CREATE TYPE parlour.article(
     summary text,
     content text,
     status int,
+    categoryId text,
     createdDate timestamp,
     modifiedDate timestamp
 );
@@ -115,6 +116,7 @@ CREATE TABLE IF NOT EXISTS parlour.article (
     summary text,
     content text,
     status int,
+    categoryId text,
     createdDate timestamp,
     modifiedDate timestamp,
     likedList frozen<set<text>> ,

@@ -106,8 +106,8 @@ public class UserDAO implements UserDAOI{
     }
 
     @Override
-    public Optional<UserInfo> getUserInfoFromDb(UserInfoRequestBean userInfoRequestBean){
-        return userInfoRepositoryI.findUserInfoByLoginName(userInfoRequestBean.getLoginName());
+    public Optional<UserInfo> getUserInfoFromDb(String loginName){
+        return userInfoRepositoryI.findUserInfoByLoginName(loginName);
     }
 
     @Override
@@ -119,6 +119,7 @@ public class UserDAO implements UserDAOI{
     protected void insertUserSignUpDataBeansInBatch(UserSignupHelperBean userSignupHelperBean, CassandraBatchOperations batchOps){
         batchOps.insert(userSignupHelperBean.getUser());
         batchOps.insert(userSignupHelperBean.getLoginNameEmailMapper());
+        batchOps.execute();
     }
 
 

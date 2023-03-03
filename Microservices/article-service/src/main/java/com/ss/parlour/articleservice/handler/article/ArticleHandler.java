@@ -8,7 +8,10 @@ import com.ss.parlour.articleservice.utils.bean.*;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleHistoryResponseBean;
 import com.ss.parlour.articleservice.utils.bean.response.ArticleResponseBean;
+import com.ss.parlour.articleservice.utils.bean.response.AuthorDetailResponseBean;
 import com.ss.parlour.articleservice.utils.common.KeyGenerator;
+import com.ss.parlour.articleservice.utils.exception.ArticleServiceRuntimeException;
+import com.ss.parlour.articleservice.writer.ExternalRestWriterI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +29,14 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     @Autowired
     private KeyGenerator keyGenerator;
 
-    //Handle when user request post create
+    @Autowired
+    private ExternalRestWriterI externalRestWriterI;
+
+    /***
+     * Handle when user request post create
+     * @param articleBean
+     * @return
+     */
     @Override
     public Article processCreateArticleRequest(ArticleBean articleBean){
         if (articleBean.getId() == null || articleBean.getId().isEmpty()){ //New article request
@@ -40,7 +50,10 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         return article;
     }
 
-    //Handle when user add post like
+    /***
+     * Handle when user add post like
+     * @param likeBean
+     */
     @Override
     public void handleLikeRequest(LikeBean likeBean){
         Optional<Article> existingArticleBean = articleDAOI.getArticleById(likeBean.getArticleId());
@@ -48,7 +61,10 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         existingArticleBean.ifPresent((article) -> updateArticleVote(likeBean, article));
     }
 
-    //Handle when user delete an article
+    /***
+     * Handle when user delete an article
+     * @param articleDeleteRequestBean
+     */
     @Override
     public void processDeleteArticleRequest(ArticleDeleteRequestBean articleDeleteRequestBean){
         Optional<Article> exitingArticle = articleDAOI.getArticleById(articleDeleteRequestBean.getArticleId());
@@ -57,16 +73,25 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         exitingArticle.ifPresent((article) -> processUpdateArticleStatus(article, ArticleConst.ARTICLE_INACTIVE));
     }
 
-    //When user request to find article by id
+    /***
+     * When user request to find article by id
+     * @param articleRequestBean
+     * @return
+     */
     @Override
     public ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean){
         ArticleResponseBean articleResponseBean = new ArticleResponseBean();
         populateArticleDetails(articleRequestBean, articleResponseBean);
+        populateArticleAuthorDetails(articleResponseBean);
         articleResponseBean.setArticleComments(commentHandlerI.getCommentListForPost(articleRequestBean));
         return articleResponseBean;
     }
 
-    //When user request to find article history by id
+    /***
+     * When user request to find article history by id
+     * @param articleHistoryRequestBean
+     * @return
+     */
     @Override
     public ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean){
         ArticleHistoryResponseBean articleHistoryResponseBean = new ArticleHistoryResponseBean();
@@ -75,7 +100,11 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         return articleHistoryResponseBean;
     }
 
-    //Find user article by id
+    /***
+     * Find user article by id
+     * @param articleId
+     * @return
+     */
     @Override
     public Article findArticleDetailsById(String articleId){
         Optional<Article> currentArticle = articleDAOI.getArticleById(articleId);
@@ -83,7 +112,11 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         return null;
     }
 
-    //Handle article edit request
+    /***
+     * Handle article edit request
+     * @param articleEditRequestBean
+     * @return
+     */
     @Override
     public String processArticleEditRequest(ArticleEditRequestBean articleEditRequestBean){
         EditRequest articleEditBean = articleEditRequestBean.getArticleEditRequest();
@@ -95,8 +128,11 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         return articleEditRequestId;
     }
 
-    //Call article edit approve request
-    //Once article edit approve it should updates article edit beans + insert data into shared article table
+    /***
+     * Call article edit approve request
+     * Once article edit approve it should updates article edit beans + insert data into shared article table
+     * @param articleEditApproveRequest
+     */
     @Override
     public void processArticleEditRequestApproval(ArticleEditApproveRequest articleEditApproveRequest){
         processEditApproveRequestForArticle(articleEditApproveRequest, ArticleConst.ARTICLE_EDIT_REQUEST_APPROVED);
@@ -135,24 +171,30 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         Set<String> unLikeUsers = oldArticle.getUnLikedList();
 
         switch (likeBean.getStatus()){ //Update user like or unlike list based on user input
-            case ArticleConst.USER_LIKED:
-                likedUsers.add(likeBean.getUserName());
-                unLikeUsers.removeIf(username -> username.equals(likeBean.getUserName()));
-                break;
-            case ArticleConst.USER_UNLIKED:
-                unLikeUsers.add(likeBean.getUserName());
-                likedUsers.removeIf(username -> username.equals(likeBean.getUserName()));
-                break;
-            default:
-                likedUsers.removeIf(username -> username.equals(likeBean.getUserName()));
-                unLikeUsers.removeIf(username -> username.equals(likeBean.getUserName()));
-                break;
+            case ArticleConst.USER_LIKED -> processUserLikedRequest(likeBean, likedUsers, unLikeUsers);
+            case ArticleConst.USER_UNLIKED -> processUserUnLikedRequest(likeBean, likedUsers, unLikeUsers);
+            default -> processUserNeutralLikedRequest(likeBean, likedUsers, unLikeUsers);
         }
 
         Article updatedArticle = oldArticle;
         updatedArticle.setLikedList(likedUsers);
         updatedArticle.setUnLikedList(unLikeUsers);
         articleDAOI.saveArticle(updatedArticle);
+    }
+
+    protected void processUserLikedRequest(LikeBean likeBean, Set<String> likedUsers, Set<String> unLikeUsers){
+        likedUsers.add(likeBean.getUserName());
+        unLikeUsers.removeIf(username -> username.equals(likeBean.getUserName()));
+    }
+
+    protected void processUserUnLikedRequest(LikeBean likeBean, Set<String> likedUsers, Set<String> unLikeUsers){
+        unLikeUsers.add(likeBean.getUserName());
+        likedUsers.removeIf(username -> username.equals(likeBean.getUserName()));
+    }
+
+    protected void processUserNeutralLikedRequest(LikeBean likeBean, Set<String> likedUsers, Set<String> unLikeUsers){
+        likedUsers.removeIf(username -> username.equals(likeBean.getUserName()));
+        unLikeUsers.removeIf(username -> username.equals(likeBean.getUserName()));
     }
 
     //Populate article details to send response back to browser
@@ -181,6 +223,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         article.setCreatedDate(articleBean.getCreatedDate());
         article.setModifiedDate(articleBean.getModifiedDate());
         article.setStatus(articleBean.getStatus());
+        article.setCategoryId(articleBean.getCategoryId());
         return article;
     }
 
@@ -262,7 +305,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
 
     protected EditRequestHelperBean populateEditRequestHelperBeanForApproval(ArticleEditApproveRequest articleEditApproveRequest, String status)  {
         var currentEditRequest = articleDAOI.getArticleEditRequest(articleEditApproveRequest.getEditRequestId())
-                .orElseThrow();
+                .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.ARTICLE_EDIT_REQ_NOT_FOUND_ERROR + articleEditApproveRequest.getEditRequestId()));
         currentEditRequest.setEditRequestStatus(status);
         EditRequestHelperBean editRequestHelperBean = new EditRequestHelperBean();
         editRequestHelperBean.setEditRequest(currentEditRequest);
@@ -288,6 +331,14 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         sharedArticleBean.setStatus(editRequest.getEditRequestStatus());
         sharedArticleBean.setAuthor(editRequest.getOwnerId());
         return sharedArticleBean;
+    }
+
+    public void populateArticleAuthorDetails(ArticleResponseBean articleResponseBean) {
+        Article article = articleResponseBean.getArticle();
+        Optional<AuthorDetailResponseBean> authorDetailResponseBean = externalRestWriterI.findAuthorDetailsByLoginName(article.getUserName());
+        var authorDetails = authorDetailResponseBean
+                .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.AUTHOR_NOT_FOUND_ERROR + article.getUserName()));
+        articleResponseBean.setAuthorDetails(authorDetails);
     }
 
 }

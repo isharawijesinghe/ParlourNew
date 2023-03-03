@@ -18,8 +18,4 @@ public class EditRequestByArticle {
     private String articleId;
     private HashMap<String, EditRequest> editRequestByArticleMap = new HashMap<>();
 
-    public EditRequestByArticle(String articleId, HashMap<String, EditRequest> editRequestByArticleMap){
-        this.articleId = articleId;
-        this.editRequestByArticleMap = editRequestByArticleMap;
-    }
 }

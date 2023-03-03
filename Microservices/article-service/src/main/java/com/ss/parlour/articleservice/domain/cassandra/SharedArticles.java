@@ -18,8 +18,4 @@ public class SharedArticles {
     private String userId;
     private HashMap<String, SharedArticleBean> sharedArticleBeanMap = new HashMap<>();
 
-    public SharedArticles(String userId, HashMap<String, SharedArticleBean> sharedArticleBeanMap){
-        this.userId = userId;
-        this.sharedArticleBeanMap = sharedArticleBeanMap;
-    }
 }
