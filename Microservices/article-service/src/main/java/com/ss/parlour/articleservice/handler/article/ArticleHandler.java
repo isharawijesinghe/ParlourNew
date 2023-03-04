@@ -32,43 +32,57 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
 
     /***
      * Handle when user request post create
+     * 1. Check request has article id -> If not then it is new article create request
+     * 2. If request has article id then article edit or update request -> Then keep histry and udate new request
      * @param articleBean
      * @return
      */
     @Override
-    public Article processCreateArticleRequest(ArticleBean articleBean){
+    public ArticleCommonResponse processCreateArticleRequest(ArticleBean articleBean){
+        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
+        ArticleUpdateHelperBean articleUpdateHelperBean = new ArticleUpdateHelperBean();
         if (articleBean.getId() == null || articleBean.getId().isEmpty()){ //New article request
             articleBean.setId(keyGenerator.articleKeyGenerator(articleBean.getAuthorName()));
         } else { //Article update approve request flow
             Optional<Article> currentArticle = articleDAOI.getArticleById(articleBean.getId());
-            currentArticle.ifPresent(article -> updateArticle(article)); //Update ArticleHistory table
+            //Update ArticleHistory table
+            currentArticle.ifPresent(article -> updateArticleHistoryToPushIntoHistory(article, articleUpdateHelperBean));
         }
-        Article article = populateArticle(articleBean); //Populate article bean
-        updateArticle(article); //Create or update article >> Update Article table
-        return article;
+        Article article = populateUpdatedArticle(articleBean); //Populate article bean
+        articleUpdateHelperBean.setUpdatedArticle(article);
+        articleDAOI.saveArticleCreateRequest(articleUpdateHelperBean); //Create or update article >> Update Article table
+        articleCommonResponse.setArticleId(article.getId());
+        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);
+        return articleCommonResponse;
     }
 
     /***
+     * Update saved article object in db >> Update Article table
      * Handle when user add post like
      * @param likeBean
      */
     @Override
     public void handleLikeRequest(LikeBean likeBean){
         Optional<Article> existingArticleBean = articleDAOI.getArticleById(likeBean.getArticleId());
-        //Update saved article object in db >> Update Article table
         existingArticleBean.ifPresent((article) -> updateArticleVote(likeBean, article));
     }
 
     /***
+     * 1. If delete request article exists --> Then update article status to inactive
+     * 2. If required can be removed entry from list as well
      * Handle when user delete an article
      * @param articleDeleteRequest
      */
     @Override
-    public void processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest){
+    public ArticleCommonResponse processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest){
+        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
         Optional<Article> exitingArticle = articleDAOI.getArticleById(articleDeleteRequest.getArticleId());
-        //If delete request article exists --> Then update article status to inactive
-        //If required this can be deleted
         exitingArticle.ifPresent((article) -> processUpdateArticleStatus(article, ArticleConst.ARTICLE_INACTIVE));
+        articleCommonResponse.setArticleId(articleDeleteRequest.getArticleId());
+        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED);
+        return articleCommonResponse;
     }
 
     /***
@@ -236,13 +250,9 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         }
     }
 
-    //Update article >> Update or save
-    protected void updateArticle(Article article){
-        articleDAOI.saveArticle(article);
-    }
 
     //Populate Article bean
-    protected Article populateArticle(ArticleBean articleBean){
+    protected Article populateUpdatedArticle(ArticleBean articleBean){
         Article article = new Article();
         article.setId(articleBean.getId());
         article.setUserName(articleBean.getAuthorName());
@@ -256,18 +266,10 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         return article;
     }
 
-    //Update article history into db
-    protected void updateArticleHistory(Article oldArticle){
-        Optional<ArticleHistory> existingArticleHistoryBean = articleDAOI.getArticleHistoryByArticleId(oldArticle.getId());
-        List<Article> articleHistoriesList = new ArrayList<>();
-        if (existingArticleHistoryBean.isPresent()){
-            articleHistoriesList = existingArticleHistoryBean.get().getOldArticles();
-        }
-        articleHistoriesList.add(oldArticle);
-        ArticleHistory articleHistory = new ArticleHistory();
-        articleHistory.setArticleId(existingArticleHistoryBean.get().getArticleId());
-        articleHistory.setOldArticles(articleHistoriesList);
-        articleDAOI.updateArticleHistory(articleHistory);
+
+    protected void updateArticleHistoryToPushIntoHistory(Article oldArticle, ArticleUpdateHelperBean articleUpdateHelperBean){
+        //oldArticle.setModifiedDate(new Date());
+        articleUpdateHelperBean.setOldArticle(oldArticle);
     }
 
     protected EditRequestHelperBean populateEditRequestHelperBean(EditRequest editRequest){
@@ -379,7 +381,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         editDraftArticles.setArticleId(articleEditDraftRequest.getArticleId());
         Optional<EditDraftArticles> editDraftArticlesDb = articleDAOI.getEditDraftArticleByArticleId(articleEditDraftRequest.getArticleId());
         editDraftArticlesDb.ifPresent(draftArticle -> {editDraftArticles.setDraftArticles(draftArticle.getDraftArticles());});
-        Article draftArticle = populateArticle(articleEditDraftRequest.getArticleBean());
+        Article draftArticle = populateUpdatedArticle(articleEditDraftRequest.getArticleBean());
         editDraftArticles.getDraftArticles().put(articleEditDraftRequest.getEditRequestId(), draftArticle);
         editRequestHelperBean.setEditDraftArticles(editDraftArticles);
     }

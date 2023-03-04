@@ -1,6 +1,7 @@
 package com.ss.parlour.articleservice.dao.cassandra;
 
 import com.ss.parlour.articleservice.domain.cassandra.*;
+import com.ss.parlour.articleservice.utils.bean.ArticleUpdateHelperBean;
 import com.ss.parlour.articleservice.utils.bean.EditRequestHelperBean;
 import org.springframework.data.cassandra.core.CassandraBatchOperations;
 
@@ -25,4 +26,5 @@ public interface ArticleDAOI {
     Optional<EditRequest> getArticleEditRequest(String editRequestId);
     Optional<EditDraftArticles> getEditDraftArticleByArticleId(String articleId);
     void saveArticleEditDraftRequest(EditRequestHelperBean editRequestHelperBean);
+    void saveArticleCreateRequest(ArticleUpdateHelperBean articleUpdateHelperBean);
 }

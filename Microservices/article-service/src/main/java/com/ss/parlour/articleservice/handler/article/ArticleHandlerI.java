@@ -7,8 +7,8 @@ import com.ss.parlour.articleservice.utils.bean.response.*;
 
 public interface ArticleHandlerI {
 
-    Article processCreateArticleRequest(ArticleBean articleBean);
-    void processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest);
+    ArticleCommonResponse processCreateArticleRequest(ArticleBean articleBean);
+    ArticleCommonResponse processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest);
     ArticleResponse findArticleById(ArticleRequest articleRequest);
     ArticleHistoryResponse findArticleHistoryById(ArticleHistoryRequest articleHistoryRequest);
     Article findArticleDetailsById(String articleId);

@@ -32,68 +32,42 @@ public class ArticleService implements ArticleServiceI {
 
     @Override
     public ArticleCommonResponse createArticle(ArticleCreateRequest articleCreateRequest){
-        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
         ArticleBean articleBean = articleValidatorI.validateArticleRequest(articleCreateRequest);
-        Article article = articleHandlerI.processCreateArticleRequest(articleBean);
-        articleCommonResponse.setArticleId(article.getId());
-        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);
-        return articleCommonResponse;
+        return articleHandlerI.processCreateArticleRequest(articleBean);
     }
 
     @Override
     public CommentCommonResponse addComment(CommentCreateRequest commentCreateRequest){
-        CommentCommonResponse commentCommonResponse = new CommentCommonResponse();
         CommentBean commentBean = articleValidatorI.validateCommentRequest(commentCreateRequest); //Doing basic initial validations
-        Comment comment = commentHandlerI.processAddCommentRequest(commentBean); //Handle comments related logics
-        commentCommonResponse.setCommentId(comment.getId());
-        commentCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        commentCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_ADDED);
-        return commentCommonResponse;
+        return commentHandlerI.processAddCommentRequest(commentBean);
     }
 
     @Override
     public LikeCommonResponse addLike(LikeRequest likeRequest){
-        LikeCommonResponse likeCommonResponse = new LikeCommonResponse();
         LikeBean likeBean = articleValidatorI.validateArticleLikeRequest(likeRequest); //Doing basic initial validations
-        likeHandlerI.processAddLikeRequest(likeBean);
-        likeCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        likeCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_LIKE_ADDED);
-        return likeCommonResponse;
+        return likeHandlerI.processAddLikeRequest(likeBean);
     }
 
     @Override
     public ArticleResponse findArticleById(ArticleRequest articleRequest){
-        ArticleResponse articleResponse = articleHandlerI.findArticleById(articleRequest);
-        return articleResponse;
+        return articleHandlerI.findArticleById(articleRequest);
     }
 
     @Override
     public ArticleHistoryResponse findArticleHistoryById(ArticleHistoryRequest articleHistoryRequest){
-        ArticleHistoryResponse articleHistoryResponse = articleHandlerI.findArticleHistoryById(articleHistoryRequest);
-        return articleHistoryResponse;
+        return articleHandlerI.findArticleHistoryById(articleHistoryRequest);
     }
 
     @Override
     public ArticleCommonResponse deleteArticle(ArticleDeleteRequest articleDeleteRequest){
-        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
         articleValidatorI.validateArticleDeleteRequest(articleDeleteRequest); //Doing basic initial validations
-        articleHandlerI.processDeleteArticleRequest(articleDeleteRequest);
-        articleCommonResponse.setArticleId(articleDeleteRequest.getArticleId());
-        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED);
-        return articleCommonResponse;//Return response
+        return articleHandlerI.processDeleteArticleRequest(articleDeleteRequest);
     }
 
     @Override
     public CommentCommonResponse deleteComment(CommentDeleteRequest commentDeleteRequest){
-        CommentCommonResponse commentCommonResponse = new CommentCommonResponse();
         articleValidatorI.validateCommentDeleteRequest(commentDeleteRequest); //Doing basic initial validations
-        commentHandlerI.processDeleteCommentRequest(commentDeleteRequest);
-        commentCommonResponse.setCommentId(commentDeleteRequest.getCommentId());
-        commentCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        commentCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_DELETED);
-        return commentCommonResponse;//Return response
+        return commentHandlerI.processDeleteCommentRequest(commentDeleteRequest);
     }
 
     @Override
@@ -103,20 +77,17 @@ public class ArticleService implements ArticleServiceI {
 
     @Override
     public ArticleEditRequestResponse articleEditRequest(ArticleEditRequest articleEditRequest){
-        ArticleEditRequestResponse articleEditRequestResponse = articleHandlerI.processArticleEditRequest(articleEditRequest);
-        return articleEditRequestResponse;
+        return articleHandlerI.processArticleEditRequest(articleEditRequest);
     }
 
     @Override
     public ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest){
-        ArticleEditApproveResponse articleEditApproveResponse = articleHandlerI.processArticleEditRequestApproval(articleEditApproveRequest);
-        return articleEditApproveResponse;
+        return articleHandlerI.processArticleEditRequestApproval(articleEditApproveRequest);
     }
 
     @Override
     public ArticleEditDraftResponse postArticleEditDraft(ArticleEditDraftRequest articleEditDraftRequest){
-        ArticleEditDraftResponse articleEditDraftResponse = articleHandlerI.postArticleEditDraft(articleEditDraftRequest);
-        return articleEditDraftResponse;
+        return articleHandlerI.postArticleEditDraft(articleEditDraftRequest);
     }
 
 }

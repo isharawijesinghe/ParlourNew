@@ -8,6 +8,7 @@ import com.ss.parlour.articleservice.utils.bean.CommentBean;
 import com.ss.parlour.articleservice.utils.bean.LikeBean;
 import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequest;
 import com.ss.parlour.articleservice.utils.bean.requests.CommentDeleteRequest;
+import com.ss.parlour.articleservice.utils.bean.response.CommentCommonResponse;
 import com.ss.parlour.articleservice.utils.common.KeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,8 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
 
     //When user add comment on article
     @Override
-    public Comment processAddCommentRequest(CommentBean commentBean){
+    public CommentCommonResponse processAddCommentRequest(CommentBean commentBean){
+        CommentCommonResponse commentCommonResponse = new CommentCommonResponse();
         if(commentBean.getId() == null || commentBean.getId().isEmpty()){
             //Adding new comment id if request do not have comment id >> This is for new comment
             commentBean.setId(keyGenerator.commentKeyGenerator(commentBean.getAuthorName(), commentBean.getArticleId()));
@@ -34,7 +36,10 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
         Comment comment = populateComment(commentBean);
         handleComment(comment);
         handleCommentByArticle(comment);
-        return comment;
+        commentCommonResponse.setCommentId(comment.getId());
+        commentCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        commentCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_ADDED);
+        return commentCommonResponse;
     }
 
     //When user vote for comment
@@ -50,7 +55,8 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
 
     //When delete comment
     @Override
-    public void processDeleteCommentRequest(CommentDeleteRequest commentDeleteRequest){
+    public CommentCommonResponse processDeleteCommentRequest(CommentDeleteRequest commentDeleteRequest){
+        CommentCommonResponse commentCommonResponse = new CommentCommonResponse();
         Optional<Comment> currentComment = commentDAOI.getCommentById(commentDeleteRequest.getCommentId());
         if (currentComment.isPresent()){
             Comment oldComment = currentComment.get();//Update comment bean in db --> does require to remove from db ???
@@ -58,6 +64,10 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
             commentDAOI.saveComment(oldComment);
             removeArticleAssignComment(oldComment);//Update article assign comment map in db
         }
+        commentCommonResponse.setCommentId(commentDeleteRequest.getCommentId());
+        commentCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        commentCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_DELETED);
+        return commentCommonResponse;//Return response
     }
 
     //When user request for comment list for post

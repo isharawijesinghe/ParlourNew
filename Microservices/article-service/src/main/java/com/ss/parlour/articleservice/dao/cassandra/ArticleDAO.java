@@ -2,6 +2,7 @@ package com.ss.parlour.articleservice.dao.cassandra;
 
 import com.ss.parlour.articleservice.domain.cassandra.*;
 import com.ss.parlour.articleservice.repository.cassandra.*;
+import com.ss.parlour.articleservice.utils.bean.ArticleUpdateHelperBean;
 import com.ss.parlour.articleservice.utils.bean.EditRequestHelperBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.CassandraBatchOperations;
@@ -119,14 +120,20 @@ public class ArticleDAO implements ArticleDAOI {
         insertArticleEditDraftRequestInBatch(editRequestHelperBean, batchOps);
     }
 
-    private void insertArticleEditRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
+    @Override
+    public void saveArticleCreateRequest(ArticleUpdateHelperBean articleUpdateHelperBean){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        insertArticleCreateRequestInBatch(articleUpdateHelperBean, batchOps);
+    }
+
+    protected void insertArticleEditRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
         batchOps.insert(editRequestHelperBean.getEditRequest());
         batchOps.insert(editRequestHelperBean.getEditRequestByArticle());
         batchOps.insert(editRequestHelperBean.getEditRequestByUser());
         batchOps.execute();
     }
 
-    private void insertArticleEditApprovalRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
+    protected void insertArticleEditApprovalRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
         batchOps.insert(editRequestHelperBean.getEditRequest());
         batchOps.insert(editRequestHelperBean.getEditRequestByArticle());
         batchOps.insert(editRequestHelperBean.getEditRequestByUser());
@@ -134,9 +141,15 @@ public class ArticleDAO implements ArticleDAOI {
         batchOps.execute();
     }
 
-    private void insertArticleEditDraftRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
+    protected void insertArticleEditDraftRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
         batchOps.insert(editRequestHelperBean.getSharedArticles());
         batchOps.insert(editRequestHelperBean.getEditDraftArticles());
+        batchOps.execute();
+    }
+
+    protected void insertArticleCreateRequestInBatch(ArticleUpdateHelperBean articleUpdateHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(articleUpdateHelperBean.getUpdatedArticle());
+        batchOps.insert(articleUpdateHelperBean.getOldArticle());
         batchOps.execute();
     }
 
