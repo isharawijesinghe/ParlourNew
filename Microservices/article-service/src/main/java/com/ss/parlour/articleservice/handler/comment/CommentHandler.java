@@ -6,8 +6,8 @@ import com.ss.parlour.articleservice.handler.LikeTypeHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleConst;
 import com.ss.parlour.articleservice.utils.bean.CommentBean;
 import com.ss.parlour.articleservice.utils.bean.LikeBean;
-import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequestBean;
-import com.ss.parlour.articleservice.utils.bean.requests.CommentDeleteRequestBean;
+import com.ss.parlour.articleservice.utils.bean.requests.ArticleRequest;
+import com.ss.parlour.articleservice.utils.bean.requests.CommentDeleteRequest;
 import com.ss.parlour.articleservice.utils.common.KeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,8 +50,8 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
 
     //When delete comment
     @Override
-    public void processDeleteCommentRequest(CommentDeleteRequestBean commentDeleteRequestBean){
-        Optional<Comment> currentComment = commentDAOI.getCommentById(commentDeleteRequestBean.getCommentId());
+    public void processDeleteCommentRequest(CommentDeleteRequest commentDeleteRequest){
+        Optional<Comment> currentComment = commentDAOI.getCommentById(commentDeleteRequest.getCommentId());
         if (currentComment.isPresent()){
             Comment oldComment = currentComment.get();//Update comment bean in db --> does require to remove from db ???
             oldComment.setStatus(ArticleConst.COMMENT_INACTIVE);
@@ -62,9 +62,9 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
 
     //When user request for comment list for post
     @Override
-    public List<Comment> getCommentListForPost(ArticleRequestBean articleRequestBean){
+    public List<Comment> getCommentListForPost(ArticleRequest articleRequest){
         //Load all comments for particular article
-        Optional<CommentByArticle> currentCommentByArticle = commentDAOI.getCommentsByArticleId(articleRequestBean.getArticleId());
+        Optional<CommentByArticle> currentCommentByArticle = commentDAOI.getCommentsByArticleId(articleRequest.getArticleId());
         List<Comment> responseComment = new ArrayList<>();
         if (currentCommentByArticle.isPresent()){
             CommentByArticle commentByArticleCurrent = currentCommentByArticle.get();

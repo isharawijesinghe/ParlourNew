@@ -1,5 +1,6 @@
 package com.ss.parlour.articleservice.utils.bean.requests;
 
+import com.ss.parlour.articleservice.utils.bean.ArticleBean;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleRequestBean {
+public class ArticleCreateRequest {
 
-    private String articleId;
+    private ArticleBean articleBean;
 
 }

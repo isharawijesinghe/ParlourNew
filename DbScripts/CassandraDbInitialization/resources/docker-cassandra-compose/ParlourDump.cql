@@ -218,3 +218,10 @@ CREATE TABLE IF NOT EXISTS parlour.shared_articles (
    sharedArticleBeanMap map<text, frozen<shared_articles>>,
    PRIMARY KEY (userId)
 );
+
+CREATE TABLE IF NOT EXISTS parlour.shared_articles (
+  articleId text,
+  draftArticles map<text, frozen<article>>,
+  PRIMARY KEY (articleId)
+);
+

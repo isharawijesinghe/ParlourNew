@@ -17,45 +17,45 @@ public class ArticleREST {
     private ArticleServiceI articleServiceI;
 
     @RequestMapping(value = "/createArticle", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> createArticle(@RequestBody ArticleCreateRequestBean articleCreateRequestBean){
-        ArticleCommonResponseBean articleCommonResponseBean = articleServiceI.createArticle(articleCreateRequestBean);
-        return ResponseEntity.ok().body(articleCommonResponseBean);
+    public ResponseEntity<Object> createArticle(@RequestBody ArticleCreateRequest articleCreateRequest){
+        ArticleCommonResponse articleCommonResponse = articleServiceI.createArticle(articleCreateRequest);
+        return ResponseEntity.ok().body(articleCommonResponse);
     }
 
     @RequestMapping(value = "/addComment", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> addComment(@RequestBody CommentCreateRequestBean commentCreateRequestBean){
-        CommentCommonResponseBean commentCommonResponseBean = articleServiceI.addComment(commentCreateRequestBean);
-        return ResponseEntity.ok().body(commentCommonResponseBean);
+    public ResponseEntity<Object> addComment(@RequestBody CommentCreateRequest commentCreateRequest){
+        CommentCommonResponse commentCommonResponse = articleServiceI.addComment(commentCreateRequest);
+        return ResponseEntity.ok().body(commentCommonResponse);
     }
 
     @RequestMapping(value = "/addLike", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> addLike(@RequestBody LikeRequestBean likeRequestBean){
-        LikeCommonResponseBean likeCommonResponseBean = articleServiceI.addLike(likeRequestBean);
-        return ResponseEntity.ok().body(likeCommonResponseBean);
+    public ResponseEntity<Object> addLike(@RequestBody LikeRequest likeRequest){
+        LikeCommonResponse likeCommonResponse = articleServiceI.addLike(likeRequest);
+        return ResponseEntity.ok().body(likeCommonResponse);
     }
 
     @RequestMapping(value = "/findArticleById", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> findArticleById(@RequestBody ArticleRequestBean articleRequestBean){
-        ArticleResponseBean articleResponseBean = articleServiceI.findArticleById(articleRequestBean);
-        return ResponseEntity.ok().body(articleResponseBean);
+    public ResponseEntity<Object> findArticleById(@RequestBody ArticleRequest articleRequest){
+        ArticleResponse articleResponse = articleServiceI.findArticleById(articleRequest);
+        return ResponseEntity.ok().body(articleResponse);
     }
 
     @RequestMapping(value = "/findArticleHistoryById", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> findArticleHistoryById(@RequestBody ArticleHistoryRequestBean articleHistoryRequestBean){
-        ArticleHistoryResponseBean articleHistoryResponseBean = articleServiceI.findArticleHistoryById(articleHistoryRequestBean);
-        return ResponseEntity.ok().body(articleHistoryResponseBean);
+    public ResponseEntity<Object> findArticleHistoryById(@RequestBody ArticleHistoryRequest articleHistoryRequest){
+        ArticleHistoryResponse articleHistoryResponse = articleServiceI.findArticleHistoryById(articleHistoryRequest);
+        return ResponseEntity.ok().body(articleHistoryResponse);
     }
 
     @RequestMapping(value = "/deleteArticle", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> deleteArticle(@RequestBody ArticleDeleteRequestBean articleDeleteRequestBean){
-        ArticleCommonResponseBean articleCommonResponseBean = articleServiceI.deleteArticle(articleDeleteRequestBean);
-        return ResponseEntity.ok().body(articleCommonResponseBean);
+    public ResponseEntity<Object> deleteArticle(@RequestBody ArticleDeleteRequest articleDeleteRequest){
+        ArticleCommonResponse articleCommonResponse = articleServiceI.deleteArticle(articleDeleteRequest);
+        return ResponseEntity.ok().body(articleCommonResponse);
     }
 
     @RequestMapping(value = "/deleteComment", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> deleteComment(@RequestBody CommentDeleteRequestBean commentDeleteRequestBean){
-        CommentCommonResponseBean commentCommonResponseBean = articleServiceI.deleteComment(commentDeleteRequestBean);;
-        return ResponseEntity.ok().body(commentCommonResponseBean);
+    public ResponseEntity<Object> deleteComment(@RequestBody CommentDeleteRequest commentDeleteRequest){
+        CommentCommonResponse commentCommonResponse = articleServiceI.deleteComment(commentDeleteRequest);;
+        return ResponseEntity.ok().body(commentCommonResponse);
     }
 
     @RequestMapping(value = "/findArticleDetailsById/{id}", method = RequestMethod.GET, consumes = {"application/json"})
@@ -64,8 +64,8 @@ public class ArticleREST {
     }
 
     @RequestMapping(value = "/articleEditRequest", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> articleEditRequest(@RequestBody ArticleEditRequestBean articleEditRequestBean){
-        ArticleEditRequestResponse articleEditRequestResponse = articleServiceI.articleEditRequest(articleEditRequestBean);
+    public ResponseEntity<Object> articleEditRequest(@RequestBody ArticleEditRequest articleEditRequest){
+        ArticleEditRequestResponse articleEditRequestResponse = articleServiceI.articleEditRequest(articleEditRequest);
         return ResponseEntity.ok().body(articleEditRequestResponse);
     }
 
@@ -78,6 +78,12 @@ public class ArticleREST {
     @RequestMapping(value = "/findShareArticles", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> findShareArticles(@RequestBody ArticleEditApproveRequest articleEditApproveRequest){
         ArticleEditApproveResponse articleEditApproveResponse = articleServiceI.approveArticleEditRequest(articleEditApproveRequest);
+        return ResponseEntity.ok().body(articleEditApproveResponse);
+    }
+
+    @RequestMapping(value = "/postArticleEditDraft", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<Object> postArticleEditDraft(@RequestBody ArticleEditDraftRequest articleEditDraftRequest){
+        ArticleEditDraftResponse articleEditApproveResponse = articleServiceI.postArticleEditDraft(articleEditDraftRequest);
         return ResponseEntity.ok().body(articleEditApproveResponse);
     }
 

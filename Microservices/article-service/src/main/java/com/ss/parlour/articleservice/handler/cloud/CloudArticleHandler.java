@@ -1,14 +1,14 @@
 package com.ss.parlour.articleservice.handler.cloud;
 
-import com.ss.parlour.articleservice.utils.bean.requests.PreSignUrlGenerateRequestBean;
-import com.ss.parlour.articleservice.utils.bean.response.PreSignUrlResponseBean;
+import com.ss.parlour.articleservice.utils.bean.requests.PreSignUrlGenerateRequest;
+import com.ss.parlour.articleservice.utils.bean.response.PreSignUrlResponse;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CloudArticleHandler implements CommonCloudHandlerI{
 
     @Override
-    public PreSignUrlResponseBean generatePreSignUrl(PreSignUrlGenerateRequestBean preSignUrlGenerateRequestBean){
+    public PreSignUrlResponse generatePreSignUrl(PreSignUrlGenerateRequest preSignUrlGenerateRequest){
         return null;
     }
 }

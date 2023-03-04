@@ -4,13 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.net.URL;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class PreSignUrlResponseBean {
+public class LikeCommonResponse {
 
-    private URL preSignUrl;
+    private int status;
+    private String narration;
 
 }

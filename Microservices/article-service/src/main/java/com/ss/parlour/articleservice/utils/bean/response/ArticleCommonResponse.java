@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleCommonResponseBean {
+public class ArticleCommonResponse {
 
     private String articleId;
     private int status;

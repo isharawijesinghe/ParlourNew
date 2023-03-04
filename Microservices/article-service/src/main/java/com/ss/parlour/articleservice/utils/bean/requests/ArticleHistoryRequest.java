@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PreSignUrlGenerateRequestBean {
+public class ArticleHistoryRequest {
 
-    private String extension;
+    private String articleId;
 
 }

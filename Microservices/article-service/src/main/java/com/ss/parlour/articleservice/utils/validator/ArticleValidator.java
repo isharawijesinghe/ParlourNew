@@ -10,30 +10,30 @@ import org.springframework.stereotype.Component;
 public class ArticleValidator implements ArticleValidatorI{
 
     @Override
-    public ArticleBean validateArticleRequest(ArticleCreateRequestBean articleCreateRequestBean){
+    public ArticleBean validateArticleRequest(ArticleCreateRequest articleCreateRequest){
         //Validate for article existence
         //Validate for user exist
         //Validate for fields exist
-        return articleCreateRequestBean.getArticleBean();
+        return articleCreateRequest.getArticleBean();
     }
 
     @Override
-    public CommentBean validateCommentRequest(CommentCreateRequestBean commentCreateRequestBean){
-        return commentCreateRequestBean.getCommentBean();
+    public CommentBean validateCommentRequest(CommentCreateRequest commentCreateRequest){
+        return commentCreateRequest.getCommentBean();
     }
 
     @Override
-    public LikeBean validateArticleLikeRequest(LikeRequestBean likeRequestBean){
-        return likeRequestBean.getLikeBean();
+    public LikeBean validateArticleLikeRequest(LikeRequest likeRequest){
+        return likeRequest.getLikeBean();
     }
 
     @Override
-    public void validateArticleDeleteRequest(ArticleDeleteRequestBean articleDeleteRequestBean){
+    public void validateArticleDeleteRequest(ArticleDeleteRequest articleDeleteRequest){
 
     }
 
     @Override
-    public void validateCommentDeleteRequest(CommentDeleteRequestBean commentDeleteRequestBean){
+    public void validateCommentDeleteRequest(CommentDeleteRequest commentDeleteRequest){
 
     }
 }

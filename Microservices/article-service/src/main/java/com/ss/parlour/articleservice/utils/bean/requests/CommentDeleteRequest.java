@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CommentDeleteRequestBean {
+public class CommentDeleteRequest {
 
     private String articleId;
     private String commentId;

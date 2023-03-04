@@ -7,8 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LikeCommonResponseBean {
+public class CommentCommonResponse {
 
+    private String commentId;
     private int status;
     private String narration;
 

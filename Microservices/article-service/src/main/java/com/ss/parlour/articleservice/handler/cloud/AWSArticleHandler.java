@@ -6,8 +6,8 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.ss.parlour.articleservice.utils.bean.requests.PreSignUrlGenerateRequestBean;
-import com.ss.parlour.articleservice.utils.bean.response.PreSignUrlResponseBean;
+import com.ss.parlour.articleservice.utils.bean.requests.PreSignUrlGenerateRequest;
+import com.ss.parlour.articleservice.utils.bean.response.PreSignUrlResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,9 +20,9 @@ public class AWSArticleHandler implements CommonCloudHandlerI{
     private String bucketName;
 
     @Override
-    public PreSignUrlResponseBean generatePreSignUrl(PreSignUrlGenerateRequestBean preSignUrlGenerateRequestBean){
-        PreSignUrlResponseBean preSignUrlResponseBean = new PreSignUrlResponseBean();
-        String objectKey = preSignUrlGenerateRequestBean.getExtension();
+    public PreSignUrlResponse generatePreSignUrl(PreSignUrlGenerateRequest preSignUrlGenerateRequest){
+        PreSignUrlResponse preSignUrlResponse = new PreSignUrlResponse();
+        String objectKey = preSignUrlGenerateRequest.getExtension();
         AWSCredentialsProvider provider = new DefaultAWSCredentialsProviderChain();
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(provider).build();
 
@@ -38,7 +38,7 @@ public class AWSArticleHandler implements CommonCloudHandlerI{
                 .withMethod(HttpMethod.GET)
                 .withExpiration(expiration);
         URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
-        preSignUrlResponseBean.setPreSignUrl(url);
-        return preSignUrlResponseBean;
+        preSignUrlResponse.setPreSignUrl(url);
+        return preSignUrlResponse;
     }
 }

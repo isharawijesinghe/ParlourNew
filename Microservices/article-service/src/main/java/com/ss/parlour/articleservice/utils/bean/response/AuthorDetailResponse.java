@@ -7,10 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CommentCommonResponseBean {
+public class AuthorDetailResponse {
 
-    private String commentId;
-    private int status;
-    private String narration;
-
+    private String name;
+    private String profileImageUrl;
 }

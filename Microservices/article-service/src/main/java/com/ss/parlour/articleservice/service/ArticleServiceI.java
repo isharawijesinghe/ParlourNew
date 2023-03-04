@@ -7,16 +7,17 @@ import com.ss.parlour.articleservice.utils.bean.response.*;
 
 public interface ArticleServiceI {
 
-    ArticleCommonResponseBean createArticle(ArticleCreateRequestBean articleCreateRequestBean);
-    CommentCommonResponseBean addComment(CommentCreateRequestBean commentCreateRequestBean);
-    LikeCommonResponseBean addLike(LikeRequestBean likeRequestBean);
-    ArticleResponseBean findArticleById(ArticleRequestBean articleRequestBean);
+    ArticleCommonResponse createArticle(ArticleCreateRequest articleCreateRequest);
+    CommentCommonResponse addComment(CommentCreateRequest commentCreateRequest);
+    LikeCommonResponse addLike(LikeRequest likeRequest);
+    ArticleResponse findArticleById(ArticleRequest articleRequest);
     Article findArticleDetailsById(String articleId);
-    ArticleHistoryResponseBean findArticleHistoryById(ArticleHistoryRequestBean articleHistoryRequestBean);
-    ArticleCommonResponseBean deleteArticle(ArticleDeleteRequestBean articleDeleteRequestBean);
-    CommentCommonResponseBean deleteComment(CommentDeleteRequestBean commentDeleteRequestBean);
-    ArticleEditRequestResponse articleEditRequest(ArticleEditRequestBean articleEditRequestBean);
+    ArticleHistoryResponse findArticleHistoryById(ArticleHistoryRequest articleHistoryRequest);
+    ArticleCommonResponse deleteArticle(ArticleDeleteRequest articleDeleteRequest);
+    CommentCommonResponse deleteComment(CommentDeleteRequest commentDeleteRequest);
+    ArticleEditRequestResponse articleEditRequest(ArticleEditRequest articleEditRequest);
     ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest);
+    ArticleEditDraftResponse postArticleEditDraft(ArticleEditDraftRequest articleEditDraftRequest);
 
 
 }

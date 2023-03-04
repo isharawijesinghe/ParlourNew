@@ -4,11 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.net.URL;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class AuthorDetailResponseBean {
+public class PreSignUrlResponse {
 
-    private String name;
-    private String profileImageUrl;
+    private URL preSignUrl;
+
 }

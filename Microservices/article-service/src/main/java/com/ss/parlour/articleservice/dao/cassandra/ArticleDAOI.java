@@ -23,4 +23,6 @@ public interface ArticleDAOI {
     void saveArticleEditRequest(EditRequestHelperBean editRequestHelperBean);
     void saveArticleApprovalRequest(EditRequestHelperBean editRequestHelperBean);
     Optional<EditRequest> getArticleEditRequest(String editRequestId);
+    Optional<EditDraftArticles> getEditDraftArticleByArticleId(String articleId);
+    void saveArticleEditDraftRequest(EditRequestHelperBean editRequestHelperBean);
 }

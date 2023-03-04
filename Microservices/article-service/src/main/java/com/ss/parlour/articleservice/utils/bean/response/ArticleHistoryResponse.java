@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleHistoryResponseBean {
+public class ArticleHistoryResponse {
 
     private String articleId;
     private List<Article> articleHistoryList = new ArrayList<>();

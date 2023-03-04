@@ -12,10 +12,10 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleResponseBean {
+public class ArticleResponse {
 
     private Article article;
     private List<Comment> articleComments = new ArrayList<>();
-    private AuthorDetailResponseBean authorDetails;
+    private AuthorDetailResponse authorDetails;
 
 }

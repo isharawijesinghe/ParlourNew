@@ -1,6 +1,5 @@
 package com.ss.parlour.articleservice.utils.bean.requests;
 
-import com.ss.parlour.articleservice.domain.cassandra.EditRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleEditRequestBean {
+public class PreSignUrlRequest {
 
-    private EditRequest articleEditRequest;
+    private String fileName;
 
 }

@@ -1,6 +1,6 @@
 package com.ss.parlour.articleservice.writer;
 
-import com.ss.parlour.articleservice.utils.bean.response.AuthorDetailResponseBean;
+import com.ss.parlour.articleservice.utils.bean.response.AuthorDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -14,9 +14,9 @@ public class ExternalRestWriter implements ExternalRestWriterI{
     private RestTemplate restTemplate;
 
     @Override
-    public Optional<AuthorDetailResponseBean> findAuthorDetailsByLoginName(String loginName){
-        AuthorDetailResponseBean authorDetailResponseBean = restTemplate.getForObject("http://USER-SERVICE/user/findAuthorDetailsByLoginName/" + loginName,
-                AuthorDetailResponseBean.class);
-        return Optional.ofNullable(authorDetailResponseBean);
+    public Optional<AuthorDetailResponse> findAuthorDetailsByLoginName(String loginName){
+        AuthorDetailResponse authorDetailResponse = restTemplate.getForObject("http://USER-SERVICE/user/findAuthorDetailsByLoginName/" + loginName,
+                AuthorDetailResponse.class);
+        return Optional.ofNullable(authorDetailResponse);
     }
 }

@@ -7,9 +7,9 @@ import com.ss.parlour.articleservice.utils.bean.requests.*;
 
 public interface ArticleValidatorI {
 
-    ArticleBean validateArticleRequest(ArticleCreateRequestBean articleCreateRequestBean);
-    CommentBean validateCommentRequest(CommentCreateRequestBean commentCreateRequestBean);
-    LikeBean validateArticleLikeRequest(LikeRequestBean likeRequestBean);
-    void validateArticleDeleteRequest(ArticleDeleteRequestBean articleDeleteRequestBean);
-    void validateCommentDeleteRequest(CommentDeleteRequestBean commentDeleteRequestBean);
+    ArticleBean validateArticleRequest(ArticleCreateRequest articleCreateRequest);
+    CommentBean validateCommentRequest(CommentCreateRequest commentCreateRequest);
+    LikeBean validateArticleLikeRequest(LikeRequest likeRequest);
+    void validateArticleDeleteRequest(ArticleDeleteRequest articleDeleteRequest);
+    void validateCommentDeleteRequest(CommentDeleteRequest commentDeleteRequest);
 }
