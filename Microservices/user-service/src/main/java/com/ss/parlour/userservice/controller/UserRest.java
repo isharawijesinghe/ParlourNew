@@ -66,8 +66,9 @@ public class UserRest {
      * @return UserInterestsAddResponse
      */
     @RequestMapping(value = "/addUserInterests", method = RequestMethod.POST, consumes = {"application/json"})
-    public UserInterestsAddResponse addUserInterests(@RequestBody UserInterestsAddRequest userInterestsAddRequest){
-        return userServiceI.addUserInterests(userInterestsAddRequest);
+    public ResponseEntity<?> addUserInterests(@RequestBody UserInterestsAddRequest userInterestsAddRequest){
+        UserInterestsAddResponse userInterestsAddResponse = userServiceI.addUserInterests(userInterestsAddRequest);
+        return ResponseEntity.ok(userInterestsAddResponse);
     }
 
     /***
@@ -76,8 +77,9 @@ public class UserRest {
      * @return UserInterestsResponse
      */
     @RequestMapping(value = "/findUserInterests", method = RequestMethod.GET)
-    public UserInterestsResponse findUserInterests(@RequestParam("loginName") String loginName){
-        return userServiceI.findUserInterests(loginName);
+    public ResponseEntity<?> findUserInterests(@RequestParam("loginName") String loginName){
+        UserInterestsResponse userInterestsResponse = userServiceI.findUserInterests(loginName);
+        return ResponseEntity.ok(userInterestsResponse);
     }
 
 }
