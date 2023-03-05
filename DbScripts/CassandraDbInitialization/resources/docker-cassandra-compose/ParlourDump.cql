@@ -225,3 +225,13 @@ CREATE TABLE IF NOT EXISTS parlour.shared_articles (
   PRIMARY KEY (articleId)
 );
 
+CREATE TABLE IF NOT EXISTS parlour.edit_draft_articles (
+  articleId text,
+  draftArticles map<text, frozen<article>>,
+  PRIMARY KEY (articleId)
+);
+
+CREATE TABLE IF NOT EXISTS parlour.topics (
+   name text,
+   PRIMARY KEY (name)
+);

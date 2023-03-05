@@ -14,6 +14,9 @@ public interface ArticleConst {
     String SUCCESSFULLY_COMMENT_DELETED = "Successfully comment deleted";
     String SUCCESSFULLY_PLACE_EDIT_REQUEST = "Edit request successful";
     String SUCCESSFULLY_APPROVED_EDIT_REQUEST = "Edit request successfully approved";
+    String ARTICLE_EDIT_DRAFT_SUCCESSFUL_NARRATION = "Successfully saved article edit draft";
+    String ARTICLE_TOPIC_ADDED_SUCCESSFUL_NARRATION = "Topics added successfully";
+
     String SEPARATOR = "~";
 
     int USER_LIKED = 1;
@@ -41,7 +44,6 @@ public interface ArticleConst {
     String ARTICLE_STATUS_ACCEPTED = "Accepted";
     String ARTICLE_STATUS_PUBLISHED = "Published";
 
-    String ARTICLE_EDIT_DRAFT_SUCCESSFUL_NARRATION = "Successfully saved article edit draft";
 
 
 }

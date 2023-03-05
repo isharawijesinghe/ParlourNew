@@ -6,6 +6,7 @@ import com.ss.parlour.articleservice.utils.bean.EditRequestHelperBean;
 import org.springframework.data.cassandra.core.CassandraBatchOperations;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 public interface ArticleDAOI {
@@ -27,4 +28,6 @@ public interface ArticleDAOI {
     Optional<EditDraftArticles> getEditDraftArticleByArticleId(String articleId);
     void saveArticleEditDraftRequest(EditRequestHelperBean editRequestHelperBean);
     void saveArticleCreateRequest(ArticleUpdateHelperBean articleUpdateHelperBean);
+    void saveTopic(List<Topics> topics);
+    Optional<List<Topics>> loadAllTopicsEntries();
 }

@@ -1,12 +1,10 @@
 package com.ss.parlour.articleservice.service;
 
 import com.ss.parlour.articleservice.domain.cassandra.Article;
-import com.ss.parlour.articleservice.domain.cassandra.Comment;
 import com.ss.parlour.articleservice.handler.article.ArticleHandlerI;
 import com.ss.parlour.articleservice.handler.comment.CommentHandlerI;
 import com.ss.parlour.articleservice.handler.like.LikeHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleBean;
-import com.ss.parlour.articleservice.utils.bean.ArticleConst;
 import com.ss.parlour.articleservice.utils.bean.CommentBean;
 import com.ss.parlour.articleservice.utils.bean.LikeBean;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
@@ -88,6 +86,16 @@ public class ArticleService implements ArticleServiceI {
     @Override
     public ArticleEditDraftResponse postArticleEditDraft(ArticleEditDraftRequest articleEditDraftRequest){
         return articleHandlerI.postArticleEditDraft(articleEditDraftRequest);
+    }
+
+    @Override
+    public TopicAddResponse addTopic(TopicAddRequest topicAddRequest){
+        return articleHandlerI.addTopic(topicAddRequest);
+    }
+
+    @Override
+    public TopicResponse findAllTopic(){
+        return articleHandlerI.findAllTopic();
     }
 
 }

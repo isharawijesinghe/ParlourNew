@@ -45,8 +45,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
             articleBean.setId(keyGenerator.articleKeyGenerator(articleBean.getAuthorName()));
         } else { //Article update approve request flow
             Optional<Article> currentArticle = articleDAOI.getArticleById(articleBean.getId());
-            //Update ArticleHistory table
-            currentArticle.ifPresent(article -> updateArticleHistoryToPushIntoHistory(article, articleUpdateHelperBean));
+            currentArticle.ifPresent(article -> updateArticleHistoryToPushIntoHistory(article, articleUpdateHelperBean)); //Update ArticleHistory table
         }
         Article article = populateUpdatedArticle(articleBean); //Populate article bean
         articleUpdateHelperBean.setUpdatedArticle(article);
@@ -88,7 +87,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     /***
      * When user request to find article by id
      * @param articleRequest
-     * @return
+     * @return articleResponse
      */
     @Override
     public ArticleResponse findArticleById(ArticleRequest articleRequest){
@@ -102,7 +101,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     /***
      * When user request to find article history by id
      * @param articleHistoryRequest
-     * @return
+     * @return articleHistoryResponse
      */
     @Override
     public ArticleHistoryResponse findArticleHistoryById(ArticleHistoryRequest articleHistoryRequest){
@@ -115,7 +114,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     /***
      * Find user article by id
      * @param articleId
-     * @return
+     * @return Article
      */
     @Override
     public Article findArticleDetailsById(String articleId){
@@ -131,7 +130,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * 3. Populate edit request by user
      * 4. Save request into tables
      * @param articleEditRequest
-     * @return
+     * @return ArticleEditRequestResponse
      */
     @Override
     public ArticleEditRequestResponse processArticleEditRequest(ArticleEditRequest articleEditRequest){
@@ -194,6 +193,28 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         articleEditDraftResponse.setArticleId(articleEditDraftRequest.getArticleId());
         articleEditDraftResponse.setNarration(ArticleConst.ARTICLE_EDIT_DRAFT_SUCCESSFUL_NARRATION);
         return articleEditDraftResponse;
+    }
+
+    /***
+     * This will add interest topic to db
+     * @param topicAddRequest
+     * @return topicAddResponse
+     */
+    @Override
+    public TopicAddResponse addTopic(TopicAddRequest topicAddRequest){
+        TopicAddResponse topicAddResponse = new TopicAddResponse();
+        articleDAOI.saveTopic(topicAddRequest.getTopicName());
+        topicAddResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        topicAddResponse.setNarration(ArticleConst.ARTICLE_TOPIC_ADDED_SUCCESSFUL_NARRATION);
+        return topicAddResponse;
+    }
+
+    @Override
+    public TopicResponse findAllTopic(){
+        TopicResponse topicResponse = new TopicResponse();
+        Optional<List<Topics>> topicsList = articleDAOI.loadAllTopicsEntries();
+        topicsList.ifPresent(topics -> topicResponse.setTopicName(topics));
+        return topicResponse;
     }
 
     //---------------------------********* Article handler provide methods *********---------------------------//

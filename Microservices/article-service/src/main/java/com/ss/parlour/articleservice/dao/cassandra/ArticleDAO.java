@@ -9,6 +9,7 @@ import org.springframework.data.cassandra.core.CassandraBatchOperations;
 import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -37,6 +38,9 @@ public class ArticleDAO implements ArticleDAOI {
 
     @Autowired
     private EditDraftArticlesRepositoryI editDraftArticlesRepositoryI;
+
+    @Autowired
+    private TopicsRepositoryI topicsRepositoryI;
 
     @Autowired
     private  CassandraTemplate cassandraTemplate;
@@ -126,6 +130,17 @@ public class ArticleDAO implements ArticleDAOI {
         insertArticleCreateRequestInBatch(articleUpdateHelperBean, batchOps);
     }
 
+    @Override
+    public void saveTopic(List<Topics> topics){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        insertTopicsInBatch(topics, batchOps);
+    }
+
+    @Override
+    public Optional<List<Topics>> loadAllTopicsEntries(){
+        return topicsRepositoryI.loadAllTopicsEntries();
+    }
+
     protected void insertArticleEditRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
         batchOps.insert(editRequestHelperBean.getEditRequest());
         batchOps.insert(editRequestHelperBean.getEditRequestByArticle());
@@ -150,6 +165,11 @@ public class ArticleDAO implements ArticleDAOI {
     protected void insertArticleCreateRequestInBatch(ArticleUpdateHelperBean articleUpdateHelperBean, CassandraBatchOperations batchOps){
         batchOps.insert(articleUpdateHelperBean.getUpdatedArticle());
         batchOps.insert(articleUpdateHelperBean.getOldArticle());
+        batchOps.execute();
+    }
+
+    protected void insertTopicsInBatch(List<Topics> topics, CassandraBatchOperations batchOps){
+        topics.stream().forEach(topic -> batchOps.insert(topics));
         batchOps.execute();
     }
 

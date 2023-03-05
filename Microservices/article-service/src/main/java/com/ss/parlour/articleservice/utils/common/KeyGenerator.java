@@ -22,4 +22,8 @@ public class KeyGenerator {
     public String articleEditRequestGenerator(String articleId, String userName){
         return articleId + "_" + userName + "_" +  UUIDs.timeBased();
     }
+
+    public String generateUniqueIdentifier(){
+        return String.valueOf(UUIDs.timeBased());
+    }
 }

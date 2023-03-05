@@ -87,4 +87,16 @@ public class ArticleREST {
         return ResponseEntity.ok().body(articleEditApproveResponse);
     }
 
+    @RequestMapping(value = "/addTopic", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<Object> addTopic(@RequestBody TopicAddRequest topicAddRequest){
+        TopicAddResponse topicAddResponse = articleServiceI.addTopic(topicAddRequest);
+        return ResponseEntity.ok().body(topicAddResponse);
+    }
+
+    @RequestMapping(value = "/findAllTopic", method = RequestMethod.GET, consumes = {"application/json"})
+    public ResponseEntity<Object> findAllTopic(){
+        TopicResponse topicAddResponse = articleServiceI.findAllTopic();
+        return ResponseEntity.ok().body(topicAddResponse);
+    }
+
 }

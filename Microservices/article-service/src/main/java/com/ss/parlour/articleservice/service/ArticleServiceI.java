@@ -18,6 +18,8 @@ public interface ArticleServiceI {
     ArticleEditRequestResponse articleEditRequest(ArticleEditRequest articleEditRequest);
     ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest);
     ArticleEditDraftResponse postArticleEditDraft(ArticleEditDraftRequest articleEditDraftRequest);
+    TopicAddResponse addTopic(TopicAddRequest topicAddRequest);
+    TopicResponse findAllTopic();
 
 
 }
