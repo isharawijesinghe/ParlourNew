@@ -209,6 +209,10 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         return topicAddResponse;
     }
 
+    /***
+     * Load all available topics from db and send
+     * @return TopicResponse
+     */
     @Override
     public TopicResponse findAllTopic(){
         TopicResponse topicResponse = new TopicResponse();

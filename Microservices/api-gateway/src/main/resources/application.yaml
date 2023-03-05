@@ -28,7 +28,7 @@ spring:
         - id: ARTICLE-SERVICE
           uri: lb://article-service/
           predicates:
-            - Path=/article/**
+            - Path=/article/** , /topics/** , /article/util/**
           filters:
             TokenRelay=
         - id: AUTHORIZATION-SERVICE

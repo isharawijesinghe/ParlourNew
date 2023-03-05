@@ -1,13 +1,7 @@
 package com.ss.parlour.userservice.dao.cassandra;
 
-import com.ss.parlour.userservice.domain.cassandra.User;
-import com.ss.parlour.userservice.domain.cassandra.UserInfo;
-import com.ss.parlour.userservice.domain.cassandra.UserLoginNameEmailMapper;
-import com.ss.parlour.userservice.domain.cassandra.UserToken;
-import com.ss.parlour.userservice.repository.cassandra.LoginNameEmailMapperRepositoryI;
-import com.ss.parlour.userservice.repository.cassandra.UserInfoRepositoryI;
-import com.ss.parlour.userservice.repository.cassandra.UserRepositoryI;
-import com.ss.parlour.userservice.repository.cassandra.UserTokenRepositoryI;
+import com.ss.parlour.userservice.domain.cassandra.*;
+import com.ss.parlour.userservice.repository.cassandra.*;
 import com.ss.parlour.userservice.util.bean.AuthProvider;
 import com.ss.parlour.userservice.util.bean.UserConst;
 import com.ss.parlour.userservice.util.bean.UserSignupHelperBean;
@@ -22,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,6 +34,9 @@ public class UserDAO implements UserDAOI{
 
     @Autowired
     private UserInfoRepositoryI userInfoRepositoryI;
+
+    @Autowired
+    private UserInterestsRepositoryI userInterestsRepositoryI;
 
     @Autowired
     private CassandraTemplate cassandraTemplate;
@@ -114,6 +112,21 @@ public class UserDAO implements UserDAOI{
     public void saveUserSignUpDataBeans(UserSignupHelperBean userSignupHelperBean){
         CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
         insertUserSignUpDataBeansInBatch(userSignupHelperBean, batchOps);
+    }
+
+    @Override
+    public void saveUserInterests(List<Topics> topics){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        insertUserInterestsInBatch(topics, batchOps);
+    }
+
+    public Optional<UserInterests> getUserInterestsByLoginName(String loginName){
+        return userInterestsRepositoryI.findById(loginName);
+    }
+
+    protected void insertUserInterestsInBatch(List<Topics> topics, CassandraBatchOperations batchOps){
+        topics.stream().forEach(topic -> batchOps.insert(topics));
+        batchOps.execute();
     }
 
     protected void insertUserSignUpDataBeansInBatch(UserSignupHelperBean userSignupHelperBean, CassandraBatchOperations batchOps){

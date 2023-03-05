@@ -3,13 +3,8 @@ package com.ss.parlour.userservice.service;
 import com.ss.parlour.userservice.handler.CloudHandlerFactoryI;
 import com.ss.parlour.userservice.handler.cloud.CommonCloudHandlerI;
 import com.ss.parlour.userservice.handler.user.UserHandlerI;
-import com.ss.parlour.userservice.util.bean.requests.PreSignUrlGenerateRequestBean;
-import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
-import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
-import com.ss.parlour.userservice.util.bean.response.AuthorDetailResponseBean;
-import com.ss.parlour.userservice.util.bean.response.PreSignUrlResponseBean;
-import com.ss.parlour.userservice.util.bean.response.UserInfoResponseBean;
-import com.ss.parlour.userservice.util.bean.response.UserInfoUpdateResponseBean;
+import com.ss.parlour.userservice.util.bean.requests.*;
+import com.ss.parlour.userservice.util.bean.response.*;
 import com.ss.parlour.userservice.util.validators.UserValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,19 +30,26 @@ public class UserService implements UserServiceI{
 
     @Override
     public UserInfoUpdateResponseBean updateUserInfo(UserInfoUpdateRequestBean userInfoUpdateRequestBean){
-        UserInfoUpdateResponseBean userInfoUpdateResponseBean = userHandlerI.updateUserInfo(userInfoUpdateRequestBean);
-        return userInfoUpdateResponseBean;
+        return userHandlerI.updateUserInfo(userInfoUpdateRequestBean);
     }
 
     @Override
     public UserInfoResponseBean findUserInfoByUser(UserInfoRequestBean userInfoRequestBean){
-        UserInfoResponseBean userInfoResponseBean = userHandlerI.findUserInfoByUser(userInfoRequestBean);
-        return userInfoResponseBean;
+        return userHandlerI.findUserInfoByUser(userInfoRequestBean);
     }
 
     @Override
     public AuthorDetailResponseBean findAuthorDetailsById(String loginName){
-        AuthorDetailResponseBean authorDetailResponseBean = userHandlerI.findAuthorDetailsById(loginName);
-        return authorDetailResponseBean;
+        return userHandlerI.findAuthorDetailsById(loginName);
+    }
+
+    @Override
+    public UserInterestsAddResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest){
+        return userHandlerI.addUserInterests(userInterestsAddRequest);
+    }
+
+    @Override
+    public UserInterestsResponse findUserInterests(UserInterestsRequest userInterestsRequest){
+        return userHandlerI.findUserInterests(userInterestsRequest);
     }
 }

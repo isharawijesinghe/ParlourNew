@@ -1,13 +1,11 @@
 package com.ss.parlour.userservice.dao.cassandra;
 
-import com.ss.parlour.userservice.domain.cassandra.User;
-import com.ss.parlour.userservice.domain.cassandra.UserInfo;
-import com.ss.parlour.userservice.domain.cassandra.UserLoginNameEmailMapper;
-import com.ss.parlour.userservice.domain.cassandra.UserToken;
+import com.ss.parlour.userservice.domain.cassandra.*;
 import com.ss.parlour.userservice.util.bean.UserSignupHelperBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserRegisterRequestBean;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserDAOI {
@@ -23,4 +21,6 @@ public interface UserDAOI {
     void saveUserInfo(UserInfo userInfo);
     Optional<UserInfo> getUserInfoFromDb(String loginName);
     void saveUserSignUpDataBeans(UserSignupHelperBean userSignupHelperBean);
+    void saveUserInterests(List<Topics> topics);
+    Optional<UserInterests> getUserInterestsByLoginName(String loginName);
 }

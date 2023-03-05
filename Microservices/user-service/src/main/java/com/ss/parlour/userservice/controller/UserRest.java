@@ -1,13 +1,8 @@
 package com.ss.parlour.userservice.controller;
 
 import com.ss.parlour.userservice.service.UserServiceI;
-import com.ss.parlour.userservice.util.bean.requests.PreSignUrlGenerateRequestBean;
-import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
-import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
-import com.ss.parlour.userservice.util.bean.response.AuthorDetailResponseBean;
-import com.ss.parlour.userservice.util.bean.response.PreSignUrlResponseBean;
-import com.ss.parlour.userservice.util.bean.response.UserInfoResponseBean;
-import com.ss.parlour.userservice.util.bean.response.UserInfoUpdateResponseBean;
+import com.ss.parlour.userservice.util.bean.requests.*;
+import com.ss.parlour.userservice.util.bean.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,19 +17,19 @@ public class UserRest {
 
     //AWS solution -> Generate S3 Bucket pre sign url and send link back to client side upload images
     @RequestMapping(value = "/upload/generatePreSignUrl", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> generatePreSignUrl(@RequestBody PreSignUrlGenerateRequestBean generatePreSignUrl){
+    public ResponseEntity<?> generatePreSignUrl(@RequestBody PreSignUrlGenerateRequestBean generatePreSignUrl){
         PreSignUrlResponseBean preSignUrlResponseBean = userServiceI.generatePreSignUrl(generatePreSignUrl);
         return ResponseEntity.ok(preSignUrlResponseBean);
     }
 
     @RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<UserInfoUpdateResponseBean> updateUserInfo(@RequestBody UserInfoUpdateRequestBean userInfoUpdateRequestBean){
+    public ResponseEntity<?> updateUserInfo(@RequestBody UserInfoUpdateRequestBean userInfoUpdateRequestBean){
         UserInfoUpdateResponseBean userInfoUpdateResponseBean = userServiceI.updateUserInfo(userInfoUpdateRequestBean);
         return ResponseEntity.ok(userInfoUpdateResponseBean);
     }
 
     @RequestMapping(value = "/findUserInfoByUser", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<UserInfoResponseBean> findUserInfoByUser(@RequestBody UserInfoRequestBean userInfoRequestBean){
+    public ResponseEntity<?> findUserInfoByUser(@RequestBody UserInfoRequestBean userInfoRequestBean){
         UserInfoResponseBean userInfoResponseBean = userServiceI.findUserInfoByUser(userInfoRequestBean);
         return ResponseEntity.ok(userInfoResponseBean);
     }
@@ -43,4 +38,15 @@ public class UserRest {
     public AuthorDetailResponseBean findAuthorDetailsById(@PathVariable("loginName") String loginName){
         return userServiceI.findAuthorDetailsById(loginName);
     }
+
+    @RequestMapping(value = "/addUserInterests", method = RequestMethod.POST, consumes = {"application/json"})
+    public UserInterestsAddResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest){
+        return userServiceI.addUserInterests(userInterestsAddRequest);
+    }
+
+    @RequestMapping(value = "/findUserInterests", method = RequestMethod.POST, consumes = {"application/json"})
+    public UserInterestsResponse findUserInterests(UserInterestsRequest userInterestsRequest){
+        return userServiceI.findUserInterests(userInterestsRequest);
+    }
+
 }

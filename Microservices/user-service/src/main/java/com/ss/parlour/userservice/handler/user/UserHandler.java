@@ -2,12 +2,13 @@ package com.ss.parlour.userservice.handler.user;
 
 import com.ss.parlour.userservice.dao.cassandra.UserDAOI;
 import com.ss.parlour.userservice.domain.cassandra.UserInfo;
+import com.ss.parlour.userservice.domain.cassandra.UserInterests;
 import com.ss.parlour.userservice.util.bean.UserConst;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
-import com.ss.parlour.userservice.util.bean.response.AuthorDetailResponseBean;
-import com.ss.parlour.userservice.util.bean.response.UserInfoResponseBean;
-import com.ss.parlour.userservice.util.bean.response.UserInfoUpdateResponseBean;
+import com.ss.parlour.userservice.util.bean.requests.UserInterestsAddRequest;
+import com.ss.parlour.userservice.util.bean.requests.UserInterestsRequest;
+import com.ss.parlour.userservice.util.bean.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +44,23 @@ public class UserHandler implements UserHandlerI{
         Optional<UserInfo> currentUserInfoFromDb =  userDAOI.getUserInfoFromDb(loginName);
         currentUserInfoFromDb.ifPresent(userInfo -> {populateAuthorInfo(authorDetailResponseBean, userInfo);});
         return authorDetailResponseBean;
+    }
+
+    @Override
+    public UserInterestsAddResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest){
+        UserInterestsAddResponse userInterestsAddResponse = new UserInterestsAddResponse();
+        userDAOI.saveUserInterests(userInterestsAddRequest.getTopicName());
+        userInterestsAddResponse.setNarration(UserConst.USER_INTERESTS_ADDED_SUCCESSFUL_NARRATION);
+        userInterestsAddResponse.setStatus(UserConst.STATUS_SUCCESS);
+        return userInterestsAddResponse;
+    }
+
+    @Override
+    public UserInterestsResponse findUserInterests(UserInterestsRequest userInterestsRequest){
+        UserInterestsResponse userInterestsResponse = new UserInterestsResponse();
+        Optional<UserInterests> currentUserInterests = userDAOI.getUserInterestsByLoginName(userInterestsRequest.getLoginName());
+        currentUserInterests.ifPresent(userInterests -> userInterestsResponse.setTopicName(userInterests.getUserInterests()));
+        return userInterestsResponse;
     }
 
     protected UserInfo populateUserInfoDataBean(UserInfoUpdateRequestBean userInfoUpdateRequestBean){

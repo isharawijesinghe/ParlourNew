@@ -63,6 +63,9 @@ CREATE TYPE parlour.shared_articles(
     author text
 );
 
+CREATE TYPE parlour.topics(
+    name text
+);
 
 // ------------------ Table scripts ------------------- //
 
@@ -234,4 +237,10 @@ CREATE TABLE IF NOT EXISTS parlour.edit_draft_articles (
 CREATE TABLE IF NOT EXISTS parlour.topics (
    name text,
    PRIMARY KEY (name)
+);
+
+CREATE TABLE IF NOT EXISTS parlour.like_by_article (
+  loginName text,
+  userInterests list<frozen<topics>> ,
+  PRIMARY KEY (loginName)
 );
