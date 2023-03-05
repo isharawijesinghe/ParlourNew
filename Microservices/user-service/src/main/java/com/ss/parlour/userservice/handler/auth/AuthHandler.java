@@ -174,7 +174,7 @@ public class AuthHandler implements AuthHandlerI {
     protected UserLoginNameEmailMapper populateLoginNameEmailMapper(UserRegisterRequestBean userRegisterRequestBean){
         UserLoginNameEmailMapper loginNameEmailMapper = new UserLoginNameEmailMapper();
         loginNameEmailMapper.setEmail(userRegisterRequestBean.getEmail());
-        loginNameEmailMapper.setLoginName(userRegisterRequestBean.getEmail());
+        loginNameEmailMapper.setLoginName(userRegisterRequestBean.getLoginName());
         return loginNameEmailMapper;
     }
 

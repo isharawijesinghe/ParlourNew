@@ -19,7 +19,7 @@ public class UserHandler implements UserHandlerI{
     private UserDAOI userDAOI;
 
     @Override
-    public UserInfoUpdateResponseBean updateUserInfo(UserInfoUpdateRequestBean userInfoUpdateRequestBean){
+    public UserInfoUpdateResponseBean addUserInfo(UserInfoUpdateRequestBean userInfoUpdateRequestBean){
         UserInfoUpdateResponseBean userInfoUpdateResponseBean = new UserInfoUpdateResponseBean();
         UserInfo userInfo = populateUserInfoDataBean(userInfoUpdateRequestBean);
         userDAOI.saveUserInfo(userInfo);
@@ -47,7 +47,8 @@ public class UserHandler implements UserHandlerI{
     @Override
     public UserInterestsAddResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest){
         UserInterestsAddResponse userInterestsAddResponse = new UserInterestsAddResponse();
-        userDAOI.saveUserInterests(userInterestsAddRequest.getTopicName());
+        UserInterests userInterests = populateUserInterests(userInterestsAddRequest);
+        userDAOI.saveUserInterests(userInterests);
         userInterestsAddResponse.setNarration(UserConst.USER_INTERESTS_ADDED_SUCCESSFUL_NARRATION);
         userInterestsAddResponse.setStatus(UserConst.STATUS_SUCCESS);
         return userInterestsAddResponse;
@@ -59,6 +60,13 @@ public class UserHandler implements UserHandlerI{
         Optional<UserInterests> currentUserInterests = userDAOI.getUserInterestsByLoginName(loginName);
         currentUserInterests.ifPresent(userInterests -> userInterestsResponse.setTopicName(userInterests.getUserInterests()));
         return userInterestsResponse;
+    }
+
+    protected UserInterests populateUserInterests(UserInterestsAddRequest userInterestsAddRequest){
+        UserInterests userInterests = new UserInterests();
+        userInterests.setLoginName(userInterestsAddRequest.getLoginName());
+        userInterests.setUserInterests(userInterestsAddRequest.getTopicName());
+        return userInterests;
     }
 
     protected UserInfo populateUserInfoDataBean(UserInfoUpdateRequestBean userInfoUpdateRequestBean){

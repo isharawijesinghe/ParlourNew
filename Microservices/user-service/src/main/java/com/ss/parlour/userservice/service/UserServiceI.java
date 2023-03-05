@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface UserServiceI {
 
     PreSignUrlResponseBean generatePreSignUrl(PreSignUrlGenerateRequestBean preSignUrlGenerateRequestBean);
-    UserInfoUpdateResponseBean updateUserInfo(UserInfoUpdateRequestBean userInfoUpdateRequestBean);
+    UserInfoUpdateResponseBean addUserInfo(UserInfoUpdateRequestBean userInfoUpdateRequestBean);
     UserInfoResponseBean findUserInfoByUser(String loginName);
     AuthorDetailResponseBean findAuthorDetailsById(String loginName);
     UserInterestsAddResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest);

@@ -29,8 +29,8 @@ public class UserService implements UserServiceI{
     }
 
     @Override
-    public UserInfoUpdateResponseBean updateUserInfo(UserInfoUpdateRequestBean userInfoUpdateRequestBean){
-        return userHandlerI.updateUserInfo(userInfoUpdateRequestBean);
+    public UserInfoUpdateResponseBean addUserInfo(UserInfoUpdateRequestBean userInfoUpdateRequestBean){
+        return userHandlerI.addUserInfo(userInfoUpdateRequestBean);
     }
 
     @Override

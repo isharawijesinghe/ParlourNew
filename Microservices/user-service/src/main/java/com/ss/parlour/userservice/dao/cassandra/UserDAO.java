@@ -106,9 +106,8 @@ public class UserDAO implements UserDAOI{
     }
 
     @Override
-    public void saveUserInterests(List<Topics> topics){
-        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
-        insertUserInterestsInBatch(topics, batchOps);
+    public void saveUserInterests(UserInterests userInterests){
+        userInterestsRepositoryI.save(userInterests);
     }
 
     public Optional<UserInterests> getUserInterestsByLoginName(String loginName){

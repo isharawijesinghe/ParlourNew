@@ -19,6 +19,6 @@ public interface UserDAOI {
     void saveUserInfo(UserInfo userInfo);
     Optional<UserInfo> getUserInfoFromDb(String loginName);
     void saveUserSignUpDataBeans(UserSignupHelperBean userSignupHelperBean);
-    void saveUserInterests(List<Topics> topics);
+    void saveUserInterests(UserInterests userInterests);
     Optional<UserInterests> getUserInterestsByLoginName(String loginName);
 }

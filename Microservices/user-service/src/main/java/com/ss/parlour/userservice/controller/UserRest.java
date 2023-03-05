@@ -1,15 +1,16 @@
 package com.ss.parlour.userservice.controller;
 
 import com.ss.parlour.userservice.service.UserServiceI;
-import com.ss.parlour.userservice.util.bean.requests.*;
+import com.ss.parlour.userservice.util.bean.requests.PreSignUrlGenerateRequestBean;
+import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
+import com.ss.parlour.userservice.util.bean.requests.UserInterestsAddRequest;
 import com.ss.parlour.userservice.util.bean.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
-@RequestMapping(path = "/user",consumes= MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/user")
 public class UserRest {
 
     @Autowired
@@ -32,9 +33,9 @@ public class UserRest {
      * @param userInfoUpdateRequestBean
      * @return UserInfoUpdateResponseBean
      */
-    @RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<?> updateUserInfo(@RequestBody UserInfoUpdateRequestBean userInfoUpdateRequestBean){
-        UserInfoUpdateResponseBean userInfoUpdateResponseBean = userServiceI.updateUserInfo(userInfoUpdateRequestBean);
+    @RequestMapping(value = "/addUserInfo", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<?> addUserInfo(@RequestBody UserInfoUpdateRequestBean userInfoUpdateRequestBean){
+        UserInfoUpdateResponseBean userInfoUpdateResponseBean = userServiceI.addUserInfo(userInfoUpdateRequestBean);
         return ResponseEntity.ok(userInfoUpdateResponseBean);
     }
 
@@ -43,8 +44,8 @@ public class UserRest {
      * @param loginName
      * @return UserInfoResponseBean
      */
-    @RequestMapping(value = "/findUserInfoByUser/{loginName}", method = RequestMethod.GET, consumes = {"application/json"})
-    public ResponseEntity<?> findUserInfoByUser(@PathVariable("loginName") String loginName){
+    @RequestMapping(value = "/findUserInfoByUser", method = RequestMethod.GET, consumes = {"application/json"})
+    public ResponseEntity<?> findUserInfoByUser(@RequestParam("loginName") String loginName){
         UserInfoResponseBean userInfoResponseBean = userServiceI.findUserInfoByUser(loginName);
         return ResponseEntity.ok(userInfoResponseBean);
     }
@@ -54,8 +55,8 @@ public class UserRest {
      * @param loginName
      * @return AuthorDetailResponseBean
      */
-    @RequestMapping(value = "/findAuthorDetailsByLoginName/{loginName}", method = RequestMethod.GET, consumes = {"application/json"})
-    public AuthorDetailResponseBean findAuthorDetailsById(@PathVariable("loginName") String loginName){
+    @RequestMapping(value = "/findAuthorDetailsByLoginName", method = RequestMethod.GET, consumes = {"application/json"})
+    public AuthorDetailResponseBean findAuthorDetailsById(@RequestParam("loginName") String loginName){
         return userServiceI.findAuthorDetailsById(loginName);
     }
 
@@ -65,7 +66,7 @@ public class UserRest {
      * @return UserInterestsAddResponse
      */
     @RequestMapping(value = "/addUserInterests", method = RequestMethod.POST, consumes = {"application/json"})
-    public UserInterestsAddResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest){
+    public UserInterestsAddResponse addUserInterests(@RequestBody UserInterestsAddRequest userInterestsAddRequest){
         return userServiceI.addUserInterests(userInterestsAddRequest);
     }
 
@@ -74,8 +75,8 @@ public class UserRest {
      * @param loginName
      * @return UserInterestsResponse
      */
-    @RequestMapping(value = "/findUserInterests/{loginName}", method = RequestMethod.GET, consumes = {"application/json"})
-    public UserInterestsResponse findUserInterests(@PathVariable("loginName") String loginName){
+    @RequestMapping(value = "/findUserInterests", method = RequestMethod.GET)
+    public UserInterestsResponse findUserInterests(@RequestParam("loginName") String loginName){
         return userServiceI.findUserInterests(loginName);
     }
 

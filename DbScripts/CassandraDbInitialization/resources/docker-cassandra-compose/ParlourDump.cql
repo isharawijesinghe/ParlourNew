@@ -239,7 +239,7 @@ CREATE TABLE IF NOT EXISTS parlour.topics (
    PRIMARY KEY (name)
 );
 
-CREATE TABLE IF NOT EXISTS parlour.like_by_article (
+CREATE TABLE IF NOT EXISTS parlour.user_interests (
   loginName text,
   userInterests list<frozen<topics>> ,
   PRIMARY KEY (loginName)
