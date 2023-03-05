@@ -4,10 +4,8 @@ import com.ss.parlour.userservice.dao.cassandra.UserDAOI;
 import com.ss.parlour.userservice.domain.cassandra.UserInfo;
 import com.ss.parlour.userservice.domain.cassandra.UserInterests;
 import com.ss.parlour.userservice.util.bean.UserConst;
-import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInterestsAddRequest;
-import com.ss.parlour.userservice.util.bean.requests.UserInterestsRequest;
 import com.ss.parlour.userservice.util.bean.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,9 +29,9 @@ public class UserHandler implements UserHandlerI{
     }
 
     @Override
-    public UserInfoResponseBean findUserInfoByUser(UserInfoRequestBean userInfoRequestBean){
+    public UserInfoResponseBean findUserInfoByUser(String loginName){
         UserInfoResponseBean userInfoResponseBean = new UserInfoResponseBean();
-        Optional<UserInfo> currentUserInfoFromDb=  userDAOI.getUserInfoFromDb(userInfoRequestBean.getLoginName());
+        Optional<UserInfo> currentUserInfoFromDb=  userDAOI.getUserInfoFromDb(loginName);
         currentUserInfoFromDb.ifPresent(userInfo -> populateUserInfoResponseBean(userInfoResponseBean, userInfo));
         return userInfoResponseBean;
     }
@@ -56,9 +54,9 @@ public class UserHandler implements UserHandlerI{
     }
 
     @Override
-    public UserInterestsResponse findUserInterests(UserInterestsRequest userInterestsRequest){
+    public UserInterestsResponse findUserInterests(String loginName){
         UserInterestsResponse userInterestsResponse = new UserInterestsResponse();
-        Optional<UserInterests> currentUserInterests = userDAOI.getUserInterestsByLoginName(userInterestsRequest.getLoginName());
+        Optional<UserInterests> currentUserInterests = userDAOI.getUserInterestsByLoginName(loginName);
         currentUserInterests.ifPresent(userInterests -> userInterestsResponse.setTopicName(userInterests.getUserInterests()));
         return userInterestsResponse;
     }

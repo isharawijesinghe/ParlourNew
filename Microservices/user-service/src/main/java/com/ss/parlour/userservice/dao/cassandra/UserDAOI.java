@@ -2,8 +2,6 @@ package com.ss.parlour.userservice.dao.cassandra;
 
 import com.ss.parlour.userservice.domain.cassandra.*;
 import com.ss.parlour.userservice.util.bean.UserSignupHelperBean;
-import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
-import com.ss.parlour.userservice.util.bean.requests.UserRegisterRequestBean;
 
 import java.util.List;
 import java.util.Optional;

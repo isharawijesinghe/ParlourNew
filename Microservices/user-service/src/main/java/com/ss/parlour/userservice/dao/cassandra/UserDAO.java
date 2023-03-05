@@ -2,23 +2,14 @@ package com.ss.parlour.userservice.dao.cassandra;
 
 import com.ss.parlour.userservice.domain.cassandra.*;
 import com.ss.parlour.userservice.repository.cassandra.*;
-import com.ss.parlour.userservice.util.bean.AuthProvider;
-import com.ss.parlour.userservice.util.bean.UserConst;
 import com.ss.parlour.userservice.util.bean.UserSignupHelperBean;
-import com.ss.parlour.userservice.util.bean.requests.UserInfoRequestBean;
-import com.ss.parlour.userservice.util.bean.requests.UserRegisterRequestBean;
-import com.ss.parlour.userservice.util.common.TokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.CassandraBatchOperations;
 import org.springframework.data.cassandra.core.CassandraTemplate;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 public class UserDAO implements UserDAOI{

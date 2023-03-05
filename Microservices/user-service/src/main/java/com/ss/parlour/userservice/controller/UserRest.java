@@ -15,38 +15,68 @@ public class UserRest {
     @Autowired
     private UserServiceI userServiceI;
 
-    //AWS solution -> Generate S3 Bucket pre sign url and send link back to client side upload images
+    /***
+     * Generate Bucket pre sign url and send link back to client side upload images
+     * @param generatePreSignUrl
+     * @return PreSignUrlResponseBean
+     */
     @RequestMapping(value = "/upload/generatePreSignUrl", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> generatePreSignUrl(@RequestBody PreSignUrlGenerateRequestBean generatePreSignUrl){
         PreSignUrlResponseBean preSignUrlResponseBean = userServiceI.generatePreSignUrl(generatePreSignUrl);
         return ResponseEntity.ok(preSignUrlResponseBean);
     }
 
+    /***
+     * Update user info details
+     * Client send update info and backend will update data in db
+     * @param userInfoUpdateRequestBean
+     * @return UserInfoUpdateResponseBean
+     */
     @RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> updateUserInfo(@RequestBody UserInfoUpdateRequestBean userInfoUpdateRequestBean){
         UserInfoUpdateResponseBean userInfoUpdateResponseBean = userServiceI.updateUserInfo(userInfoUpdateRequestBean);
         return ResponseEntity.ok(userInfoUpdateResponseBean);
     }
 
-    @RequestMapping(value = "/findUserInfoByUser", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<?> findUserInfoByUser(@RequestBody UserInfoRequestBean userInfoRequestBean){
-        UserInfoResponseBean userInfoResponseBean = userServiceI.findUserInfoByUser(userInfoRequestBean);
+    /***
+     * Based on get request populate and send user info back to client
+     * @param loginName
+     * @return UserInfoResponseBean
+     */
+    @RequestMapping(value = "/findUserInfoByUser/{loginName}", method = RequestMethod.GET, consumes = {"application/json"})
+    public ResponseEntity<?> findUserInfoByUser(@PathVariable("loginName") String loginName){
+        UserInfoResponseBean userInfoResponseBean = userServiceI.findUserInfoByUser(loginName);
         return ResponseEntity.ok(userInfoResponseBean);
     }
 
+    /***
+     * Load author detail and send to internal service
+     * @param loginName
+     * @return AuthorDetailResponseBean
+     */
     @RequestMapping(value = "/findAuthorDetailsByLoginName/{loginName}", method = RequestMethod.GET, consumes = {"application/json"})
     public AuthorDetailResponseBean findAuthorDetailsById(@PathVariable("loginName") String loginName){
         return userServiceI.findAuthorDetailsById(loginName);
     }
 
+    /***
+     * Add user interests topics
+     * @param userInterestsAddRequest
+     * @return UserInterestsAddResponse
+     */
     @RequestMapping(value = "/addUserInterests", method = RequestMethod.POST, consumes = {"application/json"})
     public UserInterestsAddResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest){
         return userServiceI.addUserInterests(userInterestsAddRequest);
     }
 
-    @RequestMapping(value = "/findUserInterests", method = RequestMethod.POST, consumes = {"application/json"})
-    public UserInterestsResponse findUserInterests(UserInterestsRequest userInterestsRequest){
-        return userServiceI.findUserInterests(userInterestsRequest);
+    /***
+     * Load and populate user interests and send back to client
+     * @param loginName
+     * @return UserInterestsResponse
+     */
+    @RequestMapping(value = "/findUserInterests/{loginName}", method = RequestMethod.GET, consumes = {"application/json"})
+    public UserInterestsResponse findUserInterests(@PathVariable("loginName") String loginName){
+        return userServiceI.findUserInterests(loginName);
     }
 
 }

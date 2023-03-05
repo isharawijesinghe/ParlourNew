@@ -34,8 +34,8 @@ public class UserService implements UserServiceI{
     }
 
     @Override
-    public UserInfoResponseBean findUserInfoByUser(UserInfoRequestBean userInfoRequestBean){
-        return userHandlerI.findUserInfoByUser(userInfoRequestBean);
+    public UserInfoResponseBean findUserInfoByUser(String loginName){
+        return userHandlerI.findUserInfoByUser(loginName);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class UserService implements UserServiceI{
     }
 
     @Override
-    public UserInterestsResponse findUserInterests(UserInterestsRequest userInterestsRequest){
-        return userHandlerI.findUserInterests(userInterestsRequest);
+    public UserInterestsResponse findUserInterests(String loginName){
+        return userHandlerI.findUserInterests(loginName);
     }
 }
