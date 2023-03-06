@@ -23,8 +23,8 @@ public interface ArticleConst {
     int USER_UNLIKED = -1;
     int USER_NEUTRAL = 0;
 
-    int ARTICLE_ACTIVE = 1;
-    int ARTICLE_INACTIVE = -1;
+    String ARTICLE_ACTIVE = "Active";
+    String ARTICLE_MARK_DELETED = "Mark deleted";
 
     int COMMENT_ACTIVE = 1;
     int COMMENT_INACTIVE = -1;

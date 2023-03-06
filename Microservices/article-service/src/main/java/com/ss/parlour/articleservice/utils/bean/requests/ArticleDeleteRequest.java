@@ -10,5 +10,6 @@ import lombok.Setter;
 public class ArticleDeleteRequest {
 
     private String articleId;
+    private String userName;
 
 }

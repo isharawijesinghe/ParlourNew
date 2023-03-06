@@ -21,8 +21,9 @@ public class Article {
     private String title;
     private String summary;
     private String content;
-    private int status;
+    private String status;
     private String categoryId;
+    private String thumbnailUrl;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
     private Set<String> likedList = new HashSet<>();

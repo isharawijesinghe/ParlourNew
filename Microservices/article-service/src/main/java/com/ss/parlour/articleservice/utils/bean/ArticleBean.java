@@ -14,9 +14,10 @@ public class ArticleBean {
     private String authorName;
     private String title;
     private String summary;
-    private int status;
+    private String status;
     private String content;
     private String categoryId;
+    private String thumbnailUrl;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
 

@@ -34,10 +34,16 @@ public class ArticleREST {
         return ResponseEntity.ok().body(likeCommonResponse);
     }
 
-    @RequestMapping(value = "/findArticleById", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> findArticleById(@RequestBody ArticleRequest articleRequest){
-        ArticleResponse articleResponse = articleServiceI.findArticleById(articleRequest);
+    @RequestMapping(value = "/findArticleById", method = RequestMethod.GET, consumes = {"application/json"})
+    public ResponseEntity<Object> findArticleById(@RequestParam("articleId") String articleId){
+        ArticleResponse articleResponse = articleServiceI.findArticleById(articleId);
         return ResponseEntity.ok().body(articleResponse);
+    }
+
+    @RequestMapping(value = "/findArticleByUser", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<?> findArticleByUser(@RequestBody ArticleListRequest articleListRequest){
+        ArticleListResponse articleListResponse = articleServiceI.findArticleByUser(articleListRequest);
+        return ResponseEntity.ok().body(articleListResponse);
     }
 
     @RequestMapping(value = "/findArticleHistoryById", method = RequestMethod.POST, consumes = {"application/json"})

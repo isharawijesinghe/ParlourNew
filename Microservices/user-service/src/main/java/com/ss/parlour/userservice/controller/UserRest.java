@@ -76,7 +76,7 @@ public class UserRest {
      * @param loginName
      * @return UserInterestsResponse
      */
-    @RequestMapping(value = "/findUserInterests", method = RequestMethod.GET)
+    @RequestMapping(value = "/findUserInterests", method = RequestMethod.GET, consumes = {"application/json"})
     public ResponseEntity<?> findUserInterests(@RequestParam("loginName") String loginName){
         UserInterestsResponse userInterestsResponse = userServiceI.findUserInterests(loginName);
         return ResponseEntity.ok(userInterestsResponse);

@@ -7,6 +7,7 @@ import com.ss.parlour.articleservice.handler.comment.CommentHandlerI;
 import com.ss.parlour.articleservice.utils.bean.*;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.*;
+import com.ss.parlour.articleservice.utils.common.DateUtils;
 import com.ss.parlour.articleservice.utils.common.KeyGenerator;
 import com.ss.parlour.articleservice.utils.exception.ArticleServiceRuntimeException;
 import com.ss.parlour.articleservice.writer.ExternalRestWriterI;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
@@ -38,22 +40,21 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * @return
      */
     @Override
-    public ArticleCommonResponse processCreateArticleRequest(ArticleBean articleBean){
-        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
+    public Article processCreateArticleRequest(ArticleBean articleBean){
         ArticleUpdateHelperBean articleUpdateHelperBean = new ArticleUpdateHelperBean();
         if (articleBean.getId() == null || articleBean.getId().isEmpty()){ //New article request
-            articleBean.setId(keyGenerator.articleKeyGenerator(articleBean.getAuthorName()));
+            prePopulatedForNewArticleFlow(articleBean);
         } else { //Article update approve request flow
-            Optional<Article> currentArticle = articleDAOI.getArticleById(articleBean.getId());
-            currentArticle.ifPresent(article -> updateArticleHistoryToPushIntoHistory(article, articleUpdateHelperBean)); //Update ArticleHistory table
+            prePopulateForUpdateArticleFlow(articleBean, articleUpdateHelperBean);
         }
-        Article article = populateUpdatedArticle(articleBean); //Populate article bean
-        articleUpdateHelperBean.setUpdatedArticle(article);
-        articleDAOI.saveArticleCreateRequest(articleUpdateHelperBean); //Create or update article >> Update Article table
-        articleCommonResponse.setArticleId(article.getId());
-        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);
-        return articleCommonResponse;
+        Article article = populateUpdatedArticle(articleBean);//Create article bean
+        populateUpdateArticle(articleUpdateHelperBean, article);//Populate article bean
+        populateUserAssignArticle(articleUpdateHelperBean, article);//Populate article by user bean
+        //1. Update Article table
+        //2. If exists update article history table
+        //3. Update article by user table
+        articleDAOI.saveArticleCreateRequest(articleUpdateHelperBean);
+        return article;
     }
 
     /***
@@ -62,7 +63,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * @param likeBean
      */
     @Override
-    public void handleLikeRequest(LikeBean likeBean){
+    public void addLikeRequest(LikeBean likeBean){
         Optional<Article> existingArticleBean = articleDAOI.getArticleById(likeBean.getArticleId());
         existingArticleBean.ifPresent((article) -> updateArticleVote(likeBean, article));
     }
@@ -74,28 +75,48 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * @param articleDeleteRequest
      */
     @Override
-    public ArticleCommonResponse processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest){
-        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
-        Optional<Article> exitingArticle = articleDAOI.getArticleById(articleDeleteRequest.getArticleId());
-        exitingArticle.ifPresent((article) -> processUpdateArticleStatus(article, ArticleConst.ARTICLE_INACTIVE));
-        articleCommonResponse.setArticleId(articleDeleteRequest.getArticleId());
-        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED);
-        return articleCommonResponse;
+    public void processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest){
+        ArticleUpdateHelperBean articleUpdateHelperBean = new ArticleUpdateHelperBean();
+        //1. Delete article entry
+        //2. Delete article entry by user
+        //3. Delete article history entry
+        populateDeleteArticle(articleUpdateHelperBean, articleDeleteRequest);
+        populateDeleteArticleByUser(articleUpdateHelperBean, articleDeleteRequest);
+        populateDeleteArticleHistory(articleUpdateHelperBean, articleDeleteRequest);
+        articleDAOI.deleteArticleEntry(articleUpdateHelperBean);
     }
+
 
     /***
      * When user request to find article by id
-     * @param articleRequest
+     * @param articleId
      * @return articleResponse
      */
     @Override
-    public ArticleResponse findArticleById(ArticleRequest articleRequest){
+    public ArticleResponse findArticleById(String articleId){
         ArticleResponse articleResponse = new ArticleResponse();
-        populateArticleDetails(articleRequest, articleResponse);
+        //1. Populate article details
+        //2. Populate article author details
+        //3. Populate article comments
+        populateArticleDetails(articleResponse, articleId);
         populateArticleAuthorDetails(articleResponse);
-        articleResponse.setArticleComments(commentHandlerI.getCommentListForPost(articleRequest));
+        populateArticleComments(articleResponse, articleId);
         return articleResponse;
+    }
+
+    /***
+     * Query for user created articles and return them back to server
+     * @param articleListRequest
+     * @return List<Article>
+     */
+    @Override
+    public List<Article> findArticleByUser(ArticleListRequest articleListRequest){
+        AtomicReference<List<Article>> currentUserAssignArticle = new AtomicReference<>();
+        Optional<ArticleByUser> currentUserArticleFromDb = articleDAOI.getArticleByUserId(articleListRequest.getLoginName());
+        currentUserArticleFromDb.ifPresent(
+                userArticle -> currentUserAssignArticle.set(new ArrayList<>(userArticle.getUserCreatedArticles().values()))
+        );
+        return currentUserAssignArticle.get();
     }
 
     /***
@@ -106,8 +127,8 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     @Override
     public ArticleHistoryResponse findArticleHistoryById(ArticleHistoryRequest articleHistoryRequest){
         ArticleHistoryResponse articleHistoryResponse = new ArticleHistoryResponse();
-        Optional<ArticleHistory> currentArticleHistory = articleDAOI.getArticleHistoryByArticleId(articleHistoryRequest.getArticleId());
-        currentArticleHistory.ifPresent((articleHistory -> articleHistoryResponse.setArticleHistoryList(articleHistory.getOldArticles())));
+        Optional<ArticleHistory> articleHistoryInDb = articleDAOI.getArticleHistoryByArticleId(articleHistoryRequest.getArticleId());
+        articleHistoryInDb.ifPresent((articleHistory -> articleHistoryResponse.setArticleHistoryList(articleHistory.getOldArticles())));
         return articleHistoryResponse;
     }
 
@@ -118,9 +139,10 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      */
     @Override
     public Article findArticleDetailsById(String articleId){
-        Optional<Article> currentArticle = articleDAOI.getArticleById(articleId);
-        currentArticle.ifPresent(article -> returnArticle(article));
-        return null;
+        Optional<Article> currentArticleInDb = articleDAOI.getArticleById(articleId);
+        var articleReturned = currentArticleInDb.
+                orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.ARTICLE_DETAIL_FOUND_ERROR + articleId));
+        return articleReturned;
     }
 
     /***
@@ -223,14 +245,55 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
 
     //---------------------------********* Article handler provide methods *********---------------------------//
 
-    protected Article returnArticle(Article article){
-        return article;
+    protected void prePopulatedForNewArticleFlow(ArticleBean articleBean){
+        articleBean.setId(keyGenerator.articleKeyGenerator(articleBean.getAuthorName()));
+        articleBean.setCreatedDate(DateUtils.currentSqlTimestamp());
+        articleBean.setModifiedDate(DateUtils.currentSqlTimestamp());
     }
 
-    //Update article status
-    protected void processUpdateArticleStatus(Article currentArticle, int status){
-        currentArticle.setStatus(status);
-        articleDAOI.saveArticle(currentArticle);
+    protected void prePopulateForUpdateArticleFlow(ArticleBean articleBean, ArticleUpdateHelperBean articleUpdateHelperBean){
+        Optional<Article> currentArticleResponse = articleDAOI.getArticleById(articleBean.getId());
+        var currentArticle = currentArticleResponse
+                .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.ARTICLE_NOT_FOUND_ERROR + articleBean.getId()));
+        updateArticleHistoryToPushIntoHistory(currentArticle, articleUpdateHelperBean); //Update article history bean for persistence
+        articleBean.setCreatedDate(currentArticle.getCreatedDate());
+        articleBean.setModifiedDate(DateUtils.currentSqlTimestamp());
+    }
+
+    protected void populateUpdateArticle(ArticleUpdateHelperBean articleUpdateHelperBean, Article article){
+        articleUpdateHelperBean.setUpdatedArticle(article);
+    }
+
+    protected void populateUserAssignArticle(ArticleUpdateHelperBean articleUpdateHelperBean, Article article){
+        ArticleByUser articleByUser = new ArticleByUser();
+        articleByUser.setUserId(articleByUser.getUserId());
+        Optional<ArticleByUser> currentUserCreatedArticle = articleDAOI.getArticleByUserId(article.getUserName());
+        currentUserCreatedArticle.ifPresent(userCreatedArticles -> articleByUser.setUserCreatedArticles(userCreatedArticles.getUserCreatedArticles()));
+        articleByUser.getUserCreatedArticles().put(article.getId(), article);
+        articleUpdateHelperBean.setArticleByUser(articleByUser);
+    }
+
+    protected void populateDeleteArticle(ArticleUpdateHelperBean articleUpdateHelperBean, ArticleDeleteRequest articleDeleteRequest){
+        Optional<Article> currentArticleInDb = articleDAOI.getArticleById(articleDeleteRequest.getArticleId());
+        currentArticleInDb.ifPresent((article) -> articleUpdateHelperBean.setUpdatedArticle(article));
+    }
+
+    protected void populateDeleteArticleByUser(ArticleUpdateHelperBean articleUpdateHelperBean, ArticleDeleteRequest articleDeleteRequest){
+        Optional<ArticleByUser> currentArticleByUserInDb = articleDAOI.getArticleByUserId(articleDeleteRequest.getUserName());
+        currentArticleByUserInDb.ifPresent((articleByUser) -> articleUpdateHelperBean.setArticleByUser(articleByUser));
+    }
+
+    protected void populateDeleteArticleHistory(ArticleUpdateHelperBean articleUpdateHelperBean, ArticleDeleteRequest articleDeleteRequest){
+        Optional<ArticleHistory> currentArticleHistoryInDb = articleDAOI.getArticleHistoryByArticleId(articleDeleteRequest.getArticleId());
+        currentArticleHistoryInDb.ifPresent((articleHistory) -> articleUpdateHelperBean.setArticleHistory(articleHistory));
+    }
+
+    protected void populateArticleComments(ArticleResponse articleResponse, String articleId){
+        articleResponse.setArticleComments(commentHandlerI.getCommentListForPost(articleId));
+    }
+
+    protected Article returnArticle(Article article){
+        return article;
     }
 
     //Update article like / unlike status
@@ -266,13 +329,12 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     }
 
     //Populate article details to send response back to browser
-    protected void populateArticleDetails(ArticleRequest articleRequest, ArticleResponse articleResponse){
-        Optional<Article> existingArticleBean = articleDAOI.getArticleById(articleRequest.getArticleId());
+    protected void populateArticleDetails(ArticleResponse articleResponse, String articleId){
+        Optional<Article> currentArticleInDb = articleDAOI.getArticleById(articleId);
         //Only load if article exists and active
-        if (existingArticleBean.isPresent() && existingArticleBean.get().getStatus() == ArticleConst.ARTICLE_ACTIVE){
-            Article article = existingArticleBean.get();
-            articleResponse.setArticle(article);
-        }
+        var currentArticle = currentArticleInDb
+                .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.ARTICLE_NOT_FOUND_ERROR + articleId));
+        articleResponse.setArticle(currentArticle);
     }
 
 
@@ -284,17 +346,23 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         article.setTitle(articleBean.getTitle());
         article.setSummary(articleBean.getSummary());
         article.setContent(articleBean.getContent());
-        article.setCreatedDate(articleBean.getCreatedDate());
-        article.setModifiedDate(articleBean.getModifiedDate());
         article.setStatus(articleBean.getStatus());
         article.setCategoryId(articleBean.getCategoryId());
+        article.setThumbnailUrl(articleBean.getThumbnailUrl());
+        article.setCreatedDate(articleBean.getCreatedDate());
+        article.setModifiedDate(articleBean.getModifiedDate());
         return article;
     }
 
 
     protected void updateArticleHistoryToPushIntoHistory(Article oldArticle, ArticleUpdateHelperBean articleUpdateHelperBean){
-        //oldArticle.setModifiedDate(new Date());
-        articleUpdateHelperBean.setOldArticle(oldArticle);
+        ArticleHistory updatedArticleHistory = new ArticleHistory();
+        updatedArticleHistory.setArticleId(oldArticle.getId());
+        Optional<ArticleHistory> currentArticleHistoryInDb = articleDAOI.getArticleHistoryByArticleId(oldArticle.getId());
+        currentArticleHistoryInDb.ifPresent(articleHistory -> updatedArticleHistory.setOldArticles(articleHistory.getOldArticles()));
+        updatedArticleHistory.getOldArticles().add(oldArticle);
+        articleUpdateHelperBean.setArticleHistory(updatedArticleHistory);
+
     }
 
     protected EditRequestHelperBean populateEditRequestHelperBean(EditRequest editRequest){

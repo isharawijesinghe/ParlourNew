@@ -5,11 +5,14 @@ import com.ss.parlour.articleservice.utils.bean.ArticleBean;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.*;
 
+import java.util.List;
+
 public interface ArticleHandlerI {
 
-    ArticleCommonResponse processCreateArticleRequest(ArticleBean articleBean);
-    ArticleCommonResponse processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest);
-    ArticleResponse findArticleById(ArticleRequest articleRequest);
+    Article processCreateArticleRequest(ArticleBean articleBean);
+    void processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest);
+    ArticleResponse findArticleById(String articleId);
+    List<Article> findArticleByUser(ArticleListRequest articleListRequest);
     ArticleHistoryResponse findArticleHistoryById(ArticleHistoryRequest articleHistoryRequest);
     Article findArticleDetailsById(String articleId);
     ArticleEditRequestResponse processArticleEditRequest(ArticleEditRequest articleEditRequest);

@@ -44,7 +44,7 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
 
     //When user vote for comment
     @Override
-    public void handleLikeRequest(LikeBean likeBean){
+    public void addLikeRequest(LikeBean likeBean){
         Optional<Comment> currentComment = commentDAOI.getCommentById(likeBean.getCommentId());
         if (currentComment.isPresent()){
             Comment updatedComment = updateCommentVote(likeBean, currentComment.get());//Update saved comment object in db >> Update "Comment" table
@@ -72,9 +72,9 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
 
     //When user request for comment list for post
     @Override
-    public List<Comment> getCommentListForPost(ArticleRequest articleRequest){
+    public List<Comment> getCommentListForPost(String articleId){
         //Load all comments for particular article
-        Optional<CommentByArticle> currentCommentByArticle = commentDAOI.getCommentsByArticleId(articleRequest.getArticleId());
+        Optional<CommentByArticle> currentCommentByArticle = commentDAOI.getCommentsByArticleId(articleId);
         List<Comment> responseComment = new ArrayList<>();
         if (currentCommentByArticle.isPresent()){
             CommentByArticle commentByArticleCurrent = currentCommentByArticle.get();

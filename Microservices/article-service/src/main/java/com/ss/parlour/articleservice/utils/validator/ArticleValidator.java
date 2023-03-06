@@ -23,7 +23,7 @@ public class ArticleValidator implements ArticleValidatorI{
     }
 
     @Override
-    public LikeBean validateArticleLikeRequest(LikeRequest likeRequest){
+    public LikeBean validateAddLikeRequest(LikeRequest likeRequest){
         return likeRequest.getLikeBean();
     }
 

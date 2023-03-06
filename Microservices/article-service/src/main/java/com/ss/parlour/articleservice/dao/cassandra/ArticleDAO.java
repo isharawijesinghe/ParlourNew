@@ -43,6 +43,9 @@ public class ArticleDAO implements ArticleDAOI {
     private TopicsRepositoryI topicsRepositoryI;
 
     @Autowired
+    private ArticleByUserRepositoryI articleByUserRepositoryI;
+
+    @Autowired
     private  CassandraTemplate cassandraTemplate;
 
     @Override
@@ -141,6 +144,17 @@ public class ArticleDAO implements ArticleDAOI {
         return topicsRepositoryI.loadAllTopicsEntries();
     }
 
+    @Override
+    public Optional<ArticleByUser> getArticleByUserId(String userId){
+        return articleByUserRepositoryI.findById(userId);
+    }
+
+    @Override
+    public void deleteArticleEntry(ArticleUpdateHelperBean articleUpdateHelperBean){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        deleteArticleEntriesInBatch(articleUpdateHelperBean, batchOps);
+    }
+
     protected void insertArticleEditRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
         batchOps.insert(editRequestHelperBean.getEditRequest());
         batchOps.insert(editRequestHelperBean.getEditRequestByArticle());
@@ -164,7 +178,19 @@ public class ArticleDAO implements ArticleDAOI {
 
     protected void insertArticleCreateRequestInBatch(ArticleUpdateHelperBean articleUpdateHelperBean, CassandraBatchOperations batchOps){
         batchOps.insert(articleUpdateHelperBean.getUpdatedArticle());
-        batchOps.insert(articleUpdateHelperBean.getOldArticle());
+        batchOps.insert(articleUpdateHelperBean.getArticleByUser());
+        if (articleUpdateHelperBean.getArticleHistory() != null){
+            batchOps.insert(articleUpdateHelperBean.getArticleHistory());
+        }
+        batchOps.execute();
+    }
+
+    protected void deleteArticleEntriesInBatch(ArticleUpdateHelperBean articleUpdateHelperBean, CassandraBatchOperations batchOps){
+        batchOps.delete(articleUpdateHelperBean.getUpdatedArticle());
+        batchOps.delete(articleUpdateHelperBean.getArticleByUser());
+        if (articleUpdateHelperBean.getArticleHistory() != null){
+            batchOps.delete(articleUpdateHelperBean.getArticleHistory());
+        }
         batchOps.execute();
     }
 

@@ -54,7 +54,7 @@ public class AuthHandler implements AuthHandlerI {
                             userLoginNameEmailMapper -> {
                                 String loginName = userLoginNameEmailMapper.getLoginName();
                                 Optional<User> mappedUser = userDAOI.findUserByLoginName(loginName);
-                                mappedUser.ifPresent(dbMappedUser -> {dbLoggedUserValue.set(dbMappedUser);;});
+                                mappedUser.ifPresent(dbMappedUser -> {dbLoggedUserValue.set(dbMappedUser);});
                             }
                     );
                 }

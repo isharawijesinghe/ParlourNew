@@ -17,7 +17,7 @@ public class LikeHandler implements LikeHandlerI{
     @Override
     public LikeCommonResponse processAddLikeRequest(LikeBean likeBean) {
         LikeCommonResponse likeCommonResponse = new LikeCommonResponse();
-        likeHandlerFactoryI.getLikeTypeHandlerI(likeBean.getLikeType()).handleLikeRequest(likeBean);
+        likeHandlerFactoryI.getLikeTypeHandlerI(likeBean.getLikeType()).addLikeRequest(likeBean);
         likeCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
         likeCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_LIKE_ADDED);
         return likeCommonResponse;

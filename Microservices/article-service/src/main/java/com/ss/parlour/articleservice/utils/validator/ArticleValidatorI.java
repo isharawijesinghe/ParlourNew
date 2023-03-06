@@ -9,7 +9,7 @@ public interface ArticleValidatorI {
 
     ArticleBean validateArticleRequest(ArticleCreateRequest articleCreateRequest);
     CommentBean validateCommentRequest(CommentCreateRequest commentCreateRequest);
-    LikeBean validateArticleLikeRequest(LikeRequest likeRequest);
+    LikeBean validateAddLikeRequest(LikeRequest likeRequest);
     void validateArticleDeleteRequest(ArticleDeleteRequest articleDeleteRequest);
     void validateCommentDeleteRequest(CommentDeleteRequest commentDeleteRequest);
 }

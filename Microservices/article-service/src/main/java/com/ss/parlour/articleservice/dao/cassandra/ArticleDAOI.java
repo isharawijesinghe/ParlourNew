@@ -30,4 +30,6 @@ public interface ArticleDAOI {
     void saveArticleCreateRequest(ArticleUpdateHelperBean articleUpdateHelperBean);
     void saveTopic(List<Topics> topics);
     Optional<List<Topics>> loadAllTopicsEntries();
+    Optional<ArticleByUser> getArticleByUserId(String userId);
+    void deleteArticleEntry(ArticleUpdateHelperBean articleUpdateHelperBean);
 }

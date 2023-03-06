@@ -11,6 +11,6 @@ import java.util.List;
 public interface CommentHandlerI {
 
     CommentCommonResponse processAddCommentRequest(CommentBean commentBean);
-    List<Comment> getCommentListForPost(ArticleRequest articleRequest);
+    List<Comment> getCommentListForPost(String articleId);
     CommentCommonResponse processDeleteCommentRequest(CommentDeleteRequest commentDeleteRequest);
 }

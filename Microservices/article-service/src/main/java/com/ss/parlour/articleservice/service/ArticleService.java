@@ -5,6 +5,7 @@ import com.ss.parlour.articleservice.handler.article.ArticleHandlerI;
 import com.ss.parlour.articleservice.handler.comment.CommentHandlerI;
 import com.ss.parlour.articleservice.handler.like.LikeHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleBean;
+import com.ss.parlour.articleservice.utils.bean.ArticleConst;
 import com.ss.parlour.articleservice.utils.bean.CommentBean;
 import com.ss.parlour.articleservice.utils.bean.LikeBean;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
@@ -12,6 +13,8 @@ import com.ss.parlour.articleservice.utils.bean.response.*;
 import com.ss.parlour.articleservice.utils.validator.ArticleValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ArticleService implements ArticleServiceI {
@@ -30,8 +33,13 @@ public class ArticleService implements ArticleServiceI {
 
     @Override
     public ArticleCommonResponse createArticle(ArticleCreateRequest articleCreateRequest){
+        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
         ArticleBean articleBean = articleValidatorI.validateArticleRequest(articleCreateRequest);
-        return articleHandlerI.processCreateArticleRequest(articleBean);
+        Article article = articleHandlerI.processCreateArticleRequest(articleBean);
+        articleCommonResponse.setArticleId(article.getId());
+        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);
+        return articleCommonResponse;
     }
 
     @Override
@@ -42,13 +50,21 @@ public class ArticleService implements ArticleServiceI {
 
     @Override
     public LikeCommonResponse addLike(LikeRequest likeRequest){
-        LikeBean likeBean = articleValidatorI.validateArticleLikeRequest(likeRequest); //Doing basic initial validations
+        LikeBean likeBean = articleValidatorI.validateAddLikeRequest(likeRequest); //Doing basic initial validations
         return likeHandlerI.processAddLikeRequest(likeBean);
     }
 
     @Override
-    public ArticleResponse findArticleById(ArticleRequest articleRequest){
-        return articleHandlerI.findArticleById(articleRequest);
+    public ArticleResponse findArticleById(String articleId){
+        return articleHandlerI.findArticleById(articleId);
+    }
+
+    @Override
+    public ArticleListResponse findArticleByUser(ArticleListRequest articleListRequest){
+        ArticleListResponse  articleListResponse = new ArticleListResponse();
+        List<Article> currentUserArticleList = articleHandlerI.findArticleByUser(articleListRequest);
+        articleListResponse.setArticleResponseList(currentUserArticleList);
+        return articleListResponse;
     }
 
     @Override
@@ -58,8 +74,13 @@ public class ArticleService implements ArticleServiceI {
 
     @Override
     public ArticleCommonResponse deleteArticle(ArticleDeleteRequest articleDeleteRequest){
+        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
         articleValidatorI.validateArticleDeleteRequest(articleDeleteRequest); //Doing basic initial validations
-        return articleHandlerI.processDeleteArticleRequest(articleDeleteRequest);
+        articleHandlerI.processDeleteArticleRequest(articleDeleteRequest);
+        articleCommonResponse.setArticleId(articleDeleteRequest.getArticleId());
+        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED);
+        return articleCommonResponse;
     }
 
     @Override

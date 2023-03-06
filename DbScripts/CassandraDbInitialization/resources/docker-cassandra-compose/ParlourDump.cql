@@ -36,6 +36,7 @@ CREATE TYPE parlour.article(
     content text,
     status int,
     categoryId text,
+    thumbnailUrl text,
     createdDate timestamp,
     modifiedDate timestamp
 );
@@ -120,6 +121,7 @@ CREATE TABLE IF NOT EXISTS parlour.article (
     content text,
     status int,
     categoryId text,
+    thumbnailUrl text,
     createdDate timestamp,
     modifiedDate timestamp,
     likedList frozen<set<text>> ,
@@ -243,4 +245,10 @@ CREATE TABLE IF NOT EXISTS parlour.user_interests (
   loginName text,
   userInterests list<frozen<topics>> ,
   PRIMARY KEY (loginName)
+);
+
+CREATE TABLE IF NOT EXISTS parlour.article_by_user (
+  userId text,
+  userCreatedArticles map<text, frozen<article>>,
+  PRIMARY KEY (userId)
 );
