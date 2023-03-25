@@ -56,11 +56,10 @@ public class UserDAO implements UserDAOI{
 
     @Override
     public User loadUserByLoginName(String loginName){
+        AtomicReference<User> currentUserLoginMapper = new AtomicReference<>();
         Optional<User> existingUser = userRepositoryI.findByUserId(loginName);
-        if (existingUser.isPresent()){
-            return existingUser.get();
-        }
-        return null;
+        existingUser.ifPresent(user -> {currentUserLoginMapper.set(user);});
+        return currentUserLoginMapper.get();
     }
 
     @Override
@@ -69,22 +68,8 @@ public class UserDAO implements UserDAOI{
     }
 
     @Override
-    public User getUserByUserToken(String userName, String actionType){
-        Optional<UserToken> userTokenFromDb = userTokenRepositoryI.findByUserIdentificationAndActionType(userName, actionType);
-        if (userTokenFromDb.isPresent()) {
-            String existingUserLoginName = userTokenFromDb.get().getUserIdentification();
-            Optional<User> existingUserFromDb = userRepositoryI.findByUserId(existingUserLoginName);
-            if (existingUserFromDb.isPresent()) {
-                return existingUserFromDb.get();
-            }
-            return null;
-        }
-        return null;
-    }
-
-    @Override
     public UserLoginEmailMapper loadLoginEmailMapperBean(String email){
-        AtomicReference<UserLoginEmailMapper> currentUserLoginMapper = null;
+        AtomicReference<UserLoginEmailMapper> currentUserLoginMapper = new AtomicReference<>();
         Optional<UserLoginEmailMapper> loginNameEmailMapperFromDb = userLoginEmailMapperRepositoryI.findByEmail(email);
         loginNameEmailMapperFromDb.ifPresent(loginNameEmailMapper -> {currentUserLoginMapper.set(loginNameEmailMapper);});
         return currentUserLoginMapper.get();
@@ -117,33 +102,15 @@ public class UserDAO implements UserDAOI{
     }
 
     @Override
-    public void saveUserInterests(UserInterests userInterests){
-        userInterestsRepositoryI.save(userInterests);
-    }
-
-    @Override
-    public void saveUserInterests(UserInterestsAddRequest userInterestsAddRequest){
-        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
-        UserInterestsAddRequest.UserInterestsAddRequestBody userInterestsAddRequestBody = userInterestsAddRequest.getUserInterestsAddRequestBody();
-        insertUserInterestsInBatch(userInterestsAddRequestBody.getTopicName(), userInterestsAddRequestBody.getUserId(), batchOps);
-    }
-
-    @Override
     public void saveUserInterests(UserInterestsAddHelperBean userInterestsAddHelperBean){
         CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
         insertUserInterestsInBatch(userInterestsAddHelperBean, batchOps);
         batchOps.execute();
     }
 
-
     @Override
     public Optional<List<UserInterests>> getUserInterestsByLoginName(String userId){
         return userInterestsRepositoryI.findByUserId(userId);
-    }
-
-    protected void insertUserInterestsInBatch(List<String> topicName , String userId, CassandraBatchOperations batchOps){
-        topicName.stream().forEach(topic -> batchOps.insert(new UserInterests(userId, topic, DateUtils.currentSqlTimestamp())));
-        batchOps.execute();
     }
 
     protected void insertUserSignUpDataBeansInBatch(UserSignupHelperBean userSignupHelperBean, CassandraBatchOperations batchOps){

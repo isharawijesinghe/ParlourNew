@@ -16,14 +16,11 @@ public interface UserDAOI {
     User saveUser(User user);
     UserLoginEmailMapper loadLoginEmailMapperBean(String email);
     User loadUserByLoginName(String loginName);
-    User getUserByUserToken(String token, String type);
     void saveUserToken(UserToken userToken);
     Optional<UserToken> getUserToken(String userName, String actionType);
     void saveUserInfo(UserInfo userInfo);
     Optional<UserInfo> getUserInfoFromDb(String loginName);
     void saveUserSignUpDataBeans(UserSignupHelperBean userSignupHelperBean);
-    void saveUserInterests(UserInterests userInterests);
-    void saveUserInterests(UserInterestsAddRequest userInterestsAddRequest);
     void saveUserInterests(UserInterestsAddHelperBean userInterestsAddHelperBean);
     Optional<List<UserInterests>> getUserInterestsByLoginName(String userId);
 }
