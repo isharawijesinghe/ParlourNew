@@ -1,33 +1,33 @@
 package com.ss.parlour.streamservice.domain.cassandra;
 
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import com.ss.parlour.streamservice.utils.bean.StreamBean;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.sql.Timestamp;
 
 @Table("stream")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Stream {
 
-    @PrimaryKey
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
     private String streamId;
-   // @PrimaryKey
-    private String userName;
+    private String userId;
     private String description;
     private Timestamp createdDate;
 
-    public String getStreamId() {return streamId;}
+    public Stream(StreamBean streamBean){
+        this.streamId = streamBean.getStreamId();
+        this.userId = streamBean.getUserId();
+        this.description = streamBean.getDescription();
+        this.createdDate = streamBean.getCreatedDate();
+    }
 
-    public void setStreamId(String streamId) {this.streamId = streamId;}
 
-    public String getUserName() {return userName;}
-
-    public void setUserName(String userName) {this.userName = userName;}
-
-    public Timestamp getCreatedDate() {return createdDate;}
-
-    public void setCreatedDate(Timestamp createdDate) {this.createdDate = createdDate;}
-
-    public String getDescription() {return description;}
-
-    public void setDescription(String description) {this.description = description;}
 }

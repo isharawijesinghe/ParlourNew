@@ -4,6 +4,7 @@ import com.ss.parlour.userservice.configurations.security.UserPrincipal;
 import com.ss.parlour.userservice.configurations.security.oauth2.user.OAuth2UserInfo;
 import com.ss.parlour.userservice.configurations.security.oauth2.user.OAuth2UserInfoFactory;
 import com.ss.parlour.userservice.domain.cassandra.User;
+import com.ss.parlour.userservice.domain.cassandra.UserLoginNameMapper;
 import com.ss.parlour.userservice.handler.auth.AuthHandlerI;
 import com.ss.parlour.userservice.util.bean.AuthProvider;
 import com.ss.parlour.userservice.util.exception.OAuth2AuthenticationProcessingException;

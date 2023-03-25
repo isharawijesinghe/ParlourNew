@@ -1,12 +1,10 @@
 package com.ss.parlour.userservice.controller;
 
 import com.ss.parlour.userservice.service.AuthServiceI;
+import com.ss.parlour.userservice.util.bean.common.UserResponse;
 import com.ss.parlour.userservice.util.bean.requests.AuthRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.TokenConfirmRequest;
-import com.ss.parlour.userservice.util.bean.response.TokenConfirmResponseBean;
-import com.ss.parlour.userservice.util.bean.response.AuthResponseBean;
 import com.ss.parlour.userservice.util.bean.requests.UserRegisterRequestBean;
-import com.ss.parlour.userservice.util.bean.response.UserRegistrationResponseBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,26 +28,26 @@ public class AuthREST {
 
     @RequestMapping(value = "/auth/signIn", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> signIn(@RequestBody AuthRequestBean authRequestBean){
-        AuthResponseBean authResponseBean = authServiceI.signIn(authRequestBean);
-        return ResponseEntity.ok(authResponseBean);
+        UserResponse userResponse = authServiceI.signIn(authRequestBean);
+        return ResponseEntity.ok(userResponse);
     }
 
     @RequestMapping(value = "/auth/signUp", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> signUp(@RequestBody UserRegisterRequestBean userRegisterRequestBean){
-        UserRegistrationResponseBean userRegistrationResponseBean = authServiceI.signUp(userRegisterRequestBean);
-        return ResponseEntity.ok(userRegistrationResponseBean);
+        UserResponse userResponse = authServiceI.signUp(userRegisterRequestBean);
+        return ResponseEntity.ok(userResponse);
     }
 
     @RequestMapping(value = "/auth/signUpWithEmail", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> signUpWithEmail(@RequestBody UserRegisterRequestBean userRegisterRequestBean){
-        UserRegistrationResponseBean userRegistrationResponseBean = authServiceI.signUpWithEmail(userRegisterRequestBean);
-        return ResponseEntity.ok(userRegistrationResponseBean);
+        UserResponse userResponse = authServiceI.signUpWithEmail(userRegisterRequestBean);
+        return ResponseEntity.ok(userResponse);
     }
 
     @RequestMapping(value = "/auth/tokenConfirm", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> tokenConfirm(@RequestBody TokenConfirmRequest tokenConfirmRequest){
-        TokenConfirmResponseBean authCommonResponseBean = authServiceI.tokenConfirm(tokenConfirmRequest);
-        return ResponseEntity.ok(authCommonResponseBean);
+        UserResponse userResponse = authServiceI.emailTokenConfirm(tokenConfirmRequest);
+        return ResponseEntity.ok(userResponse);
     }
 
 }

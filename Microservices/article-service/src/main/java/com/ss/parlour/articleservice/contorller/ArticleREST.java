@@ -52,8 +52,14 @@ public class ArticleREST {
         return ResponseEntity.ok().body(articleHistoryResponse);
     }
 
+    @RequestMapping(value = "/findArticleComments", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<Object> findArticleComments(@RequestBody CommentRequest commentRequest){
+        CommentResponse commentResponse = articleServiceI.findArticleComments(commentRequest);
+        return ResponseEntity.ok().body(commentResponse);
+    }
+
     @RequestMapping(value = "/deleteArticle", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> deleteArticle(@RequestBody ArticleDeleteRequest articleDeleteRequest){
+    public ResponseEntity<Object> findArticleComments(@RequestBody ArticleDeleteRequest articleDeleteRequest){
         ArticleCommonResponse articleCommonResponse = articleServiceI.deleteArticle(articleDeleteRequest);
         return ResponseEntity.ok().body(articleCommonResponse);
     }

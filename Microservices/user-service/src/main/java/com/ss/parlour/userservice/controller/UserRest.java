@@ -1,6 +1,7 @@
 package com.ss.parlour.userservice.controller;
 
 import com.ss.parlour.userservice.service.UserServiceI;
+import com.ss.parlour.userservice.util.bean.common.UserResponse;
 import com.ss.parlour.userservice.util.bean.requests.PreSignUrlGenerateRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInterestsAddRequest;
@@ -23,8 +24,8 @@ public class UserRest {
      */
     @RequestMapping(value = "/upload/generatePreSignUrl", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> generatePreSignUrl(@RequestBody PreSignUrlGenerateRequestBean generatePreSignUrl){
-        PreSignUrlResponseBean preSignUrlResponseBean = userServiceI.generatePreSignUrl(generatePreSignUrl);
-        return ResponseEntity.ok(preSignUrlResponseBean);
+        UserResponse userResponse = userServiceI.generatePreSignUrl(generatePreSignUrl);
+        return ResponseEntity.ok(userResponse);
     }
 
     /***
@@ -35,8 +36,8 @@ public class UserRest {
      */
     @RequestMapping(value = "/addUserInfo", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> addUserInfo(@RequestBody UserInfoUpdateRequestBean userInfoUpdateRequestBean){
-        UserInfoUpdateResponseBean userInfoUpdateResponseBean = userServiceI.addUserInfo(userInfoUpdateRequestBean);
-        return ResponseEntity.ok(userInfoUpdateResponseBean);
+        UserResponse userResponse = userServiceI.addUserInfo(userInfoUpdateRequestBean);
+        return ResponseEntity.ok(userResponse);
     }
 
     /***
@@ -46,18 +47,18 @@ public class UserRest {
      */
     @RequestMapping(value = "/findUserInfoByUser", method = RequestMethod.GET, consumes = {"application/json"})
     public ResponseEntity<?> findUserInfoByUser(@RequestParam("loginName") String loginName){
-        UserInfoResponseBean userInfoResponseBean = userServiceI.findUserInfoByUser(loginName);
-        return ResponseEntity.ok(userInfoResponseBean);
+        UserResponse userResponse = userServiceI.findUserInfoByUser(loginName);
+        return ResponseEntity.ok(userResponse);
     }
 
     /***
      * Load author detail and send to internal service
-     * @param loginName
+     * @param userId
      * @return AuthorDetailResponseBean
      */
     @RequestMapping(value = "/findAuthorDetailsByLoginName", method = RequestMethod.GET, consumes = {"application/json"})
-    public AuthorDetailResponseBean findAuthorDetailsById(@RequestParam("loginName") String loginName){
-        return userServiceI.findAuthorDetailsById(loginName);
+    public UserResponse findAuthorDetailsById(@RequestParam("userId") String userId){
+        return userServiceI.findAuthorDetailsById(userId);
     }
 
     /***
@@ -67,19 +68,19 @@ public class UserRest {
      */
     @RequestMapping(value = "/addUserInterests", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> addUserInterests(@RequestBody UserInterestsAddRequest userInterestsAddRequest){
-        UserInterestsAddResponse userInterestsAddResponse = userServiceI.addUserInterests(userInterestsAddRequest);
-        return ResponseEntity.ok(userInterestsAddResponse);
+        UserResponse userResponse = userServiceI.addUserInterests(userInterestsAddRequest);
+        return ResponseEntity.ok(userResponse);
     }
 
     /***
      * Load and populate user interests and send back to client
-     * @param loginName
+     * @param userId
      * @return UserInterestsResponse
      */
     @RequestMapping(value = "/findUserInterests", method = RequestMethod.GET, consumes = {"application/json"})
-    public ResponseEntity<?> findUserInterests(@RequestParam("loginName") String loginName){
-        UserInterestsResponse userInterestsResponse = userServiceI.findUserInterests(loginName);
-        return ResponseEntity.ok(userInterestsResponse);
+    public ResponseEntity<?> findUserInterests(@RequestParam("userId") String userId){
+        UserResponse userResponse = userServiceI.findUserInterests(userId);
+        return ResponseEntity.ok(userResponse);
     }
 
 }

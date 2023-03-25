@@ -36,10 +36,8 @@ public class StreamValidator implements StreamValidatorI {
 
     }
 
+    //Check for article already assign to stream
     protected void validateExistingArticle(StreamDeleteRequest streamDeleteRequest){
-        Optional<StreamMappedArticles> existingStreamMappedArticles = streamDAOI.findByStreamId(streamDeleteRequest.getStreamId());
-        if (existingStreamMappedArticles.isPresent()){
-            throw new StreamServiceRuntimeException(StreamErrorCodes.STREAM_ASSIGN_ARTICLES_EXISTS);
-        }
+
     }
 }

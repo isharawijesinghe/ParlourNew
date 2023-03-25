@@ -7,7 +7,7 @@ import com.ss.parlour.articleservice.handler.like.LikeHandlerI;
 import com.ss.parlour.articleservice.utils.bean.ArticleBean;
 import com.ss.parlour.articleservice.utils.bean.ArticleConst;
 import com.ss.parlour.articleservice.utils.bean.CommentBean;
-import com.ss.parlour.articleservice.utils.bean.LikeBean;
+import com.ss.parlour.articleservice.utils.bean.LikeRequestBean;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.*;
 import com.ss.parlour.articleservice.utils.validator.ArticleValidatorI;
@@ -35,8 +35,8 @@ public class ArticleService implements ArticleServiceI {
     public ArticleCommonResponse createArticle(ArticleCreateRequest articleCreateRequest){
         ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
         ArticleBean articleBean = articleValidatorI.validateArticleRequest(articleCreateRequest);
-        Article article = articleHandlerI.processCreateArticleRequest(articleBean);
-        articleCommonResponse.setArticleId(article.getId());
+        String articleId = articleHandlerI.processCreateArticleRequest(articleBean);
+        articleCommonResponse.setArticleId(articleId);
         articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
         articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);
         return articleCommonResponse;
@@ -44,14 +44,19 @@ public class ArticleService implements ArticleServiceI {
 
     @Override
     public CommentCommonResponse addComment(CommentCreateRequest commentCreateRequest){
+        CommentCommonResponse commentCommonResponse = new CommentCommonResponse();
         CommentBean commentBean = articleValidatorI.validateCommentRequest(commentCreateRequest); //Doing basic initial validations
-        return commentHandlerI.processAddCommentRequest(commentBean);
+        String commentId = commentHandlerI.processAddCommentRequest(commentBean);
+        commentCommonResponse.setCommentId(commentId);
+        commentCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        commentCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_ADDED);
+        return commentCommonResponse;
     }
 
     @Override
     public LikeCommonResponse addLike(LikeRequest likeRequest){
-        LikeBean likeBean = articleValidatorI.validateAddLikeRequest(likeRequest); //Doing basic initial validations
-        return likeHandlerI.processAddLikeRequest(likeBean);
+        LikeRequestBean likeRequestBean = articleValidatorI.validateAddLikeRequest(likeRequest); //Doing basic initial validations
+        return likeHandlerI.processAddLikeRequest(likeRequestBean);
     }
 
     @Override
@@ -85,8 +90,24 @@ public class ArticleService implements ArticleServiceI {
 
     @Override
     public CommentCommonResponse deleteComment(CommentDeleteRequest commentDeleteRequest){
+        CommentCommonResponse commentCommonResponse = new CommentCommonResponse();
         articleValidatorI.validateCommentDeleteRequest(commentDeleteRequest); //Doing basic initial validations
-        return commentHandlerI.processDeleteCommentRequest(commentDeleteRequest);
+        commentHandlerI.processDeleteCommentRequest(commentDeleteRequest);
+        commentCommonResponse.setCommentId(commentDeleteRequest.getCommentId());
+        commentCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        commentCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_DELETED);
+        return commentCommonResponse;
+    }
+
+    @Override
+    public CommentResponse findArticleComments(CommentRequest commentRequest){
+        CommentResponse commentResponse = new CommentResponse();
+        List<CommentBean> commentBeanList = commentHandlerI.findArticleComments(commentRequest);
+        commentResponse.setArticleComments(commentBeanList);
+        commentResponse.setParentCommentId(commentRequest.getParentCommentId());
+        commentResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        commentResponse.setNarration(ArticleConst.ARTICLE_COMMENT_LOAD_SUCCESSFUL_NARRATION);
+        return commentResponse;
     }
 
     @Override
@@ -96,17 +117,32 @@ public class ArticleService implements ArticleServiceI {
 
     @Override
     public ArticleEditRequestResponse articleEditRequest(ArticleEditRequest articleEditRequest){
-        return articleHandlerI.processArticleEditRequest(articleEditRequest);
+        ArticleEditRequestResponse articleEditRequestResponse = new ArticleEditRequestResponse();
+        String articleEditRequestId = articleHandlerI.processArticleEditRequest(articleEditRequest);
+        articleEditRequestResponse.setEditRequestId(articleEditRequestId);
+        articleEditRequestResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleEditRequestResponse.setNarration(ArticleConst.SUCCESSFULLY_PLACE_EDIT_REQUEST);
+        return articleEditRequestResponse;
     }
 
     @Override
     public ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest){
-        return articleHandlerI.processArticleEditRequestApproval(articleEditApproveRequest);
+        ArticleEditApproveResponse articleEditApproveResponse = new ArticleEditApproveResponse();
+        articleHandlerI.processArticleEditRequestApproval(articleEditApproveRequest);
+        articleEditApproveResponse.setEditRequestId(articleEditApproveRequest.getEditRequestId());
+        articleEditApproveResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleEditApproveResponse.setNarration(ArticleConst.SUCCESSFULLY_APPROVED_EDIT_REQUEST);
+        return articleEditApproveResponse;
     }
 
     @Override
     public ArticleEditDraftResponse postArticleEditDraft(ArticleEditDraftRequest articleEditDraftRequest){
-        return articleHandlerI.postArticleEditDraft(articleEditDraftRequest);
+        ArticleEditDraftResponse articleEditDraftResponse = new ArticleEditDraftResponse();
+        articleHandlerI.postArticleEditDraft(articleEditDraftRequest);
+        articleEditDraftResponse.setEditRequestId(articleEditDraftRequest.getEditRequestId());
+        articleEditDraftResponse.setArticleId(articleEditDraftRequest.getArticleId());
+        articleEditDraftResponse.setNarration(ArticleConst.ARTICLE_EDIT_DRAFT_SUCCESSFUL_NARRATION);
+        return articleEditDraftResponse;
     }
 
     @Override

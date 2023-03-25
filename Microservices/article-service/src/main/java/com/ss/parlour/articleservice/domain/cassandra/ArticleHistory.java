@@ -15,8 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ArticleHistory {
 
-    @PrimaryKey
-    private String articleId;
-    private List<Article> oldArticles = new ArrayList<>();
+//    @PrimaryKey
+//    private String articleId;
+//    private List<Article> oldArticles = new ArrayList<>();
 
 }

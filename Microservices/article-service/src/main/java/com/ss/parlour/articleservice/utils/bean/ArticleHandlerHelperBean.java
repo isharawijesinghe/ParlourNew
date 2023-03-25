@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleUpdateHelperBean {
+public class ArticleHandlerHelperBean {
 
     private Article updatedArticle;
     private ArticleHistory articleHistory;

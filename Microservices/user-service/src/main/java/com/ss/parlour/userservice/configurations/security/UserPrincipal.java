@@ -1,6 +1,10 @@
 package com.ss.parlour.userservice.configurations.security;
 
 import com.ss.parlour.userservice.domain.cassandra.User;
+import com.ss.parlour.userservice.domain.cassandra.UserLoginNameMapper;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,14 +15,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserPrincipal implements OAuth2User, UserDetails {
-    private String email;
+
+    private String userId;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
-    public UserPrincipal(String email, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.email = email;
+    public UserPrincipal(String userId, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.userId = userId;
         this.password = password;
         this.authorities = authorities;
     }
@@ -28,7 +36,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
                 singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
         return new UserPrincipal(
-                user.getEmail(),
+                user.getUserId(),
                 user.getPassword(),
                 authorities
         );
@@ -40,10 +48,6 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         return userPrincipal;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     @Override
     public String getPassword() {
         return password;
@@ -51,7 +55,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return userId;
     }
 
     @Override
@@ -89,5 +93,5 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     @Override
-    public String getName() {return email;}
+    public String getName() {return userId;}
 }

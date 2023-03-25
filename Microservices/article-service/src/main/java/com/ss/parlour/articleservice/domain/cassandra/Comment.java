@@ -1,14 +1,15 @@
 package com.ss.parlour.articleservice.domain.cassandra;
 
+import com.ss.parlour.articleservice.utils.bean.CommentBean;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 import java.sql.Timestamp;
-import java.util.*;
 
 @Table("comment")
 @UserDefinedType
@@ -17,18 +18,24 @@ import java.util.*;
 @NoArgsConstructor
 public class Comment {
 
-    @PrimaryKey
-    private String id;
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+    private String commentId;
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
     private String articleId;
     private String parentId;
-    private String userName;
+    private String userId;
     private String content;
-    private int status;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
-    private Set<String> likedList = new HashSet<>();
-    private Set<String> unLikedList = new HashSet<>();
-    @org.springframework.data.annotation.Transient
-    private List<Comment> subComments = new ArrayList<>();
+
+    public Comment(CommentBean commentBean){
+        this.commentId = commentBean.getCommentId();
+        this.articleId = commentBean.getArticleId();
+        this.parentId = commentBean.getParentId();
+        this.userId = commentBean.getUserId();
+        this.content = commentBean.getContent();
+        this.createdDate = commentBean.getCreatedDate();
+        this.modifiedDate = commentBean.getModifiedDate();
+    }
 
 }

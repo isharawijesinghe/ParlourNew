@@ -23,5 +23,7 @@ services:
       cassandra:
         condition: service_healthy
     volumes:
-      - ./ParlourDump.cql:/ParlourDump.cql
-    command: /bin/bash -c "echo loading cassandra keyspace && cqlsh cassandra -f /ParlourDump.cql"
+      - ./UserParlourDump.cql:/UserParlourDump.cql
+      - ./ArticleParlourDump.cql:/ArticleParlourDump.cql
+      - ./StreamParlourDump.cql:/StreamParlourDump.cql
+    command: /bin/bash -c "echo loading cassandra keyspace && cqlsh cassandra -f /UserParlourDump.cql && cqlsh cassandra -f /ArticleParlourDump.cql && cqlsh cassandra -f /StreamParlourDump.cql"

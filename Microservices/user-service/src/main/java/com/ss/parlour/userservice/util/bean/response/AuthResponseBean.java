@@ -1,19 +1,20 @@
 package com.ss.parlour.userservice.util.bean.response;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AuthResponseBean {
-    private int status;
-    private String description;
+    private boolean isAuthenticated;
+    private String userId;
     private String accessToken;
     private String tokenType = "Bearer";
 
-    public AuthResponseBean(String accessToken) {
+    public AuthResponseBean(String userId, String accessToken) {
+        this.userId = userId;
         this.setAccessToken(accessToken);
     }
 

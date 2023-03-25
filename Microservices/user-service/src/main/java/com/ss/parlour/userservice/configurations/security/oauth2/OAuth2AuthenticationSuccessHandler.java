@@ -3,6 +3,7 @@ package com.ss.parlour.userservice.configurations.security.oauth2;
 import com.ss.parlour.userservice.configurations.dataSoureConfig.AppProperties;
 import com.ss.parlour.userservice.configurations.security.CookieUtils;
 import com.ss.parlour.userservice.configurations.security.TokenProvider;
+import com.ss.parlour.userservice.configurations.security.UserPrincipal;
 import com.ss.parlour.userservice.handler.auth.AuthHandlerI;
 import com.ss.parlour.userservice.util.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-        Map<String, String> claimMap = authHandlerI.createUserClaimMap(authentication);
-        String token = tokenProvider.createJwtForClaims(authentication, claimMap);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Map<String, String> claimMap = authHandlerI.createUserClaimMap(userPrincipal);
+        String token = tokenProvider.createJwtForClaims(userPrincipal, claimMap);
         return UriComponentsBuilder.fromUriString(targetUrl).queryParam("token", token).build().toUriString();
     }
 

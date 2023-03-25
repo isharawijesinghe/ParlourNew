@@ -1,14 +1,23 @@
 package com.ss.parlour.streamservice.dao.cassandra;
 
+import com.ss.parlour.streamservice.domain.cassandra.ArticleMappedStream;
 import com.ss.parlour.streamservice.domain.cassandra.Stream;
+import com.ss.parlour.streamservice.domain.cassandra.StreamByUser;
 import com.ss.parlour.streamservice.domain.cassandra.StreamMappedArticles;
-import com.ss.parlour.streamservice.domain.cassandra.UserMappedStream;
+import com.ss.parlour.streamservice.repository.cassandra.ArticleMappedStreamRepositoryI;
 import com.ss.parlour.streamservice.repository.cassandra.StreamMappedArticlesRepositoryI;
 import com.ss.parlour.streamservice.repository.cassandra.StreamRepositoryI;
-import com.ss.parlour.streamservice.repository.cassandra.UserMappedStreamRepositoryI;
+import com.ss.parlour.streamservice.repository.cassandra.StreamByUserRepositoryI;
+import com.ss.parlour.streamservice.utils.bean.ArticleStreamAddaHelperBean;
+import com.ss.parlour.streamservice.utils.bean.StreamCreateHelperBean;
+import com.ss.parlour.streamservice.utils.bean.StreamDeleteHelperBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.core.CassandraBatchOperations;
+import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -18,55 +27,98 @@ public class StreamDAO implements StreamDAOI{
     private StreamRepositoryI streamRepositoryI;
 
     @Autowired
-    private StreamMappedArticlesRepositoryI streamMapArticlesRepositoryI;
+    private StreamMappedArticlesRepositoryI streamMappedArticlesRepositoryI;
 
     @Autowired
-    private UserMappedStreamRepositoryI userMappedStreamRepositoryI;
+    private StreamByUserRepositoryI streamByUserRepositoryI;
+
+    @Autowired
+    private ArticleMappedStreamRepositoryI articleMappedStreamRepositoryI;
+
+    @Autowired
+    private CassandraTemplate cassandraTemplate;
 
     @Override
-    public void saveStream(Stream stream){
-        streamRepositoryI.save(stream);
-    }
-
-
-    @Override
-    public void saveStreamMapArticle(StreamMappedArticles streamMappedArticles){
-        streamMapArticlesRepositoryI.save(streamMappedArticles);
-    }
-
-    @Override
-    public Optional<StreamMappedArticles> findByStreamIdAndAndUserName(String streamId, String userName){
-        return streamMapArticlesRepositoryI.findByStreamIdAndAndUserName(streamId, userName);
+    public void saveStream(StreamCreateHelperBean streamCreateHelperBean){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        insertStreamDataInBatch(streamCreateHelperBean, batchOps);
+        batchOps.execute();
     }
 
     @Override
-    public Optional<StreamMappedArticles> findByStreamId(String streamId){
-        return streamMapArticlesRepositoryI.findByStreamId(streamId);
+    public void deleteStreamData(StreamDeleteHelperBean streamDeleteHelperBean){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        deleteStreamDataInBatch(streamDeleteHelperBean, batchOps);
+        batchOps.execute();
     }
 
     @Override
-    public Optional<UserMappedStream> findUserMappedStreamByUserName(String userName){
-        return userMappedStreamRepositoryI.findUserMappedStreamByUserName(userName);
+    public void saveStreamArticle(ArticleStreamAddaHelperBean articleStreamAddaHelperBean){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        insertStreamDataInBatch(articleStreamAddaHelperBean, batchOps);
+        batchOps.execute();
     }
 
     @Override
-    public Optional<Stream> findStreamById(String streamId){
-        return streamRepositoryI.findById(streamId);
+    public Optional<StreamMappedArticles> findStreamMappedArticles(String streamId, String articleId, Timestamp createdDate){
+        return streamMappedArticlesRepositoryI.findByStreamIdAndArticleIdAndCreatedDate(streamId, articleId, createdDate);
     }
 
     @Override
-    public void deleteStreamByStreamId(String streamId){
-        streamRepositoryI.deleteById(streamId);
+    public Optional<List<StreamMappedArticles>> findListOfStreamMappedArticles(String streamId){
+        return streamMappedArticlesRepositoryI.findByStreamId(streamId);
     }
 
     @Override
-    public void deleteStreamMappedArticlesByStreamId(String streamId){
-        streamMapArticlesRepositoryI.deleteById(streamId);
+    public Optional<StreamByUser> findStreamByUser(String userId, String streamId, Timestamp createdDate){
+        return streamByUserRepositoryI.findByUserIdAndStreamIdAndCreatedDate(userId, streamId, createdDate);
     }
 
     @Override
-    public void deleteUserMappedStreamByUserId(String userId){
-        userMappedStreamRepositoryI.deleteById(userId);
+    public Optional<List<StreamByUser>> findListOfStreamByUser(String userId){
+        return streamByUserRepositoryI.findByUserId(userId);
+    }
+
+    @Override
+    public Optional<ArticleMappedStream> findArticleMappedStream(String articleId, String streamId, Timestamp createdDate){
+        return articleMappedStreamRepositoryI.findByArticleIdAndStreamIdAndCreatedDate(articleId, streamId, createdDate);
+    }
+
+    @Override
+    public Optional<List<ArticleMappedStream>> findListOfArticleMappedStream(String articleId){
+        return articleMappedStreamRepositoryI.findByArticleId(articleId);
+    }
+
+    @Override
+    public Optional<Stream> findStreamData(String streamId){
+        return streamRepositoryI.findByStreamId(streamId);
+    }
+
+    protected void insertStreamDataInBatch(StreamCreateHelperBean streamCreateHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(streamCreateHelperBean.getStream());
+        batchOps.insert(streamCreateHelperBean.getStreamByUser());
+    }
+
+
+    protected void deleteStreamDataInBatch(StreamDeleteHelperBean streamDeleteHelperBean, CassandraBatchOperations batchOps){
+        if (streamDeleteHelperBean.getStream() != null){
+            batchOps.delete(streamDeleteHelperBean.getStream());
+        }
+
+        if (streamDeleteHelperBean.getStreamByUser() != null){
+            batchOps.delete(streamDeleteHelperBean.getStreamByUser());
+        }
+    }
+
+    protected void insertStreamDataInBatch(ArticleStreamAddaHelperBean articleStreamAddaHelperBean, CassandraBatchOperations batchOps){
+
+        articleStreamAddaHelperBean.getArticleMappedStreamList().stream().forEach(
+                ams -> batchOps.insert(ams)
+        );
+
+        articleStreamAddaHelperBean.getStreamMappedArticlesList().stream().forEach(
+                sma -> batchOps.insert(sma)
+        );
     }
 
 

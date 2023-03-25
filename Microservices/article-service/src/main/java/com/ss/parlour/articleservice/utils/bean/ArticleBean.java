@@ -10,7 +10,8 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 public class ArticleBean {
-    private String id;
+    private String articleId;
+    private String userId;
     private String authorName;
     private String title;
     private String summary;

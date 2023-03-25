@@ -9,7 +9,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserInfoUpdateResponseBean {
 
-    private String narration;
-    private int status;
+    private String userId;
 
 }

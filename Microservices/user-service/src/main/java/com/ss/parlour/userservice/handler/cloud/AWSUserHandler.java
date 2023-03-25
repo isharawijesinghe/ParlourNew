@@ -21,8 +21,9 @@ public class AWSUserHandler implements CommonCloudHandlerI{
 
     @Override
     public PreSignUrlResponseBean generatePreSignUrl(PreSignUrlGenerateRequestBean preSignUrlGenerateRequestBean){
+        PreSignUrlGenerateRequestBean.PreSignUrlGenerateInnerRequestBean preSignUrlGenerateInnerRequestBean = preSignUrlGenerateRequestBean.getPreSignUrlGenerateInnerRequestBean();
         PreSignUrlResponseBean preSignUrlResponseBean = new PreSignUrlResponseBean();
-        String objectKey = preSignUrlGenerateRequestBean.getExtension();
+        String objectKey = preSignUrlGenerateInnerRequestBean.getExtension();
         AWSCredentialsProvider provider = new DefaultAWSCredentialsProviderChain();
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(provider).build();
 

@@ -1,11 +1,12 @@
 package com.ss.parlour.articleservice.dao.cassandra;
 
 import com.ss.parlour.articleservice.domain.cassandra.*;
-import com.ss.parlour.articleservice.utils.bean.ArticleUpdateHelperBean;
-import com.ss.parlour.articleservice.utils.bean.EditRequestHelperBean;
-import org.springframework.data.cassandra.core.CassandraBatchOperations;
+import com.ss.parlour.articleservice.utils.bean.ArticleBean;
+import com.ss.parlour.articleservice.utils.bean.ArticleHandlerHelperBean;
+import com.ss.parlour.articleservice.utils.bean.ArticleLikeHandlerHelperBean;
+import com.ss.parlour.articleservice.utils.bean.EditRequestHandlerHelperBean;
 
-import java.util.HashMap;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,23 +14,19 @@ public interface ArticleDAOI {
 
     void saveArticle(Article article);
     Optional<Article> getArticleById(String articleId);
-    Optional<LikeByArticle> getLikeByArticle(String articleId);
-    void updateArticleHistory(ArticleHistory articleHistory);
-    Optional<ArticleHistory> getArticleHistoryByArticleId(String articleId);
-    void saveArticleEditRequest(EditRequestByArticle editRequestByArticle);
-    void saveArticleEditRequestForUser(EditRequestByUser articleEditRequest);
+   // Optional<ArticleHistory> getArticleHistoryByArticleId(String articleId);
     Optional<EditRequestByArticle> getArticleEditRequestForArticleId(String articleId);
     Optional<EditRequestByUser> getArticleEditRequestForUserId(String userId);
-    void saveSharedArticles(SharedArticles sharedArticles);
-    Optional<SharedArticles> getSharedArticlesForUserId(String userId);
-    void saveArticleEditRequest(EditRequestHelperBean editRequestHelperBean);
-    void saveArticleApprovalRequest(EditRequestHelperBean editRequestHelperBean);
-    Optional<EditRequest> getArticleEditRequest(String editRequestId);
-    Optional<EditDraftArticles> getEditDraftArticleByArticleId(String articleId);
-    void saveArticleEditDraftRequest(EditRequestHelperBean editRequestHelperBean);
-    void saveArticleCreateRequest(ArticleUpdateHelperBean articleUpdateHelperBean);
+    void saveArticleEditRequest(EditRequestHandlerHelperBean editRequestHandlerHelperBean);
+    void saveArticleApprovalRequest(EditRequestHandlerHelperBean editRequestHandlerHelperBean);
+    Optional<EditRequest> getArticleEditRequest(String editRequestId, String articleId);
+    void saveArticleEditDraftRequest(EditRequestHandlerHelperBean editRequestHandlerHelperBean);
+    void saveArticleCreateRequest(ArticleHandlerHelperBean articleHandlerHelperBean);
     void saveTopic(List<Topics> topics);
     Optional<List<Topics>> loadAllTopicsEntries();
     Optional<ArticleByUser> getArticleByUserId(String userId);
-    void deleteArticleEntry(ArticleUpdateHelperBean articleUpdateHelperBean);
+    void deleteArticleEntry(ArticleHandlerHelperBean articleHandlerHelperBean);
+    Optional<LikeByArticle> getLikeByArticleEntry(String articleId, String userId);
+    Optional<LikeByArticleGroup> getLikeByArticleGroupEntry(String articleId, String userId, Timestamp createdDate);
+    void updateArticleUserLikeRequest(ArticleLikeHandlerHelperBean articleLikeHandlerHelperBean);
 }

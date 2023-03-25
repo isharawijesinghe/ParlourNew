@@ -16,6 +16,7 @@ public interface ArticleConst {
     String SUCCESSFULLY_APPROVED_EDIT_REQUEST = "Edit request successfully approved";
     String ARTICLE_EDIT_DRAFT_SUCCESSFUL_NARRATION = "Successfully saved article edit draft";
     String ARTICLE_TOPIC_ADDED_SUCCESSFUL_NARRATION = "Topics added successfully";
+    String ARTICLE_COMMENT_LOAD_SUCCESSFUL_NARRATION = "Successfully loaded article comments";
 
     String SEPARATOR = "~";
 
@@ -43,6 +44,13 @@ public interface ArticleConst {
     String ARTICLE_STATUS_REVIEW_IN_PROGRESS = "Review in progress";
     String ARTICLE_STATUS_ACCEPTED = "Accepted";
     String ARTICLE_STATUS_PUBLISHED = "Published";
+
+    int ARTICLE_NUMBER_ZERO = 0;
+
+    String COMMENT_DEFAULT_ROOT_PARENT = "-1";
+    int COMMENT_DEFAULT_DEPTH = 2;
+    int COMMENT_DEFAULT_COMMENT_COUNT = 5;
+    int COMMENT_DEFAULT_DEPTH_COUNT = 2;
 
 
 

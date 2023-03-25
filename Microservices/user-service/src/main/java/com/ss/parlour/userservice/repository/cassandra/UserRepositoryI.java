@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface UserRepositoryI extends CassandraRepository<User, String> {
 
-    Optional<User> findByLoginName(String loginName);
+    Optional<User> findByUserId(String userId);
 }

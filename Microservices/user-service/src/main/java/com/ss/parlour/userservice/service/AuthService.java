@@ -1,7 +1,10 @@
 package com.ss.parlour.userservice.service;
 
 import com.ss.parlour.userservice.configurations.security.TokenProvider;
+import com.ss.parlour.userservice.configurations.security.UserPrincipal;
 import com.ss.parlour.userservice.handler.auth.AuthHandlerI;
+import com.ss.parlour.userservice.util.bean.UserConst;
+import com.ss.parlour.userservice.util.bean.common.UserResponse;
 import com.ss.parlour.userservice.util.bean.requests.AuthRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.userservice.util.bean.requests.UserRegisterRequestBean;
@@ -16,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Map;
 
 @Service
@@ -34,38 +39,60 @@ public class AuthService implements AuthServiceI{
     private AuthHandlerI authHandlerI;
 
     @Override
-    public AuthResponseBean signIn(AuthRequestBean authRequestBean){
+    public UserResponse signIn(AuthRequestBean authRequestBean){
+        AuthRequestBean.AuthRequestInnerBean authRequestInnerBean = authRequestBean.getAuthRequestInnerBean();
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authRequestBean.getUserIdentification(),
-                        authRequestBean.getPassword()
+                        authRequestInnerBean.getUserIdentification(),
+                        authRequestInnerBean.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        Map<String, String> claimMap = authHandlerI.createUserClaimMap(authentication);
-        String token = tokenProvider.createJwtForClaims(authentication, claimMap);
-        return new AuthResponseBean(token);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Map<String, String> claimMap = authHandlerI.createUserClaimMap(userPrincipal);
+        String token = tokenProvider.createJwtForClaims(userPrincipal, claimMap);
+        return  UserResponse.builder().body(new AuthResponseBean(userPrincipal.getUserId(), token))
+                .userMsgHeader(authRequestBean.getUserMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(UserConst.USER_LOGIN_SUCCESS_NARRATION)
+                .build();
     }
 
     @Override
-    public UserRegistrationResponseBean signUp(UserRegisterRequestBean userRegisterRequestBean){
+    public UserResponse signUp(UserRegisterRequestBean userRegisterRequestBean){
         authValidatorI.validateSignUpRequest(userRegisterRequestBean);
         UserRegistrationResponseBean userRegistrationResponseBean = authHandlerI.signUp(userRegisterRequestBean);
-        return userRegistrationResponseBean;
+        return  UserResponse.builder().body(userRegistrationResponseBean)
+                .userMsgHeader(userRegisterRequestBean.getUserMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(UserConst.USER_REGISTER_SUCCESS_NARRATION)
+                .build();
     }
 
     @Override
-    public UserRegistrationResponseBean signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
+    public UserResponse signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean){
         authValidatorI.validateSignUpWithEmail(userRegisterRequestBean);
         UserRegistrationResponseBean userRegistrationResponseBean = authHandlerI.signUpWithEmail(userRegisterRequestBean);
-        return userRegistrationResponseBean;
+        return  UserResponse.builder().body(userRegistrationResponseBean)
+                .userMsgHeader(userRegisterRequestBean.getUserMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(UserConst.USER_REGISTER_SUCCESS_NARRATION)
+                .build();
     }
 
     @Override
-    public TokenConfirmResponseBean tokenConfirm(TokenConfirmRequest tokenConfirmRequest){
+    public UserResponse emailTokenConfirm(TokenConfirmRequest tokenConfirmRequest){
         authValidatorI.validateTokenConfirm(tokenConfirmRequest);
-        TokenConfirmResponseBean tokenConfirmResponseBean = authHandlerI.tokenConfirm(tokenConfirmRequest);
-        return tokenConfirmResponseBean;
+        AuthResponseBean authResponseBean = authHandlerI.emailTokenConfirm(tokenConfirmRequest);
+        return  UserResponse.builder().body(authResponseBean)
+                .userMsgHeader(tokenConfirmRequest.getUserMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(UserConst.USER_REGISTER_TOKEN_CONFIRM_SUCCESS_NARRATION)
+                .build();
     }
 
 

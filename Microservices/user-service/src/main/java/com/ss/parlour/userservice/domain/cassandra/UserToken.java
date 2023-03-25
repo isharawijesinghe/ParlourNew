@@ -10,12 +10,12 @@ import org.springframework.data.cassandra.core.mapping.Table;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table("usertoken")
+@Table("user_token")
 public class UserToken {
 
-    @PrimaryKeyColumn(name = "username",ordinal = 0,type = PrimaryKeyType.PARTITIONED)
-    private String userName;
-    @PrimaryKeyColumn(name = "actiontype",ordinal = 0,type = PrimaryKeyType.CLUSTERED)
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+    private String userIdentification;
+    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED)
     private String actionType;
     private String userToken;
 

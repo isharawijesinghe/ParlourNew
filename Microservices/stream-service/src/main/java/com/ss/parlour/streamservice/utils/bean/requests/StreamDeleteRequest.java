@@ -3,7 +3,7 @@ package com.ss.parlour.streamservice.utils.bean.requests;
 public class StreamDeleteRequest {
 
     private String streamId;
-    private String userName;
+    private String userId;
 
     public String getStreamId() {
         return streamId;
@@ -13,11 +13,11 @@ public class StreamDeleteRequest {
         this.streamId = streamId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

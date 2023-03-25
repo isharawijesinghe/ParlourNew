@@ -2,9 +2,7 @@ package com.ss.parlour.streamservice.contorller;
 
 import com.ss.parlour.streamservice.service.StreamServiceI;
 import com.ss.parlour.streamservice.utils.bean.requests.*;
-import com.ss.parlour.streamservice.utils.bean.response.StreamCommonResponse;
-import com.ss.parlour.streamservice.utils.bean.response.StreamMappedArticleResponse;
-import com.ss.parlour.streamservice.utils.bean.response.UserMappedStreamResponse;
+import com.ss.parlour.streamservice.utils.bean.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,20 +20,20 @@ public class StreamREST {
 
     @RequestMapping(value = "/createStream", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> createStream(@RequestBody StreamCreateRequest streamCreateRequest){
-        StreamCommonResponse streamCommonResponse = streamServiceI.createStream(streamCreateRequest);
-        return ResponseEntity.ok().body(streamCommonResponse);
+        StreamCreateResponse streamCreateResponse = streamServiceI.createStream(streamCreateRequest);
+        return ResponseEntity.ok().body(streamCreateResponse);
     }
 
     @RequestMapping(value = "/deleteStream", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> deleteStream(@RequestBody StreamDeleteRequest streamDeleteRequest){
-        StreamCommonResponse streamCommonResponse =  streamServiceI.deleteStream(streamDeleteRequest);
-        return ResponseEntity.ok().body(streamCommonResponse);
+        StreamDeleteResponse streamDeleteResponse =  streamServiceI.deleteStream(streamDeleteRequest);
+        return ResponseEntity.ok().body(streamDeleteResponse);
     }
 
     @RequestMapping(value = "/addArticleToStream", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<Object> addArticleToStream(@RequestBody ArticleToStreamRequest articleToStreamRequest){
-        StreamCommonResponse streamCommonResponse =  streamServiceI.addArticleToStream(articleToStreamRequest);
-        return ResponseEntity.ok().body(streamCommonResponse);
+        ArticleStreamAddResponse articleStreamAddResponse =  streamServiceI.addArticleToStream(articleToStreamRequest);
+        return ResponseEntity.ok().body(articleStreamAddResponse);
     }
 
     @RequestMapping(value = "/findStreamByUser", method = RequestMethod.POST, consumes = {"application/json"})

@@ -1,9 +1,11 @@
 package com.ss.parlour.articleservice.domain.cassandra;
 
+import com.ss.parlour.articleservice.utils.bean.ArticleBean;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.sql.Timestamp;
@@ -15,9 +17,9 @@ import java.util.*;
 @NoArgsConstructor
 public class Article {
 
-    @PrimaryKey
-    private String id;
-    private String userName;
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+    private String articleId;
+    private String userId;
     private String title;
     private String summary;
     private String content;
@@ -28,5 +30,19 @@ public class Article {
     private Timestamp modifiedDate;
     private Set<String> likedList = new HashSet<>();
     private Set<String> unLikedList = new HashSet<>();
+
+    public Article(ArticleBean articleBean){
+        this.articleId = articleBean.getArticleId();
+        this.userId = articleBean.getUserId();
+        this.title = articleBean.getTitle();
+        this.summary = articleBean.getSummary();
+        this.content = articleBean.getSummary();
+        this.status = articleBean.getStatus();
+        this.categoryId = articleBean.getCategoryId();
+        this.thumbnailUrl = articleBean.getThumbnailUrl();
+        this.createdDate = articleBean.getCreatedDate();
+        this.modifiedDate = articleBean.getModifiedDate();
+    }
+
 
 }

@@ -1,7 +1,7 @@
 package com.ss.parlour.articleservice.utils.validator;
 
 import com.ss.parlour.articleservice.utils.bean.ArticleBean;
-import com.ss.parlour.articleservice.utils.bean.LikeBean;
+import com.ss.parlour.articleservice.utils.bean.LikeRequestBean;
 import com.ss.parlour.articleservice.utils.bean.CommentBean;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import org.springframework.stereotype.Component;
@@ -23,8 +23,8 @@ public class ArticleValidator implements ArticleValidatorI{
     }
 
     @Override
-    public LikeBean validateAddLikeRequest(LikeRequest likeRequest){
-        return likeRequest.getLikeBean();
+    public LikeRequestBean validateAddLikeRequest(LikeRequest likeRequest){
+        return likeRequest.getLikeRequestBean();
     }
 
     @Override

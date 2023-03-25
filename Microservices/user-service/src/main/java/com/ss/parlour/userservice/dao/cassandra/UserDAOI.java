@@ -1,17 +1,20 @@
 package com.ss.parlour.userservice.dao.cassandra;
 
 import com.ss.parlour.userservice.domain.cassandra.*;
+import com.ss.parlour.userservice.util.bean.UserInterestsAddHelperBean;
 import com.ss.parlour.userservice.util.bean.UserSignupHelperBean;
+import com.ss.parlour.userservice.util.bean.requests.UserInterestsAddRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserDAOI {
 
-    Optional<User> findUserByLoginName(String userIdentification);
-    Optional<UserLoginNameEmailMapper> findUserByEmail(String userIdentification);
+    Optional<User> findUserByUserId(String userId);
+    Optional<UserLoginNameMapper> findUserByLoginName(String userIdentification);
+    Optional<UserLoginEmailMapper> findUserByEmail(String userIdentification);
     User saveUser(User user);
-    UserLoginNameEmailMapper loadLoginNameEmailMapperBean(String email);
+    UserLoginEmailMapper loadLoginEmailMapperBean(String email);
     User loadUserByLoginName(String loginName);
     User getUserByUserToken(String token, String type);
     void saveUserToken(UserToken userToken);
@@ -20,5 +23,7 @@ public interface UserDAOI {
     Optional<UserInfo> getUserInfoFromDb(String loginName);
     void saveUserSignUpDataBeans(UserSignupHelperBean userSignupHelperBean);
     void saveUserInterests(UserInterests userInterests);
-    Optional<UserInterests> getUserInterestsByLoginName(String loginName);
+    void saveUserInterests(UserInterestsAddRequest userInterestsAddRequest);
+    void saveUserInterests(UserInterestsAddHelperBean userInterestsAddHelperBean);
+    Optional<List<UserInterests>> getUserInterestsByLoginName(String userId);
 }

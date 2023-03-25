@@ -8,11 +8,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EditRequestHelperBean {
+public class EditRequestHandlerHelperBean {
 
     private EditRequest editRequest;
     private EditRequestByArticle editRequestByArticle;
     private EditRequestByUser editRequestByUser;
     private SharedArticles sharedArticles;
+    private SharedArticlesWithUser sharedArticlesWithUser;
     private EditDraftArticles editDraftArticles;
 }

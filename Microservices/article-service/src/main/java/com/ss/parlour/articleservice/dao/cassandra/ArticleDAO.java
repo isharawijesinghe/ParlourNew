@@ -2,13 +2,13 @@ package com.ss.parlour.articleservice.dao.cassandra;
 
 import com.ss.parlour.articleservice.domain.cassandra.*;
 import com.ss.parlour.articleservice.repository.cassandra.*;
-import com.ss.parlour.articleservice.utils.bean.ArticleUpdateHelperBean;
-import com.ss.parlour.articleservice.utils.bean.EditRequestHelperBean;
+import com.ss.parlour.articleservice.utils.bean.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.CassandraBatchOperations;
 import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +31,7 @@ public class ArticleDAO implements ArticleDAOI {
     private EditRequestByArticleRepositoryI editRequestByArticleRepositoryI;
 
     @Autowired
-    private SharedArticlesRepositoryI sharedArticlesRepositoryI;
+    private SharedArticlesWithUserRepositoryI sharedArticlesRepositoryI;
 
     @Autowired
     private EditRequestRepositoryI editRequestRepositoryI;
@@ -46,7 +46,11 @@ public class ArticleDAO implements ArticleDAOI {
     private ArticleByUserRepositoryI articleByUserRepositoryI;
 
     @Autowired
+    private LikeByArticleGroupRepositoryI likeByArticleGroupRepositoryI;
+
+    @Autowired
     private  CassandraTemplate cassandraTemplate;
+
 
     @Override
     public Optional<Article> getArticleById(String articleId){
@@ -57,31 +61,13 @@ public class ArticleDAO implements ArticleDAOI {
     public void saveArticle(Article article){
         articleRepositoryI.save(article);
     }
+//
+//    @Override
+//    public Optional<ArticleHistory> getArticleHistoryByArticleId(String articleId){return articleHistoryRepositoryI.findById(articleId);}
 
     @Override
-    public Optional<LikeByArticle> getLikeByArticle(String articleId){return likeByArticleRepositoryI.findByArticleId(articleId);}
-
-    @Override
-    public void updateArticleHistory(ArticleHistory articleHistory){
-        articleHistoryRepositoryI.save(articleHistory);
-    }
-
-    @Override
-    public Optional<ArticleHistory> getArticleHistoryByArticleId(String articleId){return articleHistoryRepositoryI.findById(articleId);}
-
-    @Override
-    public Optional<EditRequest> getArticleEditRequest(String editRequestId){
-        return editRequestRepositoryI.findEditRequestByEditRequestId(editRequestId);
-    }
-
-    @Override
-    public void saveArticleEditRequest(EditRequestByArticle editRequestByArticle){
-        editRequestByArticleRepositoryI.save(editRequestByArticle);
-    }
-
-    @Override
-    public void saveArticleEditRequestForUser(EditRequestByUser articleEditRequest){
-        editRequestByUserRepositoryI.save(articleEditRequest);
+    public Optional<EditRequest> getArticleEditRequest(String editRequestId, String articleId){
+        return editRequestRepositoryI.findEditRequestByEditRequestIdAndArticleId(editRequestId, articleId);
     }
 
     @Override
@@ -95,42 +81,27 @@ public class ArticleDAO implements ArticleDAOI {
     }
 
     @Override
-    public void saveSharedArticles(SharedArticles sharedArticles){
-        sharedArticlesRepositoryI.save(sharedArticles);
-    }
-
-    @Override
-    public Optional<SharedArticles> getSharedArticlesForUserId(String userId){
-        return sharedArticlesRepositoryI.findById(userId);
-    }
-
-    @Override
-    public void saveArticleEditRequest(EditRequestHelperBean editRequestHelperBean){
+    public void saveArticleEditRequest(EditRequestHandlerHelperBean editRequestHandlerHelperBean){
         CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
-        insertArticleEditRequestInBatch(editRequestHelperBean, batchOps);
+        insertArticleEditRequestInBatch(editRequestHandlerHelperBean, batchOps);
     }
 
     @Override
-    public void saveArticleApprovalRequest(EditRequestHelperBean editRequestHelperBean){
+    public void saveArticleApprovalRequest(EditRequestHandlerHelperBean editRequestHandlerHelperBean){
         CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
-        insertArticleEditApprovalRequestInBatch(editRequestHelperBean, batchOps);
+        insertArticleEditApprovalRequestInBatch(editRequestHandlerHelperBean, batchOps);
     }
 
     @Override
-    public Optional<EditDraftArticles> getEditDraftArticleByArticleId(String articleId){
-        return editDraftArticlesRepositoryI.findById(articleId);
-    }
-
-    @Override
-    public void saveArticleEditDraftRequest(EditRequestHelperBean editRequestHelperBean){
+    public void saveArticleEditDraftRequest(EditRequestHandlerHelperBean editRequestHandlerHelperBean){
         CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
-        insertArticleEditDraftRequestInBatch(editRequestHelperBean, batchOps);
+        insertArticleEditDraftRequestInBatch(editRequestHandlerHelperBean, batchOps);
     }
 
     @Override
-    public void saveArticleCreateRequest(ArticleUpdateHelperBean articleUpdateHelperBean){
+    public void saveArticleCreateRequest(ArticleHandlerHelperBean articleHandlerHelperBean){
         CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
-        insertArticleCreateRequestInBatch(articleUpdateHelperBean, batchOps);
+        insertArticleCreateRequestInBatch(articleHandlerHelperBean, batchOps);
     }
 
     @Override
@@ -150,46 +121,64 @@ public class ArticleDAO implements ArticleDAOI {
     }
 
     @Override
-    public void deleteArticleEntry(ArticleUpdateHelperBean articleUpdateHelperBean){
+    public void deleteArticleEntry(ArticleHandlerHelperBean articleHandlerHelperBean){
         CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
-        deleteArticleEntriesInBatch(articleUpdateHelperBean, batchOps);
+        deleteArticleEntriesInBatch(articleHandlerHelperBean, batchOps);
     }
 
-    protected void insertArticleEditRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
-        batchOps.insert(editRequestHelperBean.getEditRequest());
-        batchOps.insert(editRequestHelperBean.getEditRequestByArticle());
-        batchOps.insert(editRequestHelperBean.getEditRequestByUser());
+    @Override
+    public Optional<LikeByArticle> getLikeByArticleEntry(String articleId, String userId){
+        return likeByArticleRepositoryI.findByArticleIdAndUserId(articleId, userId);
+    }
+
+    @Override
+    public Optional<LikeByArticleGroup> getLikeByArticleGroupEntry(String articleId, String userId, Timestamp createdDate){
+        return likeByArticleGroupRepositoryI.findByArticleIdAndUserIdAndCreatedDate(articleId, userId, createdDate);
+    }
+
+    @Override
+    public void updateArticleUserLikeRequest(ArticleLikeHandlerHelperBean articleLikeHandlerHelperBean){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        insertArticleUserLikeRequestInBatch(articleLikeHandlerHelperBean, batchOps);
+        deleteArticleUserLikeRequestInBatch(articleLikeHandlerHelperBean, batchOps);
+    }
+
+    protected void insertArticleEditRequestInBatch(EditRequestHandlerHelperBean editRequestHandlerHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(editRequestHandlerHelperBean.getEditRequest());
+        batchOps.insert(editRequestHandlerHelperBean.getEditRequestByArticle());
+        batchOps.insert(editRequestHandlerHelperBean.getEditRequestByUser());
         batchOps.execute();
     }
 
-    protected void insertArticleEditApprovalRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
-        batchOps.insert(editRequestHelperBean.getEditRequest());
-        batchOps.insert(editRequestHelperBean.getEditRequestByArticle());
-        batchOps.insert(editRequestHelperBean.getEditRequestByUser());
-        batchOps.insert(editRequestHelperBean.getSharedArticles());
+    protected void insertArticleEditApprovalRequestInBatch(EditRequestHandlerHelperBean editRequestHandlerHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(editRequestHandlerHelperBean.getEditRequest());
+        batchOps.insert(editRequestHandlerHelperBean.getEditRequestByArticle());
+        batchOps.insert(editRequestHandlerHelperBean.getEditRequestByUser());
+        batchOps.insert(editRequestHandlerHelperBean.getSharedArticles());
+        batchOps.insert(editRequestHandlerHelperBean.getSharedArticlesWithUser());
         batchOps.execute();
     }
 
-    protected void insertArticleEditDraftRequestInBatch(EditRequestHelperBean editRequestHelperBean, CassandraBatchOperations batchOps){
-        batchOps.insert(editRequestHelperBean.getSharedArticles());
-        batchOps.insert(editRequestHelperBean.getEditDraftArticles());
+    protected void insertArticleEditDraftRequestInBatch(EditRequestHandlerHelperBean editRequestHandlerHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(editRequestHandlerHelperBean.getSharedArticlesWithUser());
+        batchOps.insert(editRequestHandlerHelperBean.getEditDraftArticles());
         batchOps.execute();
     }
 
-    protected void insertArticleCreateRequestInBatch(ArticleUpdateHelperBean articleUpdateHelperBean, CassandraBatchOperations batchOps){
-        batchOps.insert(articleUpdateHelperBean.getUpdatedArticle());
-        batchOps.insert(articleUpdateHelperBean.getArticleByUser());
-        if (articleUpdateHelperBean.getArticleHistory() != null){
-            batchOps.insert(articleUpdateHelperBean.getArticleHistory());
+    protected void insertArticleCreateRequestInBatch(ArticleHandlerHelperBean articleHandlerHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(articleHandlerHelperBean.getUpdatedArticle());
+        batchOps.insert(articleHandlerHelperBean.getArticleByUser());
+        if (articleHandlerHelperBean.getArticleHistory() != null){
+            //batchOps.insert(articleHandlerHelperBean.getArticleHistory());
         }
         batchOps.execute();
     }
 
-    protected void deleteArticleEntriesInBatch(ArticleUpdateHelperBean articleUpdateHelperBean, CassandraBatchOperations batchOps){
-        batchOps.delete(articleUpdateHelperBean.getUpdatedArticle());
-        batchOps.delete(articleUpdateHelperBean.getArticleByUser());
-        if (articleUpdateHelperBean.getArticleHistory() != null){
-            batchOps.delete(articleUpdateHelperBean.getArticleHistory());
+    protected void deleteArticleEntriesInBatch(ArticleHandlerHelperBean articleHandlerHelperBean, CassandraBatchOperations batchOps){
+        batchOps.delete(articleHandlerHelperBean.getUpdatedArticle());
+        batchOps.delete(articleHandlerHelperBean.getArticleByUser());
+        if (articleHandlerHelperBean.getArticleHistory() != null){
+            //batchOps.delete(articleHandlerHelperBean.getArticleHistory());
         }
         batchOps.execute();
     }
@@ -197,6 +186,26 @@ public class ArticleDAO implements ArticleDAOI {
     protected void insertTopicsInBatch(List<Topics> topics, CassandraBatchOperations batchOps){
         topics.stream().forEach(topic -> batchOps.insert(topics));
         batchOps.execute();
+    }
+
+    protected void insertArticleUserLikeRequestInBatch(ArticleLikeHandlerHelperBean articleLikeHandlerHelperBean, CassandraBatchOperations batchOps){
+        if (articleLikeHandlerHelperBean.getNewLikeByArticle() != null){
+            batchOps.insert(articleLikeHandlerHelperBean.getNewLikeByArticle());
+        }
+
+        if (articleLikeHandlerHelperBean.getNewLikeByArticleGroup() != null){
+            batchOps.insert(articleLikeHandlerHelperBean.getNewLikeByArticleGroup());
+        }
+    }
+
+    protected void deleteArticleUserLikeRequestInBatch(ArticleLikeHandlerHelperBean articleLikeHandlerHelperBean, CassandraBatchOperations batchOps){
+        if (articleLikeHandlerHelperBean.getCurrentLikeByArticle() != null){
+            batchOps.delete(articleLikeHandlerHelperBean.getCurrentLikeByArticle());
+        }
+
+        if (articleLikeHandlerHelperBean.getCurrentLikeByArticleGroup() != null){
+            batchOps.delete(articleLikeHandlerHelperBean.getCurrentLikeByArticleGroup());
+        }
     }
 
 }

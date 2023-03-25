@@ -16,6 +16,7 @@ public interface ArticleServiceI {
     Article findArticleDetailsById(String articleId);
     ArticleHistoryResponse findArticleHistoryById(ArticleHistoryRequest articleHistoryRequest);
     ArticleCommonResponse deleteArticle(ArticleDeleteRequest articleDeleteRequest);
+    CommentResponse findArticleComments(CommentRequest commentRequest);
     CommentCommonResponse deleteComment(CommentDeleteRequest commentDeleteRequest);
     ArticleEditRequestResponse articleEditRequest(ArticleEditRequest articleEditRequest);
     ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest);

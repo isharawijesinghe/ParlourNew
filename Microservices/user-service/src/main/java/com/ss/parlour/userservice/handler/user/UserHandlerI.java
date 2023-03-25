@@ -8,7 +8,7 @@ public interface UserHandlerI {
 
     UserInfoUpdateResponseBean addUserInfo(UserInfoUpdateRequestBean userInfoUpdateRequestBean);
     UserInfoResponseBean findUserInfoByUser(String loginName);
-    AuthorDetailResponseBean findAuthorDetailsById(String loginName);
-    UserInterestsAddResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest);
-    UserInterestsResponse findUserInterests(String loginName);
+    AuthorDetailResponseBean findAuthorDetailsById(String userId);
+    void addUserInterests(UserInterestsAddRequest userInterestsAddRequest);
+    UserInterestsResponse findUserInterests(String userId);
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserInfoResponseBean {
 
-    private String loginName;
+    private String userId;
     private String firstName;
     private String lastName;
     private String country;

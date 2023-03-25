@@ -1,12 +1,14 @@
 package com.ss.parlour.articleservice.domain.cassandra;
 
+import com.ss.parlour.articleservice.utils.bean.LikeRequestBean;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import java.util.HashMap;
+import java.sql.Timestamp;
 
 @Table("like_by_article")
 @Getter
@@ -14,7 +16,15 @@ import java.util.HashMap;
 @NoArgsConstructor
 public class LikeByArticle {
 
-    @PrimaryKey
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
     private String articleId;
-    private HashMap<String, Like> likeMap = new HashMap<>();
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+    private String userId;
+    private Timestamp createdDate;
+
+    public LikeByArticle(LikeRequestBean likeRequestBean){
+        this.articleId = likeRequestBean.getArticleId();
+        this.userId = likeRequestBean.getUserId();
+        this.createdDate = likeRequestBean.getCreatedDate();
+    }
 }

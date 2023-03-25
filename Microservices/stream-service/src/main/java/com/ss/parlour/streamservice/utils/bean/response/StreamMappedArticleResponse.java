@@ -1,16 +1,17 @@
 package com.ss.parlour.streamservice.utils.bean.response;
 
 import com.ss.parlour.streamservice.domain.cassandra.StreamMappedArticles;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.List;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class StreamMappedArticleResponse {
 
-    private StreamMappedArticles streamMappedArticles;
+    private List<StreamMappedArticles> streamMappedArticles;
 
-    public StreamMappedArticles getStreamMapArticles() {
-        return streamMappedArticles;
-    }
-
-    public void setStreamMapArticles(StreamMappedArticles streamMappedArticles) {
-        this.streamMappedArticles = streamMappedArticles;
-    }
 }

@@ -1,15 +1,13 @@
 package com.ss.parlour.streamservice.service;
 
 import com.ss.parlour.streamservice.utils.bean.requests.*;
-import com.ss.parlour.streamservice.utils.bean.response.StreamCommonResponse;
-import com.ss.parlour.streamservice.utils.bean.response.StreamMappedArticleResponse;
-import com.ss.parlour.streamservice.utils.bean.response.UserMappedStreamResponse;
+import com.ss.parlour.streamservice.utils.bean.response.*;
 
 public interface StreamServiceI{
 
-    StreamCommonResponse createStream(StreamCreateRequest streamCreateRequest);
-    StreamCommonResponse deleteStream(StreamDeleteRequest streamDeleteRequest);
-    StreamCommonResponse addArticleToStream(ArticleToStreamRequest articleToStreamRequest);
+    StreamCreateResponse createStream(StreamCreateRequest streamCreateRequest);
+    StreamDeleteResponse deleteStream(StreamDeleteRequest streamDeleteRequest);
+    ArticleStreamAddResponse addArticleToStream(ArticleToStreamRequest articleToStreamRequest);
     UserMappedStreamResponse findStreamByUser(StreamRequest streamRequest);
     StreamMappedArticleResponse findArticlesByStream(StreamMappedArticleRequest streamMappedArticleRequest);
 }

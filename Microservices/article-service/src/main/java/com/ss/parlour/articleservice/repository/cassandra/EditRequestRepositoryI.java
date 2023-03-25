@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface EditRequestRepositoryI extends CassandraRepository<EditRequest, String> {
 
-    Optional<EditRequest> findEditRequestByEditRequestId(String articleId);
+    Optional<EditRequest> findEditRequestByEditRequestIdAndArticleId(String editRequestId, String articleId);
 }

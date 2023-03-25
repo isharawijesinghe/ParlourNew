@@ -2,7 +2,7 @@ package com.ss.parlour.userservice.util.validators;
 
 import com.ss.parlour.userservice.dao.cassandra.UserDAOI;
 import com.ss.parlour.userservice.domain.cassandra.User;
-import com.ss.parlour.userservice.domain.cassandra.UserLoginNameEmailMapper;
+import com.ss.parlour.userservice.domain.cassandra.UserLoginEmailMapper;
 import com.ss.parlour.userservice.util.bean.UserErrorCodes;
 import com.ss.parlour.userservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.userservice.util.bean.requests.UserRegisterRequestBean;
@@ -35,15 +35,16 @@ public class AuthValidator implements AuthValidatorI {
 
 
     protected void validateUserLoginNameExists(UserRegisterRequestBean userRegisterRequestBean){
-        User existingUser = userDAOI.loadUserByLoginName(userRegisterRequestBean.getLoginName());
+        UserRegisterRequestBean.UserRegisterRequestInnerBean userRegisterRequestInnerBean = userRegisterRequestBean.getUserRegisterRequestInnerBean();
+        User existingUser = userDAOI.loadUserByLoginName(userRegisterRequestInnerBean.getLoginName());
         if (existingUser != null){
             throw new UserRuntimeException(UserErrorCodes.LOGIN_NAME_EXISTS);
         }
     }
 
     protected void validateUserEmailExists(UserRegisterRequestBean userRegisterRequestBean){
-        UserLoginNameEmailMapper existingUserLoginNameEmailMapper
-                = userDAOI.loadLoginNameEmailMapperBean(userRegisterRequestBean.getEmail());
+        UserRegisterRequestBean.UserRegisterRequestInnerBean userRegisterRequestInnerBean = userRegisterRequestBean.getUserRegisterRequestInnerBean();
+        UserLoginEmailMapper existingUserLoginNameEmailMapper = userDAOI.loadLoginEmailMapperBean(userRegisterRequestInnerBean.getEmail());
         if (existingUserLoginNameEmailMapper != null){
             throw new UserRuntimeException(UserErrorCodes.EMAIL_EXISTS);
         }

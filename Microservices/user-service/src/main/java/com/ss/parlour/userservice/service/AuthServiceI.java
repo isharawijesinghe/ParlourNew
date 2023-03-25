@@ -1,5 +1,6 @@
 package com.ss.parlour.userservice.service;
 
+import com.ss.parlour.userservice.util.bean.common.UserResponse;
 import com.ss.parlour.userservice.util.bean.requests.PreSignUrlGenerateRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.TokenConfirmRequest;
 import com.ss.parlour.userservice.util.bean.requests.UserRegisterRequestBean;
@@ -11,9 +12,9 @@ import com.ss.parlour.userservice.util.bean.response.AuthResponseBean;
 
 public interface AuthServiceI  {
 
-    AuthResponseBean signIn(AuthRequestBean authRequestBean);
-    UserRegistrationResponseBean signUp(UserRegisterRequestBean userRegisterRequestBean);
-    UserRegistrationResponseBean signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean);
-    TokenConfirmResponseBean tokenConfirm(TokenConfirmRequest tokenConfirmRequest);
+    UserResponse signIn(AuthRequestBean authRequestBean);
+    UserResponse signUp(UserRegisterRequestBean userRegisterRequestBean);
+    UserResponse signUpWithEmail(UserRegisterRequestBean userRegisterRequestBean);
+    UserResponse emailTokenConfirm(TokenConfirmRequest tokenConfirmRequest);
 
 }

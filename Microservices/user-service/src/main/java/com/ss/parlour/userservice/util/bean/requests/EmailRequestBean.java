@@ -1,5 +1,7 @@
 package com.ss.parlour.userservice.util.bean.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ss.parlour.userservice.util.bean.common.UserHeader;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,10 +9,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EmailRequestBean {
+public class EmailRequestBean extends UserHeader {
 
-    private String receiverEmail;
-    private String actionType;
-    private String confirmationToken;
+    @JsonProperty("body")
+    private EmailRequestInnerBean emailRequestInnerBean;
+
+    @Getter
+    @Setter
+    public class EmailRequestInnerBean{
+        private String receiverEmail;
+        private String actionType;
+        private String confirmationToken;
+    }
+
+
 
 }

@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface UserInfoRepositoryI extends CassandraRepository<UserInfo, String> {
 
-    Optional<UserInfo> findUserInfoByLoginName(String loginName);
+    Optional<UserInfo> findUserInfoByUserId(String userId);
 }

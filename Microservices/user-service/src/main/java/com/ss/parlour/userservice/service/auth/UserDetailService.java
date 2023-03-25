@@ -2,7 +2,13 @@ package com.ss.parlour.userservice.service.auth;
 
 import com.ss.parlour.userservice.configurations.security.UserPrincipal;
 import com.ss.parlour.userservice.domain.cassandra.User;
+import com.ss.parlour.userservice.domain.cassandra.UserLoginNameMapper;
 import com.ss.parlour.userservice.handler.auth.AuthHandlerI;
+import com.ss.parlour.userservice.util.bean.UserConst;
+import com.ss.parlour.userservice.util.exception.UserRuntimeException;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Service
 @Transactional
 public class UserDetailService implements UserDetailsService, UserDetailServiceI {
@@ -28,6 +37,8 @@ public class UserDetailService implements UserDetailsService, UserDetailServiceI
         User user= authHandlerI.loadUserByIdentification(username);
         if (user == null){
             throw  new UsernameNotFoundException("No User Found");
+        } else if (user.getEnabled() != UserConst.USER_ENABLE){
+            throw  new UserRuntimeException("User disabled. Verify user ");
         }
         return UserPrincipal.create(user);
     }
@@ -42,13 +53,5 @@ public class UserDetailService implements UserDetailsService, UserDetailServiceI
         return authorities;
     }
 
-
-    public AuthHandlerI getAuthHandlerI() {
-        return authHandlerI;
-    }
-
-    public void setAuthHandlerI(AuthHandlerI authHandlerI) {
-        this.authHandlerI = authHandlerI;
-    }
 
 }

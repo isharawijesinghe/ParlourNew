@@ -45,13 +45,12 @@ public class TokenProvider {
         this.appProperties = appProperties;
     }
 
-    public String createJwtForClaims(Authentication authentication, Map<String, String> claims) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+    public String createJwtForClaims(UserPrincipal userPrincipal, Map<String, String> claims) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(Instant.now().toEpochMilli());
         calendar.add(Calendar.DATE, 1);
 
-        JWTCreator.Builder jwtBuilder = JWT.create().withSubject(userPrincipal.getEmail());
+        JWTCreator.Builder jwtBuilder = JWT.create().withSubject(userPrincipal.getUserId());
 
         // Add claims
         claims.forEach(jwtBuilder::withClaim);

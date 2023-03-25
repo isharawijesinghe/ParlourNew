@@ -1,43 +1,36 @@
 package com.ss.parlour.streamservice.domain.cassandra;
 
 import com.ss.parlour.streamservice.utils.bean.Article;
+import com.ss.parlour.streamservice.utils.bean.requests.ArticleToStreamRequest;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
-@Table("streammappedarticles")
+@Table("stream_mapped_articles")
+@Getter
+@Setter
+@NoArgsConstructor
 public class StreamMappedArticles {
 
-    @PrimaryKey
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
     private String streamId;
-    //@PrimaryKey
-    private String userName;
-    private Map<String, Article> streamMapArticlesMap = new HashMap();
+    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED)
+    private String articleId;
+    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED)
+    private Timestamp createdDate;
 
-    public String getStreamId() {
-        return streamId;
+    public StreamMappedArticles(ArticleToStreamRequest articleToStreamRequest, String articleId){
+        this.streamId = articleToStreamRequest.getStreamId();
+        this.articleId = articleId;
+        this.createdDate = articleToStreamRequest.getCreatedDate();
     }
 
-    public void setStreamId(String streamId) {
-        this.streamId = streamId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-
-    public Map<String, Article> getStreamMapArticlesMap() {
-        return streamMapArticlesMap;
-    }
-
-    public void setStreamMapArticlesMap(Map<String, Article> streamMapArticlesMap) {
-        this.streamMapArticlesMap = streamMapArticlesMap;
-    }
 }

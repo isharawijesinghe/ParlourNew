@@ -1,16 +1,17 @@
 package com.ss.parlour.streamservice.utils.bean.response;
 
-import com.ss.parlour.streamservice.domain.cassandra.UserMappedStream;
+import com.ss.parlour.streamservice.domain.cassandra.StreamByUser;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.List;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserMappedStreamResponse {
 
-    private UserMappedStream userMappedStream;
+    private List<StreamByUser> streamByUser;
 
-    public UserMappedStream getUserMappedStream() {
-        return userMappedStream;
-    }
-
-    public void setUserMappedStream(UserMappedStream userMappedStream) {
-        this.userMappedStream = userMappedStream;
-    }
 }

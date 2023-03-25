@@ -8,13 +8,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UserRegistrationResponseBean {
-    private boolean status;
-    private String narration;
     private String actionType;
-
-    public UserRegistrationResponseBean(boolean status, String narration) {
-        this.setStatus(status);
-        this.setNarration(narration);
-    }
+    private boolean isEmailVerificationRequired = false;
+    private String email;
 
 }
