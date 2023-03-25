@@ -108,7 +108,6 @@ public class AuthHandler implements AuthHandlerI {
 
     @Override
     public AuthResponseBean emailTokenConfirm(TokenConfirmRequest tokenConfirmRequest){
-        AtomicReference<String> dbLoggedUserValue = new AtomicReference<>();
         TokenConfirmRequest.TokenConfirmInnerRequest tokenConfirmInnerRequest = tokenConfirmRequest.getTokenConfirmInnerRequest();
         TokenConfirmResponseBean tokenConfirmResponseBean = new TokenConfirmResponseBean(UserConst.STATUS_SUCCESS, UserConst.SUCCESS_NARRATION);
         Optional<UserToken> existingUserToken = userDAOI.getUserToken(tokenConfirmInnerRequest.getUserIdentification(), tokenConfirmInnerRequest.getActionType());
@@ -120,15 +119,7 @@ public class AuthHandler implements AuthHandlerI {
         });
         if (tokenConfirmResponseBean.isTokenConfirmSuccess()){ //If token validation successful
             //If token confirmation successful then generate token
-            Optional<UserLoginEmailMapper> loginNameEmailMapperFromDb = userDAOI.findUserByEmail(tokenConfirmInnerRequest.getUserIdentification());
-            loginNameEmailMapperFromDb.ifPresent(loginEmailMapper -> {dbLoggedUserValue.set(loginEmailMapper.getUserId());});
-            String userId = dbLoggedUserValue.get();
-            Optional<User> userFromDb = userDAOI.findUserByUserId(userId);
-            var user = userFromDb.orElseThrow(() -> new UserRuntimeException("User not found in db"));
-            UserPrincipal userPrincipal = UserPrincipal.create(user);
-            Map<String, String> claimMap = createUserClaimMap(userPrincipal);
-            String token = tokenProvider.createJwtForClaims(userPrincipal, claimMap);
-            return AuthResponseBean.builder().accessToken(token).userId(userId).isAuthenticated(UserConst.TRUE).build();
+            return tokenConfirmationTokenCreation(tokenConfirmInnerRequest);
         }
         throw new UserRuntimeException("Token confirmation failed");
 
@@ -162,6 +153,19 @@ public class AuthHandler implements AuthHandlerI {
         claims.put("iss", "myApp");
         claims.put("scope", "message.read");
         return claims;
+    }
+
+    protected AuthResponseBean tokenConfirmationTokenCreation(TokenConfirmRequest.TokenConfirmInnerRequest tokenConfirmInnerRequest){
+        AtomicReference<String> dbLoggedUserValue = new AtomicReference<>();
+        Optional<UserLoginEmailMapper> loginNameEmailMapperFromDb = userDAOI.findUserByEmail(tokenConfirmInnerRequest.getUserIdentification());
+        loginNameEmailMapperFromDb.ifPresent(loginEmailMapper -> {dbLoggedUserValue.set(loginEmailMapper.getUserId());});
+        String userId = dbLoggedUserValue.get();
+        Optional<User> userFromDb = userDAOI.findUserByUserId(userId);
+        var user = userFromDb.orElseThrow(() -> new UserRuntimeException("User not found in db"));
+        UserPrincipal userPrincipal = UserPrincipal.create(user);
+        Map<String, String> claimMap = createUserClaimMap(userPrincipal);
+        String token = tokenProvider.createJwtForClaims(userPrincipal, claimMap);
+        return AuthResponseBean.builder().accessToken(token).userId(userId).isAuthenticated(UserConst.TRUE).build();
     }
 
     protected void userRegistrationTokenUpdateProcess(UserRegisterRequestBean.UserRegisterRequestInnerBean userRegisterRequestInnerBean){
