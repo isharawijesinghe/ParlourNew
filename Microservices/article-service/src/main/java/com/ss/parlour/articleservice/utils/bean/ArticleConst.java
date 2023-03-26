@@ -2,6 +2,8 @@ package com.ss.parlour.articleservice.utils.bean;
 
 public interface ArticleConst {
 
+    public final static String DEFAULT_TENANCY_CODE = "DEFAULT_TENANCY_CODE";
+
     String ARTICLE_TYPE = "ARTIC";
     String COMMENT_TYPE = "COMM";
     String LIKE_TYPE = "LIKE";
@@ -17,6 +19,8 @@ public interface ArticleConst {
     String ARTICLE_EDIT_DRAFT_SUCCESSFUL_NARRATION = "Successfully saved article edit draft";
     String ARTICLE_TOPIC_ADDED_SUCCESSFUL_NARRATION = "Topics added successfully";
     String ARTICLE_COMMENT_LOAD_SUCCESSFUL_NARRATION = "Successfully loaded article comments";
+    String ARTICLE_HISTORY_SEARCH_SUCCESSFUL_NARRATION = "Successfully loaded article history";
+    String ARTICLE_IMAGE_UPLOAD_PRE_SIGNED_GENERATE_SUCCESSFUL_NARRATION = "Successfully generate pre sign url for article image upload";
 
     String SEPARATOR = "~";
 

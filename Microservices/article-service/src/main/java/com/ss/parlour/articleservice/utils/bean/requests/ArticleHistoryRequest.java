@@ -1,5 +1,7 @@
 package com.ss.parlour.articleservice.utils.bean.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ss.parlour.articleservice.utils.bean.common.ArticleHeader;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,8 +9,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleHistoryRequest {
+public class ArticleHistoryRequest extends ArticleHeader {
 
-    private String articleId;
+    @JsonProperty("body")
+    private ArticleHistoryRequestInner articleHistoryRequestInner;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public class ArticleHistoryRequestInner{
+        private String articleId;
+    }
+
 
 }

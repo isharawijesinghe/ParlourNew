@@ -36,7 +36,8 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * @return
      */
     @Override
-    public String processCreateArticleRequest(ArticleBean articleBean){
+    public ArticleCommonResponse processCreateArticleRequest(ArticleBean articleBean){
+        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
         ArticleHandlerHelperBean articleHandlerHelperBean = new ArticleHandlerHelperBean();
         if (articleBean.getArticleId() == null || articleBean.getArticleId().isEmpty()){ //New article request
             prePopulatedForNewArticleFlow(articleBean);
@@ -48,7 +49,10 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         //1. Update Article table
         //2. Update article by user table
         articleDAOI.saveArticleCreateRequest(articleHandlerHelperBean);
-        return articleBean.getArticleId();
+        articleCommonResponse.setArticleId(articleBean.getArticleId());
+        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);
+        return articleCommonResponse;
     }
 
     /***
@@ -72,7 +76,8 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * @param articleDeleteRequest
      */
     @Override
-    public void processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest){
+    public ArticleCommonResponse processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest){
+        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
         ArticleHandlerHelperBean articleHandlerHelperBean = new ArticleHandlerHelperBean();
         //1. Delete article entry
         //2. Delete article entry by user
@@ -81,6 +86,10 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         populateDeleteArticleByUser(articleHandlerHelperBean, articleDeleteRequest);
         populateDeleteArticleHistory(articleHandlerHelperBean, articleDeleteRequest);
         articleDAOI.deleteArticleEntry(articleHandlerHelperBean);
+        articleCommonResponse.setArticleId(articleDeleteRequest.getArticleDeleteRequestInner().getArticleId());
+        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED);
+        return articleCommonResponse;
     }
 
 
@@ -90,14 +99,14 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * @return articleResponse
      */
     @Override
-    public ArticleResponse findArticleById(String articleId){
-        ArticleResponse articleResponse = new ArticleResponse();
+    public ArticleDetailsResponse findArticleById(String articleId){
+        ArticleDetailsResponse articleDetailsResponse = new ArticleDetailsResponse();
         //1. Populate article details
         //2. Populate article author details
         //3. Populate article comments
-        populateArticleDetailsFromDb(articleResponse, articleId);
-        populateArticleAuthorDetails(articleResponse);
-        return articleResponse;
+        populateArticleDetailsFromDb(articleDetailsResponse, articleId);
+        populateArticleAuthorDetails(articleDetailsResponse);
+        return articleDetailsResponse;
     }
 
     /***
@@ -106,13 +115,16 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * @return List<Article>
      */
     @Override
-    public List<Article> findArticleByUser(ArticleListRequest articleListRequest){
+    public ArticleListResponse findArticleByUser(ArticleListRequest articleListRequest){
+        ArticleListResponse  articleListResponse = new ArticleListResponse();
         AtomicReference<List<Article>> currentUserAssignArticle = new AtomicReference<>();
-        Optional<ArticleByUser> currentUserArticleFromDb = articleDAOI.getArticleByUserId(articleListRequest.getLoginName());
+        ArticleListRequest.ArticleListRequestInner articleListRequestInner = articleListRequest.getArticleListRequestInner();
+        Optional<ArticleByUser> currentUserArticleFromDb = articleDAOI.getArticleByUserId(articleListRequestInner.getLoginName());
 //        currentUserArticleFromDb.ifPresent(
 //                userArticle -> currentUserAssignArticle.set(new ArrayList<>(userArticle.getUserCreatedArticles().values()))
 //        );
-        return currentUserAssignArticle.get();
+     //   articleListResponse.setArticleResponseList(currentUserArticleFromDb.get().);
+        return articleListResponse;
     }
 
     /***
@@ -151,13 +163,17 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * @return ArticleEditRequestResponse
      */
     @Override
-    public String processArticleEditRequest(ArticleEditRequest articleEditRequest){
+    public ArticleEditRequestResponse processArticleEditRequest(ArticleEditRequest articleEditRequest){
+        ArticleEditRequestResponse articleEditRequestResponse = new ArticleEditRequestResponse();
         EditRequest articleEditBean = prePopulateArticleEditRequest(articleEditRequest);
         EditRequestHandlerHelperBean editRequestHandlerHelperBean =  populateEditRequestHelperBean(articleEditBean);//Populate article edit request
         populateEditRequestByArticle(editRequestHandlerHelperBean, articleEditBean);//Populate article edit request for article
         populateEditRequestByUser(editRequestHandlerHelperBean, articleEditBean);//Populate article  edit request for user
         articleDAOI.saveArticleEditRequest(editRequestHandlerHelperBean);//Save entries into db
-        return articleEditBean.getArticleId();
+        articleEditRequestResponse.setEditRequestId(articleEditBean.getArticleId());
+        articleEditRequestResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleEditRequestResponse.setNarration(ArticleConst.SUCCESSFULLY_PLACE_EDIT_REQUEST);
+        return articleEditRequestResponse;
     }
 
     /***
@@ -169,13 +185,19 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * @param articleEditApproveRequest
      */
     @Override
-    public void processArticleEditRequestApproval(ArticleEditApproveRequest articleEditApproveRequest){
-        EditRequestHandlerHelperBean editRequestHandlerHelperBean =  populateEditRequestHelperBeanFromDb(articleEditApproveRequest.getEditRequestId(), articleEditApproveRequest.getArticleId());
+    public ArticleEditApproveResponse processArticleEditRequestApproval(ArticleEditApproveRequest articleEditApproveRequest){
+        ArticleEditApproveResponse articleEditApproveResponse = new ArticleEditApproveResponse();
+        EditRequestHandlerHelperBean editRequestHandlerHelperBean =  populateEditRequestHelperBeanFromDb(
+                articleEditApproveRequest.getArticleEditApproveRequestInner().getEditRequestId(), articleEditApproveRequest.getArticleEditApproveRequestInner().getArticleId());
         prePopulateEditRequestForApproval(editRequestHandlerHelperBean, ArticleConst.ARTICLE_EDIT_REQUEST_APPROVED);
         populateEditRequestByArticleForApproval(editRequestHandlerHelperBean);
         populateEditRequestByUserForApproval(editRequestHandlerHelperBean);
         populateSharedArticleFromDb(editRequestHandlerHelperBean);
         articleDAOI.saveArticleApprovalRequest(editRequestHandlerHelperBean);
+        articleEditApproveResponse.setEditRequestId(articleEditApproveRequest.getArticleEditApproveRequestInner().getEditRequestId());
+        articleEditApproveResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        articleEditApproveResponse.setNarration(ArticleConst.SUCCESSFULLY_APPROVED_EDIT_REQUEST);
+        return articleEditApproveResponse;
     }
 
     /***
@@ -188,11 +210,17 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
      * @return ArticleEditDraftResponse
      */
     @Override
-    public void postArticleEditDraft(ArticleEditDraftRequest articleEditDraftRequest){
-        EditRequestHandlerHelperBean editRequestHandlerHelperBean =  populateEditRequestHelperBeanFromDb(articleEditDraftRequest.getEditRequestId(), articleEditDraftRequest.getArticleId());
+    public ArticleEditDraftResponse postArticleEditDraft(ArticleEditDraftRequest articleEditDraftRequest){
+        ArticleEditDraftResponse articleEditDraftResponse = new ArticleEditDraftResponse();
+        EditRequestHandlerHelperBean editRequestHandlerHelperBean =  populateEditRequestHelperBeanFromDb(
+                articleEditDraftRequest.getArticleEditDraftRequestInner().getEditRequestId(), articleEditDraftRequest.getArticleEditDraftRequestInner().getArticleId());
         populateSharedArticleFromDb(editRequestHandlerHelperBean);
         populateEditArticleDraft(articleEditDraftRequest, editRequestHandlerHelperBean);
         articleDAOI.saveArticleEditDraftRequest(editRequestHandlerHelperBean);
+        articleEditDraftResponse.setEditRequestId(articleEditDraftRequest.getArticleEditDraftRequestInner().getEditRequestId());
+        articleEditDraftResponse.setArticleId(articleEditDraftRequest.getArticleEditDraftRequestInner().getArticleId());
+        articleEditDraftResponse.setNarration(ArticleConst.ARTICLE_EDIT_DRAFT_SUCCESSFUL_NARRATION);
+        return articleEditDraftResponse;
     }
 
     /***
@@ -203,7 +231,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     @Override
     public TopicAddResponse addTopic(TopicAddRequest topicAddRequest){
         TopicAddResponse topicAddResponse = new TopicAddResponse();
-        articleDAOI.saveTopic(topicAddRequest.getTopicName());
+        articleDAOI.saveTopic(topicAddRequest.getTopicAddRequestInner().getTopicName());
         topicAddResponse.setStatus(ArticleConst.STATUS_SUCCESS);
         topicAddResponse.setNarration(ArticleConst.ARTICLE_TOPIC_ADDED_SUCCESSFUL_NARRATION);
         return topicAddResponse;
@@ -249,12 +277,12 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     }
 
     protected void populateDeleteArticle(ArticleHandlerHelperBean articleHandlerHelperBean, ArticleDeleteRequest articleDeleteRequest){
-        Optional<Article> currentArticleInDb = articleDAOI.getArticleById(articleDeleteRequest.getArticleId());
+        Optional<Article> currentArticleInDb = articleDAOI.getArticleById(articleDeleteRequest.getArticleDeleteRequestInner().getArticleId());
         currentArticleInDb.ifPresent((article) -> articleHandlerHelperBean.setUpdatedArticle(article));
     }
 
     protected void populateDeleteArticleByUser(ArticleHandlerHelperBean articleHandlerHelperBean, ArticleDeleteRequest articleDeleteRequest){
-        Optional<ArticleByUser> currentArticleByUserInDb = articleDAOI.getArticleByUserId(articleDeleteRequest.getUserName());
+        Optional<ArticleByUser> currentArticleByUserInDb = articleDAOI.getArticleByUserId(articleDeleteRequest.getArticleDeleteRequestInner().getUserName());
         currentArticleByUserInDb.ifPresent((articleByUser) -> articleHandlerHelperBean.setArticleByUser(articleByUser));
     }
 
@@ -280,12 +308,12 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     }
 
     //Populate article details to send response back to browser
-    protected void populateArticleDetailsFromDb(ArticleResponse articleResponse, String articleId){
+    protected void populateArticleDetailsFromDb(ArticleDetailsResponse articleDetailsResponse, String articleId){
         Optional<Article> currentArticleInDb = articleDAOI.getArticleById(articleId);
         //Only load if article exists and active
         var currentArticle = currentArticleInDb
                 .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.ARTICLE_NOT_FOUND_ERROR + articleId));
-        articleResponse.setArticle(currentArticle);
+        articleDetailsResponse.setArticle(currentArticle);
     }
 
     protected void updateArticleHistoryToPushIntoHistory(Article oldArticle, ArticleHandlerHelperBean articleHandlerHelperBean){
@@ -363,12 +391,12 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         editRequestHandlerHelperBean.setSharedArticlesWithUser(new SharedArticlesWithUser(editRequest));
     }
 
-    public void populateArticleAuthorDetails(ArticleResponse articleResponse) {
-        Article article = articleResponse.getArticle();
+    public void populateArticleAuthorDetails(ArticleDetailsResponse articleDetailsResponse) {
+        Article article = articleDetailsResponse.getArticle();
         Optional<AuthorDetailResponse> authorDetailResponseBean = externalRestWriterI.findAuthorDetailsByLoginName(article.getUserId());
         var authorDetails = authorDetailResponseBean
                 .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.AUTHOR_NOT_FOUND_ERROR + article.getUserId()));
-        articleResponse.setAuthorDetails(authorDetails);
+        articleDetailsResponse.setAuthorDetails(authorDetails);
     }
 
     protected void populateEditArticleDraft(ArticleEditDraftRequest articleEditDraftRequest, EditRequestHandlerHelperBean editRequestHandlerHelperBean){

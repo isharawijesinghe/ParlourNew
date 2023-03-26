@@ -22,7 +22,7 @@ public class AWSArticleHandler implements CommonCloudHandlerI{
     @Override
     public PreSignUrlResponse generatePreSignUrl(PreSignUrlGenerateRequest preSignUrlGenerateRequest){
         PreSignUrlResponse preSignUrlResponse = new PreSignUrlResponse();
-        String objectKey = preSignUrlGenerateRequest.getExtension();
+        String objectKey = preSignUrlGenerateRequest.getPreSignUrlGenerateRequestInner().getExtension();
         AWSCredentialsProvider provider = new DefaultAWSCredentialsProviderChain();
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(provider).build();
 

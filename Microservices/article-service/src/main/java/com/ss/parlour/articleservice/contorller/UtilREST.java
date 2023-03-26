@@ -1,6 +1,7 @@
 package com.ss.parlour.articleservice.contorller;
 
 import com.ss.parlour.articleservice.service.UtilServiceI;
+import com.ss.parlour.articleservice.utils.bean.common.ArticleResponse;
 import com.ss.parlour.articleservice.utils.bean.requests.PreSignUrlGenerateRequest;
 import com.ss.parlour.articleservice.utils.bean.response.PreSignUrlResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,9 @@ public class UtilREST {
     private UtilServiceI utilServiceI;
 
     @RequestMapping(value = "/upload/generatePreSignUrl", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> generatePreSignUrl(@RequestBody PreSignUrlGenerateRequest preSignUrlGenerateRequest){
-        PreSignUrlResponse preSignUrlResponse = utilServiceI.generatePreSignUrl(preSignUrlGenerateRequest);
-        return ResponseEntity.ok(preSignUrlResponse);
+    public ResponseEntity<?> generatePreSignUrl(@RequestBody PreSignUrlGenerateRequest preSignUrlGenerateRequest){
+        ArticleResponse articleResponse = utilServiceI.generatePreSignUrl(preSignUrlGenerateRequest);
+        return ResponseEntity.ok(articleResponse);
     }
 
 

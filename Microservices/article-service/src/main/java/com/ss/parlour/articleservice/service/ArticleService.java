@@ -8,12 +8,16 @@ import com.ss.parlour.articleservice.utils.bean.ArticleBean;
 import com.ss.parlour.articleservice.utils.bean.ArticleConst;
 import com.ss.parlour.articleservice.utils.bean.CommentBean;
 import com.ss.parlour.articleservice.utils.bean.LikeRequestBean;
+import com.ss.parlour.articleservice.utils.bean.common.ArticleMsgHeader;
+import com.ss.parlour.articleservice.utils.bean.common.ArticleResponse;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.*;
 import com.ss.parlour.articleservice.utils.validator.ArticleValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -32,127 +36,173 @@ public class ArticleService implements ArticleServiceI {
     private LikeHandlerI likeHandlerI;
 
     @Override
-    public ArticleCommonResponse createArticle(ArticleCreateRequest articleCreateRequest){
-        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
+    public ArticleResponse createArticle(ArticleCreateRequest articleCreateRequest){
         ArticleBean articleBean = articleValidatorI.validateArticleRequest(articleCreateRequest);
-        String articleId = articleHandlerI.processCreateArticleRequest(articleBean);
-        articleCommonResponse.setArticleId(articleId);
-        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);
-        return articleCommonResponse;
+        ArticleCommonResponse articleCommonResponse = articleHandlerI.processCreateArticleRequest(articleBean);
+        return  ArticleResponse.builder().body(articleCommonResponse)
+                .articleMsgHeader(articleCreateRequest.getArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE)
+                .build();
     }
 
     @Override
-    public CommentCommonResponse addComment(CommentCreateRequest commentCreateRequest){
-        CommentCommonResponse commentCommonResponse = new CommentCommonResponse();
+    public ArticleResponse addComment(CommentCreateRequest commentCreateRequest){
         CommentBean commentBean = articleValidatorI.validateCommentRequest(commentCreateRequest); //Doing basic initial validations
-        String commentId = commentHandlerI.processAddCommentRequest(commentBean);
-        commentCommonResponse.setCommentId(commentId);
-        commentCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        commentCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_ADDED);
-        return commentCommonResponse;
+        CommentCommonResponse commentCommonResponse = commentHandlerI.processAddCommentRequest(commentBean);
+        return  ArticleResponse.builder().body(commentCommonResponse)
+                .articleMsgHeader(commentCreateRequest.getArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.SUCCESSFULLY_COMMENT_ADDED)
+                .build();
     }
 
     @Override
-    public LikeCommonResponse addLike(LikeRequest likeRequest){
+    public ArticleResponse addLike(LikeRequest likeRequest){
         LikeRequestBean likeRequestBean = articleValidatorI.validateAddLikeRequest(likeRequest); //Doing basic initial validations
-        return likeHandlerI.processAddLikeRequest(likeRequestBean);
+        LikeCommonResponse likeCommonResponse = likeHandlerI.processAddLikeRequest(likeRequestBean);
+        return  ArticleResponse.builder().body(likeCommonResponse)
+                .articleMsgHeader(likeRequest.getArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.SUCCESSFULLY_LIKE_ADDED)
+                .build();
     }
 
     @Override
     public ArticleResponse findArticleById(String articleId){
-        return articleHandlerI.findArticleById(articleId);
+        ArticleDetailsResponse articleDetailsResponse =  articleHandlerI.findArticleById(articleId);
+        return  ArticleResponse.builder().body(articleDetailsResponse)
+                .articleMsgHeader(new ArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.SUCCESSFULLY_LIKE_ADDED)
+                .build();
     }
 
     @Override
-    public ArticleListResponse findArticleByUser(ArticleListRequest articleListRequest){
-        ArticleListResponse  articleListResponse = new ArticleListResponse();
-        List<Article> currentUserArticleList = articleHandlerI.findArticleByUser(articleListRequest);
-        articleListResponse.setArticleResponseList(currentUserArticleList);
-        return articleListResponse;
+    public ArticleResponse findArticleByUser(ArticleListRequest articleListRequest){
+        ArticleListResponse articleListResponse = articleHandlerI.findArticleByUser(articleListRequest);
+        return  ArticleResponse.builder().body(articleListResponse)
+                .articleMsgHeader(articleListRequest.getArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.SUCCESSFULLY_LIKE_ADDED)
+                .build();
     }
 
     @Override
-    public ArticleHistoryResponse findArticleHistoryById(ArticleHistoryRequest articleHistoryRequest){
-        return articleHandlerI.findArticleHistoryById(articleHistoryRequest);
+    public ArticleResponse findArticleHistoryById(ArticleHistoryRequest articleHistoryRequest){
+        ArticleHistoryResponse articleHistoryResponse = articleHandlerI.findArticleHistoryById(articleHistoryRequest);
+        return  ArticleResponse.builder().body(articleHistoryResponse)
+                .articleMsgHeader(articleHistoryRequest.getArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.ARTICLE_HISTORY_SEARCH_SUCCESSFUL_NARRATION)
+                .build();
     }
 
     @Override
-    public ArticleCommonResponse deleteArticle(ArticleDeleteRequest articleDeleteRequest){
-        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
+    public ArticleResponse deleteArticle(ArticleDeleteRequest articleDeleteRequest){
         articleValidatorI.validateArticleDeleteRequest(articleDeleteRequest); //Doing basic initial validations
-        articleHandlerI.processDeleteArticleRequest(articleDeleteRequest);
-        articleCommonResponse.setArticleId(articleDeleteRequest.getArticleId());
-        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED);
-        return articleCommonResponse;
+        ArticleCommonResponse articleCommonResponse =  articleHandlerI.processDeleteArticleRequest(articleDeleteRequest);
+        return  ArticleResponse.builder().body(articleCommonResponse)
+                .articleMsgHeader(articleDeleteRequest.getArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED)
+                .build();
     }
 
     @Override
-    public CommentCommonResponse deleteComment(CommentDeleteRequest commentDeleteRequest){
-        CommentCommonResponse commentCommonResponse = new CommentCommonResponse();
+    public ArticleResponse deleteComment(CommentDeleteRequest commentDeleteRequest){
         articleValidatorI.validateCommentDeleteRequest(commentDeleteRequest); //Doing basic initial validations
-        commentHandlerI.processDeleteCommentRequest(commentDeleteRequest);
-        commentCommonResponse.setCommentId(commentDeleteRequest.getCommentId());
-        commentCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        commentCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_DELETED);
-        return commentCommonResponse;
+        CommentCommonResponse commentCommonResponse = commentHandlerI.processDeleteCommentRequest(commentDeleteRequest);
+        return  ArticleResponse.builder().body(commentCommonResponse)
+                .articleMsgHeader(commentDeleteRequest.getArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.SUCCESSFULLY_COMMENT_DELETED)
+                .build();
     }
 
     @Override
-    public CommentResponse findArticleComments(CommentRequest commentRequest){
-        CommentResponse commentResponse = new CommentResponse();
-        List<CommentBean> commentBeanList = commentHandlerI.findArticleComments(commentRequest);
-        commentResponse.setArticleComments(commentBeanList);
-        commentResponse.setParentCommentId(commentRequest.getParentCommentId());
-        commentResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        commentResponse.setNarration(ArticleConst.ARTICLE_COMMENT_LOAD_SUCCESSFUL_NARRATION);
-        return commentResponse;
+    public ArticleResponse findArticleComments(CommentRequest commentRequest){
+        CommentResponse commentResponse = commentHandlerI.findArticleComments(commentRequest);
+        return  ArticleResponse.builder().body(commentResponse)
+                .articleMsgHeader(commentRequest.getArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.ARTICLE_COMMENT_LOAD_SUCCESSFUL_NARRATION)
+                .build();
     }
 
     @Override
-    public Article findArticleDetailsById(String articleId){
-        return articleHandlerI.findArticleDetailsById(articleId);
+    public ArticleResponse findArticleDetailsById(String articleId){
+        Article article = articleHandlerI.findArticleDetailsById(articleId);
+        return  ArticleResponse.builder().body(article)
+                .articleMsgHeader(new ArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.ARTICLE_COMMENT_LOAD_SUCCESSFUL_NARRATION)
+                .build();
     }
 
     @Override
-    public ArticleEditRequestResponse articleEditRequest(ArticleEditRequest articleEditRequest){
-        ArticleEditRequestResponse articleEditRequestResponse = new ArticleEditRequestResponse();
-        String articleEditRequestId = articleHandlerI.processArticleEditRequest(articleEditRequest);
-        articleEditRequestResponse.setEditRequestId(articleEditRequestId);
-        articleEditRequestResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        articleEditRequestResponse.setNarration(ArticleConst.SUCCESSFULLY_PLACE_EDIT_REQUEST);
-        return articleEditRequestResponse;
+    public ArticleResponse articleEditRequest(ArticleEditRequest articleEditRequest){
+        ArticleEditRequestResponse articleEditRequestResponse = articleHandlerI.processArticleEditRequest(articleEditRequest);
+        return  ArticleResponse.builder().body(articleEditRequestResponse)
+                .articleMsgHeader(new ArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.SUCCESSFULLY_PLACE_EDIT_REQUEST)
+                .build();
     }
 
     @Override
-    public ArticleEditApproveResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest){
-        ArticleEditApproveResponse articleEditApproveResponse = new ArticleEditApproveResponse();
-        articleHandlerI.processArticleEditRequestApproval(articleEditApproveRequest);
-        articleEditApproveResponse.setEditRequestId(articleEditApproveRequest.getEditRequestId());
-        articleEditApproveResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        articleEditApproveResponse.setNarration(ArticleConst.SUCCESSFULLY_APPROVED_EDIT_REQUEST);
-        return articleEditApproveResponse;
+    public ArticleResponse approveArticleEditRequest(ArticleEditApproveRequest articleEditApproveRequest){
+        ArticleEditApproveResponse articleEditApproveResponse = articleHandlerI.processArticleEditRequestApproval(articleEditApproveRequest);
+        return  ArticleResponse.builder().body(articleEditApproveResponse)
+                .articleMsgHeader(new ArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.SUCCESSFULLY_APPROVED_EDIT_REQUEST)
+                .build();
     }
 
     @Override
-    public ArticleEditDraftResponse postArticleEditDraft(ArticleEditDraftRequest articleEditDraftRequest){
-        ArticleEditDraftResponse articleEditDraftResponse = new ArticleEditDraftResponse();
-        articleHandlerI.postArticleEditDraft(articleEditDraftRequest);
-        articleEditDraftResponse.setEditRequestId(articleEditDraftRequest.getEditRequestId());
-        articleEditDraftResponse.setArticleId(articleEditDraftRequest.getArticleId());
-        articleEditDraftResponse.setNarration(ArticleConst.ARTICLE_EDIT_DRAFT_SUCCESSFUL_NARRATION);
-        return articleEditDraftResponse;
+    public ArticleResponse postArticleEditDraft(ArticleEditDraftRequest articleEditDraftRequest){
+        ArticleEditDraftResponse articleEditDraftResponse = articleHandlerI.postArticleEditDraft(articleEditDraftRequest);
+        return  ArticleResponse.builder().body(articleEditDraftResponse)
+                .articleMsgHeader(new ArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.ARTICLE_EDIT_DRAFT_SUCCESSFUL_NARRATION)
+                .build();
     }
 
     @Override
-    public TopicAddResponse addTopic(TopicAddRequest topicAddRequest){
-        return articleHandlerI.addTopic(topicAddRequest);
+    public ArticleResponse addTopic(TopicAddRequest topicAddRequest){
+        TopicAddResponse topicAddResponse = articleHandlerI.addTopic(topicAddRequest);
+        return  ArticleResponse.builder().body(topicAddResponse)
+                .articleMsgHeader(topicAddRequest.getArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.ARTICLE_TOPIC_ADDED_SUCCESSFUL_NARRATION)
+                .build();
     }
 
     @Override
-    public TopicResponse findAllTopic(){
-        return articleHandlerI.findAllTopic();
+    public ArticleResponse findAllTopic(){
+        TopicResponse topicResponse = articleHandlerI.findAllTopic();
+        return  ArticleResponse.builder().body(topicResponse)
+                .articleMsgHeader(new ArticleMsgHeader())
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .message(ArticleConst.ARTICLE_TOPIC_ADDED_SUCCESSFUL_NARRATION)
+                .build();
     }
 
 }

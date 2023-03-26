@@ -1,4 +1,4 @@
-package com.ss.parlour.userservice.util.bean.common;
+package com.ss.parlour.articleservice.utils.bean.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 @Setter
 @NoArgsConstructor
 @SuperBuilder
-public class UserResponse <T> extends UserHeader{
+public class ArticleResponse<T> extends ArticleHeader {
 
     private String message;
     private int httpStatus;

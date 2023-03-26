@@ -4,9 +4,10 @@ import com.ss.parlour.articleservice.dao.cassandra.CommentDAOI;
 import com.ss.parlour.articleservice.domain.cassandra.*;
 import com.ss.parlour.articleservice.handler.LikeTypeHandlerI;
 import com.ss.parlour.articleservice.utils.bean.*;
-import com.ss.parlour.articleservice.utils.bean.requests.ArticleDeleteRequest;
 import com.ss.parlour.articleservice.utils.bean.requests.CommentDeleteRequest;
 import com.ss.parlour.articleservice.utils.bean.requests.CommentRequest;
+import com.ss.parlour.articleservice.utils.bean.response.CommentCommonResponse;
+import com.ss.parlour.articleservice.utils.bean.response.CommentResponse;
 import com.ss.parlour.articleservice.utils.common.DateUtils;
 import com.ss.parlour.articleservice.utils.common.KeyGenerator;
 import com.ss.parlour.articleservice.utils.exception.ArticleServiceRuntimeException;
@@ -30,14 +31,18 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
      * @return comment id
      */
     @Override
-    public String processAddCommentRequest(CommentBean commentBean){
+    public CommentCommonResponse processAddCommentRequest(CommentBean commentBean){
+        CommentCommonResponse commentCommonResponse = new CommentCommonResponse();
         CommentAddHelperBean commentAddHelperBean = new CommentAddHelperBean();
         prePopulateCommentId(commentBean); //Generate comment id if not exists
         prePopulateCommentCreatedDate(commentBean); //Add comment created date if not exists
         populateCommentBean(commentAddHelperBean, commentBean); //Populate comment bean
         populateCommentGroup(commentAddHelperBean, commentBean); //Populate comment group
         commentDAOI.saveComment(commentAddHelperBean); //Save comment details into table
-        return commentBean.getCommentId();
+        commentCommonResponse.setCommentId(commentBean.getCommentId());
+        commentCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        commentCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_ADDED);
+        return commentCommonResponse;
     }
 
     /***
@@ -45,13 +50,18 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
      * @param commentDeleteRequest
      */
     @Override
-    public void processDeleteCommentRequest(CommentDeleteRequest commentDeleteRequest){
+    public CommentCommonResponse processDeleteCommentRequest(CommentDeleteRequest commentDeleteRequest){
+        CommentCommonResponse commentCommonResponse = new CommentCommonResponse();
         CommentDeleteHelperBean commentDeleteHelperBean = new CommentDeleteHelperBean();
         Comment comment = populateCommentFromDb(commentDeleteRequest);
         Optional<List<CommentGroup>> currentCommentGroupList = populateCommentGroupFromDb(comment.getArticleId(), comment.getCommentId());
         commentDeleteHelperBean.setComment(comment);
         currentCommentGroupList.ifPresent(commentGroups -> {commentDeleteHelperBean.setCommentGroup(commentGroups);});
         commentDAOI.deleteComment(commentDeleteHelperBean);
+        commentCommonResponse.setCommentId(commentDeleteRequest.getCommentDeleteRequestInner().getCommentId());
+        commentCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        commentCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_COMMENT_DELETED);
+        return commentCommonResponse;
     }
 
     /***
@@ -68,16 +78,21 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     }
 
     @Override
-    public List<CommentBean> findArticleComments(CommentRequest commentRequest){
+    public CommentResponse findArticleComments(CommentRequest commentRequest){
+        CommentRequest.CommentRequestInner commentRequestInner = commentRequest.getCommentRequestInner();
+        CommentResponse commentResponse = new CommentResponse();
         List<CommentBean> commentList = new ArrayList<>();
-        Optional<List<CommentGroup>> currentCommentGroupList = populateCommentGroupFromDb(commentRequest.getArticleId(), commentRequest.getParentCommentId());
-        //Populate top level comment items
-        currentCommentGroupList.ifPresent(commentGroupList -> commentGroupList.forEach(listItem -> commentList.add(new CommentBean(listItem))));
-        populateCommentList(commentList); //Populate sub child comment lists
-        return commentList;
+        Optional<List<CommentGroup>> currentCommentGroupList = populateCommentGroupFromDb(commentRequestInner.getArticleId(), commentRequestInner.getParentCommentId());
+        currentCommentGroupList.ifPresent(commentGroupList -> commentGroupList.forEach(listItem -> commentList.add(new CommentBean(listItem)))); //Populate top level comment items
+        populateChildComments(commentList); //Populate sub child comment lists
+        commentResponse.setArticleComments(commentList);
+        commentResponse.setParentCommentId(commentRequestInner.getParentCommentId());
+        commentResponse.setStatus(ArticleConst.STATUS_SUCCESS);
+        commentResponse.setNarration(ArticleConst.ARTICLE_COMMENT_LOAD_SUCCESSFUL_NARRATION);
+        return commentResponse;
     }
 
-    protected void populateCommentList(List<CommentBean> commentList){
+    protected void populateChildComments(List<CommentBean> commentList){
         commentList.forEach(commentBean -> loadAndAssignChildComments(commentBean));
     }
 
@@ -114,10 +129,11 @@ public class CommentHandler implements CommentHandlerI, LikeTypeHandlerI {
     }
 
     protected Comment populateCommentFromDb(CommentDeleteRequest commentDeleteRequest){
-        Optional<Comment> currentComment = commentDAOI.getCommentByIdAndArticleId(commentDeleteRequest.getCommentId(), commentDeleteRequest.getArticleId());
+        CommentDeleteRequest.CommentDeleteRequestInner commentDeleteRequestInner = commentDeleteRequest.getCommentDeleteRequestInner();
+        Optional<Comment> currentComment = commentDAOI.getCommentByIdAndArticleId(commentDeleteRequestInner.getCommentId(), commentDeleteRequestInner.getArticleId());
         var commentInDb = currentComment.orElseThrow(
                 () -> new ArticleServiceRuntimeException(String.format(ArticleErrorCodes.COMMENT_NOT_FOUND_ERROR,
-                        commentDeleteRequest.getCommentId(), commentDeleteRequest.getArticleId())));
+                        commentDeleteRequestInner.getCommentId(), commentDeleteRequestInner.getArticleId())));
         return commentInDb;
     }
 
