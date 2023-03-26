@@ -24,8 +24,6 @@ public class UtilService implements UtilServiceI {
         PreSignUrlResponse preSignUrlResponse = commonCloudHandlerI.generatePreSignUrl(preSignUrlGenerateRequest);
         return  ArticleResponse.builder().body(preSignUrlResponse)
                 .articleMsgHeader(preSignUrlGenerateRequest.getArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.ARTICLE_IMAGE_UPLOAD_PRE_SIGNED_GENERATE_SUCCESSFUL_NARRATION)
                 .build();
     }

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -14,7 +15,7 @@ import java.time.ZonedDateTime;
 public class ArticleResponse<T> extends ArticleHeader {
 
     private String message;
-    private int httpStatus;
-    private ZonedDateTime zonedDateTime;
+    private int httpStatus = 200;
+    private ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Z"));
     private T body;
 }

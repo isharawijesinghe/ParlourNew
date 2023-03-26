@@ -41,8 +41,6 @@ public class ArticleService implements ArticleServiceI {
         ArticleCommonResponse articleCommonResponse = articleHandlerI.processCreateArticleRequest(articleBean);
         return  ArticleResponse.builder().body(articleCommonResponse)
                 .articleMsgHeader(articleCreateRequest.getArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE)
                 .build();
     }
@@ -53,8 +51,6 @@ public class ArticleService implements ArticleServiceI {
         CommentCommonResponse commentCommonResponse = commentHandlerI.processAddCommentRequest(commentBean);
         return  ArticleResponse.builder().body(commentCommonResponse)
                 .articleMsgHeader(commentCreateRequest.getArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.SUCCESSFULLY_COMMENT_ADDED)
                 .build();
     }
@@ -65,8 +61,6 @@ public class ArticleService implements ArticleServiceI {
         LikeCommonResponse likeCommonResponse = likeHandlerI.processAddLikeRequest(likeRequestBean);
         return  ArticleResponse.builder().body(likeCommonResponse)
                 .articleMsgHeader(likeRequest.getArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.SUCCESSFULLY_LIKE_ADDED)
                 .build();
     }
@@ -76,8 +70,6 @@ public class ArticleService implements ArticleServiceI {
         ArticleDetailsResponse articleDetailsResponse =  articleHandlerI.findArticleById(articleId);
         return  ArticleResponse.builder().body(articleDetailsResponse)
                 .articleMsgHeader(new ArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.SUCCESSFULLY_LIKE_ADDED)
                 .build();
     }
@@ -87,8 +79,6 @@ public class ArticleService implements ArticleServiceI {
         ArticleListResponse articleListResponse = articleHandlerI.findArticleByUser(articleListRequest);
         return  ArticleResponse.builder().body(articleListResponse)
                 .articleMsgHeader(articleListRequest.getArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.SUCCESSFULLY_LIKE_ADDED)
                 .build();
     }
@@ -98,8 +88,6 @@ public class ArticleService implements ArticleServiceI {
         ArticleHistoryResponse articleHistoryResponse = articleHandlerI.findArticleHistoryById(articleHistoryRequest);
         return  ArticleResponse.builder().body(articleHistoryResponse)
                 .articleMsgHeader(articleHistoryRequest.getArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.ARTICLE_HISTORY_SEARCH_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -110,8 +98,6 @@ public class ArticleService implements ArticleServiceI {
         ArticleCommonResponse articleCommonResponse =  articleHandlerI.processDeleteArticleRequest(articleDeleteRequest);
         return  ArticleResponse.builder().body(articleCommonResponse)
                 .articleMsgHeader(articleDeleteRequest.getArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED)
                 .build();
     }
@@ -122,8 +108,6 @@ public class ArticleService implements ArticleServiceI {
         CommentCommonResponse commentCommonResponse = commentHandlerI.processDeleteCommentRequest(commentDeleteRequest);
         return  ArticleResponse.builder().body(commentCommonResponse)
                 .articleMsgHeader(commentDeleteRequest.getArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.SUCCESSFULLY_COMMENT_DELETED)
                 .build();
     }
@@ -133,8 +117,6 @@ public class ArticleService implements ArticleServiceI {
         CommentResponse commentResponse = commentHandlerI.findArticleComments(commentRequest);
         return  ArticleResponse.builder().body(commentResponse)
                 .articleMsgHeader(commentRequest.getArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.ARTICLE_COMMENT_LOAD_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -144,8 +126,6 @@ public class ArticleService implements ArticleServiceI {
         Article article = articleHandlerI.findArticleDetailsById(articleId);
         return  ArticleResponse.builder().body(article)
                 .articleMsgHeader(new ArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.ARTICLE_COMMENT_LOAD_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -155,8 +135,6 @@ public class ArticleService implements ArticleServiceI {
         ArticleEditRequestResponse articleEditRequestResponse = articleHandlerI.processArticleEditRequest(articleEditRequest);
         return  ArticleResponse.builder().body(articleEditRequestResponse)
                 .articleMsgHeader(new ArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.SUCCESSFULLY_PLACE_EDIT_REQUEST)
                 .build();
     }
@@ -166,8 +144,6 @@ public class ArticleService implements ArticleServiceI {
         ArticleEditApproveResponse articleEditApproveResponse = articleHandlerI.processArticleEditRequestApproval(articleEditApproveRequest);
         return  ArticleResponse.builder().body(articleEditApproveResponse)
                 .articleMsgHeader(new ArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.SUCCESSFULLY_APPROVED_EDIT_REQUEST)
                 .build();
     }
@@ -177,8 +153,6 @@ public class ArticleService implements ArticleServiceI {
         ArticleEditDraftResponse articleEditDraftResponse = articleHandlerI.postArticleEditDraft(articleEditDraftRequest);
         return  ArticleResponse.builder().body(articleEditDraftResponse)
                 .articleMsgHeader(new ArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.ARTICLE_EDIT_DRAFT_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -188,8 +162,6 @@ public class ArticleService implements ArticleServiceI {
         TopicAddResponse topicAddResponse = articleHandlerI.addTopic(topicAddRequest);
         return  ArticleResponse.builder().body(topicAddResponse)
                 .articleMsgHeader(topicAddRequest.getArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.ARTICLE_TOPIC_ADDED_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -199,8 +171,6 @@ public class ArticleService implements ArticleServiceI {
         TopicResponse topicResponse = articleHandlerI.findAllTopic();
         return  ArticleResponse.builder().body(topicResponse)
                 .articleMsgHeader(new ArticleMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(ArticleConst.ARTICLE_TOPIC_ADDED_SUCCESSFUL_NARRATION)
                 .build();
     }

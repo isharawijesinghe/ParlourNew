@@ -35,8 +35,6 @@ public class UserService implements UserServiceI{
         PreSignUrlResponseBean preSignUrlResponseBean = commonCloudHandlerI.generatePreSignUrl(preSignUrlGenerateRequestBean);
         return  UserResponse.builder().body(preSignUrlResponseBean)
                 .userMsgHeader(preSignUrlGenerateRequestBean.getUserMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(UserConst.USER_IMAGE_UPLOAD_PRE_SIGN_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -46,8 +44,6 @@ public class UserService implements UserServiceI{
         UserInfoUpdateResponseBean userInfoUpdateResponseBean = userHandlerI.addUserInfo(userInfoUpdateRequestBean);
         return  UserResponse.builder().body(userInfoUpdateResponseBean)
                 .userMsgHeader(userInfoUpdateRequestBean.getUserMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(UserConst.USER_INFO_UPDATE_SUCCESSFUL)
                 .build();
     }
@@ -56,8 +52,6 @@ public class UserService implements UserServiceI{
     public UserResponse findUserInfoByUser(String loginName){
         UserInfoResponseBean userInfoResponseBean = userHandlerI.findUserInfoByUser(loginName);
         return  UserResponse.builder().body(userInfoResponseBean)
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(UserConst.USER_INFO_FOUND_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -66,8 +60,6 @@ public class UserService implements UserServiceI{
     public UserResponse findAuthorDetailsById(String userId){
         AuthorDetailResponseBean authorDetailResponseBean = userHandlerI.findAuthorDetailsById(userId);
         return  UserResponse.builder().body(authorDetailResponseBean)
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(UserConst.USER_INFO_FOUND_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -76,8 +68,6 @@ public class UserService implements UserServiceI{
     public UserResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest){
         userHandlerI.addUserInterests(userInterestsAddRequest);
         return  UserResponse.builder()
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(UserConst.USER_INTERESTS_ADDED_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -86,8 +76,6 @@ public class UserService implements UserServiceI{
     public UserResponse findUserInterests(String userId){
         UserInterestsResponse userInterestsResponse = userHandlerI.findUserInterests(userId);
         return  UserResponse.builder().body(userInterestsResponse)
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(UserConst.USER_INTERESTS_ADDED_SUCCESSFUL_NARRATION)
                 .build();
     }

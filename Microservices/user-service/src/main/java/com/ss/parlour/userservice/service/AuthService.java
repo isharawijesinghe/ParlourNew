@@ -53,8 +53,6 @@ public class AuthService implements AuthServiceI{
         String token = tokenProvider.createJwtForClaims(userPrincipal, claimMap);
         return  UserResponse.builder().body(new AuthResponseBean(userPrincipal.getUserId(), token))
                 .userMsgHeader(authRequestBean.getUserMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(UserConst.USER_LOGIN_SUCCESS_NARRATION)
                 .build();
     }
@@ -65,8 +63,6 @@ public class AuthService implements AuthServiceI{
         UserRegistrationResponseBean userRegistrationResponseBean = authHandlerI.signUp(userRegisterRequestBean);
         return  UserResponse.builder().body(userRegistrationResponseBean)
                 .userMsgHeader(userRegisterRequestBean.getUserMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(UserConst.USER_REGISTER_SUCCESS_NARRATION)
                 .build();
     }
@@ -77,8 +73,6 @@ public class AuthService implements AuthServiceI{
         UserRegistrationResponseBean userRegistrationResponseBean = authHandlerI.signUpWithEmail(userRegisterRequestBean);
         return  UserResponse.builder().body(userRegistrationResponseBean)
                 .userMsgHeader(userRegisterRequestBean.getUserMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(UserConst.USER_REGISTER_SUCCESS_NARRATION)
                 .build();
     }
@@ -89,8 +83,6 @@ public class AuthService implements AuthServiceI{
         AuthResponseBean authResponseBean = authHandlerI.emailTokenConfirm(tokenConfirmRequest);
         return  UserResponse.builder().body(authResponseBean)
                 .userMsgHeader(tokenConfirmRequest.getUserMsgHeader())
-                .httpStatus(200)
-                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .message(UserConst.USER_REGISTER_TOKEN_CONFIRM_SUCCESS_NARRATION)
                 .build();
     }
