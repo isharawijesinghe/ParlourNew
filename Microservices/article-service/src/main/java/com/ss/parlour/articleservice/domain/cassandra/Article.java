@@ -28,8 +28,6 @@ public class Article {
     private String thumbnailUrl;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
-    private Set<String> likedList = new HashSet<>();
-    private Set<String> unLikedList = new HashSet<>();
 
     public Article(ArticleBean articleBean){
         this.articleId = articleBean.getArticleId();

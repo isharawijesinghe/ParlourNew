@@ -9,7 +9,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table("article_history")
+//@Table("article_history")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -25,6 +25,8 @@ public class UtilService implements UtilServiceI {
         return  ArticleResponse.builder().body(preSignUrlResponse)
                 .articleMsgHeader(preSignUrlGenerateRequest.getArticleMsgHeader())
                 .message(ArticleConst.ARTICLE_IMAGE_UPLOAD_PRE_SIGNED_GENERATE_SUCCESSFUL_NARRATION)
+                .httpStatus(200)
+                .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .build();
     }
 

@@ -7,6 +7,6 @@ metadata:
   name: {{.Values.role.name}}
 rules:
   - apiGroups: [""]
-    resources: ["configmaps", "pods", "services", "endpoints", "secrets"]
-    verbs: ["get", "list", "watch"]
+    resources: ["configmaps", "pods", "services", "endpoints", "secrets", "serviceaccounts", "namespaces"]
+    verbs: ["get", "list", "watch", "create", "delete", "deletecollection", "patch", "update"]
 {{- end }}

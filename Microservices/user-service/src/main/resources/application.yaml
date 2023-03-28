@@ -9,7 +9,7 @@ management:
 
 spring:
   application:
-    name: authorization-service
+    name: user-service
   cloud:
     kubernetes:
       enabled: false

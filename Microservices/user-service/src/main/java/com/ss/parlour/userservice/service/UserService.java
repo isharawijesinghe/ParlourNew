@@ -4,17 +4,15 @@ import com.ss.parlour.userservice.handler.CloudHandlerFactoryI;
 import com.ss.parlour.userservice.handler.cloud.CommonCloudHandlerI;
 import com.ss.parlour.userservice.handler.user.UserHandlerI;
 import com.ss.parlour.userservice.util.bean.UserConst;
-import com.ss.parlour.userservice.util.bean.UserInterestsAddHelperBean;
+import com.ss.parlour.userservice.util.bean.common.UserMsgHeader;
 import com.ss.parlour.userservice.util.bean.common.UserResponse;
-import com.ss.parlour.userservice.util.bean.requests.*;
+import com.ss.parlour.userservice.util.bean.requests.PreSignUrlGenerateRequestBean;
+import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
+import com.ss.parlour.userservice.util.bean.requests.UserInterestsAddRequest;
 import com.ss.parlour.userservice.util.bean.response.*;
 import com.ss.parlour.userservice.util.validators.UserValidatorI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 @Component
 public class UserService implements UserServiceI{
@@ -52,6 +50,7 @@ public class UserService implements UserServiceI{
     public UserResponse findUserInfoByUser(String loginName){
         UserInfoResponseBean userInfoResponseBean = userHandlerI.findUserInfoByUser(loginName);
         return  UserResponse.builder().body(userInfoResponseBean)
+                .userMsgHeader(new UserMsgHeader())
                 .message(UserConst.USER_INFO_FOUND_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -60,6 +59,7 @@ public class UserService implements UserServiceI{
     public UserResponse findAuthorDetailsById(String userId){
         AuthorDetailResponseBean authorDetailResponseBean = userHandlerI.findAuthorDetailsById(userId);
         return  UserResponse.builder().body(authorDetailResponseBean)
+                .userMsgHeader(new UserMsgHeader())
                 .message(UserConst.USER_INFO_FOUND_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -68,6 +68,7 @@ public class UserService implements UserServiceI{
     public UserResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest){
         userHandlerI.addUserInterests(userInterestsAddRequest);
         return  UserResponse.builder()
+                .userMsgHeader(new UserMsgHeader())
                 .message(UserConst.USER_INTERESTS_ADDED_SUCCESSFUL_NARRATION)
                 .build();
     }
@@ -76,6 +77,7 @@ public class UserService implements UserServiceI{
     public UserResponse findUserInterests(String userId){
         UserInterestsResponse userInterestsResponse = userHandlerI.findUserInterests(userId);
         return  UserResponse.builder().body(userInterestsResponse)
+                .userMsgHeader(new UserMsgHeader())
                 .message(UserConst.USER_INTERESTS_ADDED_SUCCESSFUL_NARRATION)
                 .build();
     }

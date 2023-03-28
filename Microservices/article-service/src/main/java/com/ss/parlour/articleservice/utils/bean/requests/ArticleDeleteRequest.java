@@ -19,7 +19,7 @@ public class ArticleDeleteRequest extends ArticleHeader {
     @NoArgsConstructor
     public class ArticleDeleteRequestInner{
         private String articleId;
-        private String userName;
+        private String userId;
     }
 
 }

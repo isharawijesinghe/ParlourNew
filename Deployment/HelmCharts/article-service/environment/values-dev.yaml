@@ -13,7 +13,7 @@ app:
   container:
     image:
       repository: ishara007/article-service
-      tag: latest
+      tag: v1
     imagePullPolicy: Always
     ports:
       containerPort: 9001
@@ -43,11 +43,11 @@ service:
 
 ## Role name
 role:
-  name: devRole
+  name: devArticleRole
 
 ## Role binding name
 roleBinding:
-  name: devRoleBinding
+  name: devArticleRoleBinding
 
 ## ---------------------------- Config Map ----------------------------##
 
@@ -55,4 +55,4 @@ config:
   metadata:
     name: cassandra-db-host
   data:
-    cassandra_host_dns: vpce-06a2c9ba82e041813-t6k27gow.vpce-svc-0f15aa6939f255dee.us-east-1.vpce.amazonaws.com
+    cassandra_host_dns: host.minikube.internal

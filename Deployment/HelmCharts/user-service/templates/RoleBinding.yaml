@@ -8,7 +8,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: {{.Values.app.serviceAccount}}
-    apiGroup: ""
+    namespace: {{.Values.namespace}}
 roleRef:
   kind: Role
   name: {{.Values.role.name}}

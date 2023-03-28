@@ -10,7 +10,4 @@ import lombok.Setter;
 public class ArticleCommonResponse {
 
     private String articleId;
-    private int status;
-    private String narration;
-
 }

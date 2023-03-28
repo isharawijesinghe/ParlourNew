@@ -16,9 +16,9 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class ArticleByUser {
 
-    @PrimaryKeyColumn(name = "userId", type = PrimaryKeyType.PARTITIONED)
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
     private String userId;
-    @PrimaryKeyColumn(name = "id", type = PrimaryKeyType.CLUSTERED)
+    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED)
     private String articleId;
     private String title;
     private String summary;
@@ -27,7 +27,6 @@ public class ArticleByUser {
     private String categoryId;
     private String thumbnailUrl;
     private Timestamp createdDate;
-    @PrimaryKeyColumn(name = "modifiedDate", type = PrimaryKeyType.CLUSTERED)
     private Timestamp modifiedDate;
 
     public ArticleByUser(ArticleBean articleBean){

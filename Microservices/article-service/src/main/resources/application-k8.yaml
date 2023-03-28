@@ -9,7 +9,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://authorization-service.default.svc.cluster.local:9002/.well-known/jwks.json
+          jwk-set-uri: http://user-service.default.svc.cluster.local:9002/.well-known/jwks.json
   cloud:
     kubernetes:
       enabled: true

@@ -50,8 +50,6 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         //2. Update article by user table
         articleDAOI.saveArticleCreateRequest(articleHandlerHelperBean);
         articleCommonResponse.setArticleId(articleBean.getArticleId());
-        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_CREATED_ARTICLE);
         return articleCommonResponse;
     }
 
@@ -87,8 +85,6 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         populateDeleteArticleHistory(articleHandlerHelperBean, articleDeleteRequest);
         articleDAOI.deleteArticleEntry(articleHandlerHelperBean);
         articleCommonResponse.setArticleId(articleDeleteRequest.getArticleDeleteRequestInner().getArticleId());
-        articleCommonResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        articleCommonResponse.setNarration(ArticleConst.SUCCESSFULLY_ARTICLE_DELETED);
         return articleCommonResponse;
     }
 
@@ -282,7 +278,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     }
 
     protected void populateDeleteArticleByUser(ArticleHandlerHelperBean articleHandlerHelperBean, ArticleDeleteRequest articleDeleteRequest){
-        Optional<ArticleByUser> currentArticleByUserInDb = articleDAOI.getArticleByUserId(articleDeleteRequest.getArticleDeleteRequestInner().getUserName());
+        Optional<ArticleByUser> currentArticleByUserInDb = articleDAOI.getArticleByUserId(articleDeleteRequest.getArticleDeleteRequestInner().getUserId());
         currentArticleByUserInDb.ifPresent((articleByUser) -> articleHandlerHelperBean.setArticleByUser(articleByUser));
     }
 

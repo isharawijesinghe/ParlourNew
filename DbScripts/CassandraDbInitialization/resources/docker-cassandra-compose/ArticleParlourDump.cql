@@ -5,11 +5,11 @@ and durable_writes = true;
 
 CREATE TABLE IF NOT EXISTS parlour.article (
     articleId text,
-    authorName text,
+    userId text,
     title text,
     summary text,
     content text,
-    status int,
+    status text,
     categoryId text,
     thumbnailUrl text,
     createdDate timestamp,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS parlour.article_by_user (
     title text,
     summary text,
     content text,
-    status int,
+    status text,
     categoryId text,
     thumbnailUrl text,
     createdDate timestamp,

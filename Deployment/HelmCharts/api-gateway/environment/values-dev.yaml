@@ -13,7 +13,7 @@ app:
   container:
     image:
       repository: ishara007/api-gateway
-      tag: v5
+      tag: v1
     imagePullPolicy: Always
     ports:
       containerPort: 9191
@@ -43,8 +43,8 @@ service:
 
 ## Role name
 role:
-  name: devRole
+  name: devGatewayRole
 
 ## Role binding name
 roleBinding:
-  name: devRoleBinding
+  name: devGatewayRoleBinding
