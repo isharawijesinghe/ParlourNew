@@ -10,7 +10,7 @@ public interface UserServiceI {
 
     UserResponse generatePreSignUrl(PreSignUrlGenerateRequestBean preSignUrlGenerateRequestBean);
     UserResponse addUserInfo(UserInfoUpdateRequestBean userInfoUpdateRequestBean);
-    UserResponse findUserInfoByUser(String loginName);
+    UserResponse findUserInfoByUser(String userId);
     UserResponse findAuthorDetailsById(String userId);
     UserResponse addUserInterests(UserInterestsAddRequest userInterestsAddRequest);
     UserResponse findUserInterests(String userId);

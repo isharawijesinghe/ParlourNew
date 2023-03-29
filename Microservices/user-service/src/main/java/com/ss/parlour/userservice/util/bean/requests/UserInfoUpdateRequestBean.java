@@ -17,7 +17,7 @@ public class UserInfoUpdateRequestBean extends UserHeader {
     @Getter
     @Setter
     public class UserInfoUpdateInnerRequestBean{
-        private String loginName;
+        private String userId;
         private String firstName;
         private String lastName;
         private String country;

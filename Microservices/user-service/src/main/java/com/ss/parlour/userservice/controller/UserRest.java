@@ -5,7 +5,6 @@ import com.ss.parlour.userservice.util.bean.common.UserResponse;
 import com.ss.parlour.userservice.util.bean.requests.PreSignUrlGenerateRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInfoUpdateRequestBean;
 import com.ss.parlour.userservice.util.bean.requests.UserInterestsAddRequest;
-import com.ss.parlour.userservice.util.bean.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,12 +41,12 @@ public class UserRest {
 
     /***
      * Based on get request populate and send user info back to client
-     * @param loginName
+     * @param userId
      * @return UserInfoResponseBean
      */
-    @RequestMapping(value = "/findUserInfoByUser", method = RequestMethod.GET, consumes = {"application/json"})
-    public ResponseEntity<?> findUserInfoByUser(@RequestParam("loginName") String loginName){
-        UserResponse userResponse = userServiceI.findUserInfoByUser(loginName);
+    @RequestMapping(value = "/findUserInfoByUser/{userId}", method = RequestMethod.GET, consumes = {"application/json"})
+    public ResponseEntity<?> findUserInfoByUser(@PathVariable("userId") String userId){
+        UserResponse userResponse = userServiceI.findUserInfoByUser(userId);
         return ResponseEntity.ok(userResponse);
     }
 

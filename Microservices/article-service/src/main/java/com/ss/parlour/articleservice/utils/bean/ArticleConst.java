@@ -12,6 +12,7 @@ public interface ArticleConst {
     String SUCCESSFULLY_CREATED_ARTICLE = "Successfully created article";
     String SUCCESSFULLY_COMMENT_ADDED = "Successfully comment added";
     String SUCCESSFULLY_LIKE_ADDED = "Successfully like added";
+    String SUCCESSFULLY_LOAD_ARTICLE_DETAILS = "Successfully article details loaded";
     String SUCCESSFULLY_ARTICLE_DELETED = "Successfully article deleted";
     String SUCCESSFULLY_COMMENT_DELETED = "Successfully comment deleted";
     String SUCCESSFULLY_PLACE_EDIT_REQUEST = "Edit request successful";
@@ -38,6 +39,8 @@ public interface ArticleConst {
 
     String ARTICLE_EDIT_REQUEST_PENDING = "Pending";
     String ARTICLE_EDIT_REQUEST_APPROVED = "Edit Approved";
+    String SHARED_WITH_USER_PENDING = "Share article pending";
+    String SHARED_WITH_USER_ARTICLE_DRAFT = "Shared article drafted";
     String ARTICLE_EDIT_REQUEST_IN_REVIEW = "Review In Progress";
 
     String AWS_CLOUD_PROVIDER = "AWS";

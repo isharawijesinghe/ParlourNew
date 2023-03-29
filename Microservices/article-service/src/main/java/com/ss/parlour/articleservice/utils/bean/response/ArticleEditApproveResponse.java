@@ -10,6 +10,4 @@ import lombok.Setter;
 public class ArticleEditApproveResponse {
 
     private String editRequestId;
-    private int status;
-    private String narration;
 }

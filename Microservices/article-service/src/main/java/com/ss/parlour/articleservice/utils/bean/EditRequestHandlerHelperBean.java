@@ -16,4 +16,5 @@ public class EditRequestHandlerHelperBean {
     private SharedArticles sharedArticles;
     private SharedArticlesWithUser sharedArticlesWithUser;
     private EditDraftArticles editDraftArticles;
+    private EditArticleContributors editArticleContributors;
 }

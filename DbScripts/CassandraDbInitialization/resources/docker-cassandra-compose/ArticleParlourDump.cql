@@ -168,3 +168,15 @@ CREATE TABLE IF NOT EXISTS parlour.topics (
     name text,
     PRIMARY KEY (name)
 );
+
+CREATE TABLE IF NOT EXISTS parlour.edit_article_contributors (
+    name articleId,
+    name contributorId,
+    PRIMARY KEY ((articleId), contributorId)
+);
+
+CREATE TABLE IF NOT EXISTS parlour.article_contributors (
+    name articleId,
+    name contributorId,
+    PRIMARY KEY ((articleId), contributorId)
+);

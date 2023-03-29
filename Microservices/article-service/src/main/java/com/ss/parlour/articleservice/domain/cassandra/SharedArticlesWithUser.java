@@ -27,11 +27,11 @@ public class SharedArticlesWithUser {
     @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED)
     private Timestamp createdDate;
 
-    public SharedArticlesWithUser(EditRequest editRequest){
+    public SharedArticlesWithUser(EditRequest editRequest, String status){
         this.editRequestId = editRequest.getEditRequestId();
         this.requesterId = editRequest.getRequesterId();
         this.articleId = editRequest.getArticleId();
-        this.status = editRequest.getEditRequestStatus();
+        this.status = status;
         this.ownerId = editRequest.getOwnerId();
         this.createdDate = editRequest.getCreatedDate();
 

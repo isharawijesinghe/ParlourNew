@@ -1,10 +1,8 @@
 package com.ss.parlour.articleservice.contorller;
 
-import com.ss.parlour.articleservice.domain.cassandra.Article;
 import com.ss.parlour.articleservice.service.ArticleServiceI;
 import com.ss.parlour.articleservice.utils.bean.common.ArticleResponse;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
-import com.ss.parlour.articleservice.utils.bean.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -90,25 +88,25 @@ public class ArticleREST {
     }
 
     @RequestMapping(value = "/findShareArticles", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> findShareArticles(@RequestBody ArticleEditApproveRequest articleEditApproveRequest){
+    public ResponseEntity<?> findShareArticles(@RequestBody ArticleEditApproveRequest articleEditApproveRequest){
         ArticleResponse articleResponse = articleServiceI.approveArticleEditRequest(articleEditApproveRequest);
         return ResponseEntity.ok().body(articleResponse);
     }
 
     @RequestMapping(value = "/postArticleEditDraft", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> postArticleEditDraft(@RequestBody ArticleEditDraftRequest articleEditDraftRequest){
+    public ResponseEntity<?> postArticleEditDraft(@RequestBody ArticleEditDraftRequest articleEditDraftRequest){
         ArticleResponse articleResponse = articleServiceI.postArticleEditDraft(articleEditDraftRequest);
         return ResponseEntity.ok().body(articleResponse);
     }
 
     @RequestMapping(value = "/addTopic", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<Object> addTopic(@RequestBody TopicAddRequest topicAddRequest){
+    public ResponseEntity<?> addTopic(@RequestBody TopicAddRequest topicAddRequest){
         ArticleResponse articleResponse = articleServiceI.addTopic(topicAddRequest);
         return ResponseEntity.ok().body(articleResponse);
     }
 
     @RequestMapping(value = "/findAllTopic", method = RequestMethod.GET, consumes = {"application/json"})
-    public ResponseEntity<Object> findAllTopic(){
+    public ResponseEntity<?> findAllTopic(){
         ArticleResponse articleResponse = articleServiceI.findAllTopic();
         return ResponseEntity.ok().body(articleResponse);
     }

@@ -32,9 +32,9 @@ public class UserHandler implements UserHandlerI{
     }
 
     @Override
-    public UserInfoResponseBean findUserInfoByUser(String loginName){
+    public UserInfoResponseBean findUserInfoByUser(String userId){
         UserInfoResponseBean userInfoResponseBean = new UserInfoResponseBean();
-        Optional<UserInfo> currentUserInfoFromDb=  userDAOI.getUserInfoFromDb(loginName);
+        Optional<UserInfo> currentUserInfoFromDb=  userDAOI.getUserInfoFromDb(userId);
         currentUserInfoFromDb.ifPresent(userInfo -> populateUserInfoResponseBean(userInfoResponseBean, userInfo));
         return userInfoResponseBean;
     }

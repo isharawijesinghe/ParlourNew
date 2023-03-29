@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,7 +23,16 @@ public class ArticleEditDraftRequest extends ArticleHeader {
     public class  ArticleEditDraftRequestInner{
         private String articleId;
         private String editRequestId;
-        private ArticleBean articleBean;
+        private String editorId;
+        private String authorId;
+        private String title;
+        private String summary;
+        private String status;
+        private String content;
+        private String categoryId;
+        private String thumbnailUrl;
+        private Timestamp createdDate;
+        private Timestamp modifiedDate;
     }
 
 

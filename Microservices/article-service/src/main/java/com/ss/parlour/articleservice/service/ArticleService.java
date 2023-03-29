@@ -76,7 +76,7 @@ public class ArticleService implements ArticleServiceI {
         ArticleDetailsResponse articleDetailsResponse =  articleHandlerI.findArticleById(articleId);
         return  ArticleResponse.builder().body(articleDetailsResponse)
                 .articleMsgHeader(new ArticleMsgHeader())
-                .message(ArticleConst.SUCCESSFULLY_LIKE_ADDED)
+                .message(ArticleConst.SUCCESSFULLY_LOAD_ARTICLE_DETAILS)
                 .httpStatus(200)
                 .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .build();

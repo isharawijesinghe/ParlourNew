@@ -13,6 +13,4 @@ public class ArticleEditDraftResponse {
 
     private String articleId;
     private String editRequestId;
-    private String narration;
-
 }

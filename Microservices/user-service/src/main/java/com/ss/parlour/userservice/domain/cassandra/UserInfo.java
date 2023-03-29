@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
@@ -27,7 +26,7 @@ public class UserInfo {
     private String description;
 
     public UserInfo(UserInfoUpdateRequestBean.UserInfoUpdateInnerRequestBean userInfoInner){
-        this.userId = userInfoInner.getLoginName();
+        this.userId = userInfoInner.getUserId();
         this.firstName = userInfoInner.getFirstName();
         this.lastName = userInfoInner.getLastName();
         this.country = userInfoInner.getCountry();

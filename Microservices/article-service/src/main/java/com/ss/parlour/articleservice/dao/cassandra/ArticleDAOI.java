@@ -12,9 +12,8 @@ import java.util.Optional;
 
 public interface ArticleDAOI {
 
-    void saveArticle(Article article);
     Optional<Article> getArticleById(String articleId);
-   // Optional<ArticleHistory> getArticleHistoryByArticleId(String articleId);
+    Optional<SharedArticles> getSharedArticle(String articleId, String requestId);
     Optional<EditRequestByArticle> getArticleEditRequestForArticleId(String articleId);
     Optional<EditRequestByUser> getArticleEditRequestForUserId(String userId);
     void saveArticleEditRequest(EditRequestHandlerHelperBean editRequestHandlerHelperBean);

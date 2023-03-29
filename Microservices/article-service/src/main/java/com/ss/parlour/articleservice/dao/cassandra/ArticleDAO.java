@@ -31,7 +31,10 @@ public class ArticleDAO implements ArticleDAOI {
     private EditRequestByArticleRepositoryI editRequestByArticleRepositoryI;
 
     @Autowired
-    private SharedArticlesWithUserRepositoryI sharedArticlesRepositoryI;
+    private SharedArticlesWithUserRepositoryI sharedArticlesWithUserRepositoryI;
+
+    @Autowired
+    private SharedArticlesRepositoryI sharedArticlesRepositoryI;
 
     @Autowired
     private EditRequestRepositoryI editRequestRepositoryI;
@@ -54,16 +57,14 @@ public class ArticleDAO implements ArticleDAOI {
 
     @Override
     public Optional<Article> getArticleById(String articleId){
-        return articleRepositoryI.findById(articleId);
+        return articleRepositoryI.findArticleByArticleId(articleId);
     }
 
     @Override
-    public void saveArticle(Article article){
-        articleRepositoryI.save(article);
+    public Optional<SharedArticles> getSharedArticle(String articleId, String requestId){
+        return sharedArticlesRepositoryI.findSharedArticlesByArticleIdAndRequesterId(articleId, requestId);
     }
-//
-//    @Override
-//    public Optional<ArticleHistory> getArticleHistoryByArticleId(String articleId){return articleHistoryRepositoryI.findById(articleId);}
+
 
     @Override
     public Optional<EditRequest> getArticleEditRequest(String editRequestId, String articleId){
@@ -162,6 +163,7 @@ public class ArticleDAO implements ArticleDAOI {
     protected void insertArticleEditDraftRequestInBatch(EditRequestHandlerHelperBean editRequestHandlerHelperBean, CassandraBatchOperations batchOps){
         batchOps.insert(editRequestHandlerHelperBean.getSharedArticlesWithUser());
         batchOps.insert(editRequestHandlerHelperBean.getEditDraftArticles());
+        batchOps.insert(editRequestHandlerHelperBean.getEditArticleContributors());
         batchOps.execute();
     }
 

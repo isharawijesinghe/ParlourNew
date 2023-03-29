@@ -7,7 +7,7 @@ import com.ss.parlour.userservice.util.bean.response.*;
 public interface UserHandlerI {
 
     UserInfoUpdateResponseBean addUserInfo(UserInfoUpdateRequestBean userInfoUpdateRequestBean);
-    UserInfoResponseBean findUserInfoByUser(String loginName);
+    UserInfoResponseBean findUserInfoByUser(String userId);
     AuthorDetailResponseBean findAuthorDetailsById(String userId);
     void addUserInterests(UserInterestsAddRequest userInterestsAddRequest);
     UserInterestsResponse findUserInterests(String userId);
