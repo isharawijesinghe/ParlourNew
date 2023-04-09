@@ -16,9 +16,16 @@ spring:
   data:
     cassandra:
       keyspace-name: parlour
+#      contact-points: cassandra.us-east-1.amazonaws.com
       contact-points: 127.0.0.1
+#      port: 9142
       port: 9042
       schema-action: CREATE_IF_NOT_EXISTS
+      username: null
+      password: null
+#      ssl: true
+#      request:
+#        consistency: local_quorum
   security:
     oauth2:
       client:

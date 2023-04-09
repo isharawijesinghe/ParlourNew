@@ -44,8 +44,8 @@ public class UserRest {
      * @param userId
      * @return UserInfoResponseBean
      */
-    @RequestMapping(value = "/findUserInfoByUser/{userId}", method = RequestMethod.GET, consumes = {"application/json"})
-    public ResponseEntity<?> findUserInfoByUser(@PathVariable("userId") String userId){
+    @RequestMapping(value = "/findUserInfoByUser", method = RequestMethod.GET, consumes = {"application/json"})
+    public ResponseEntity<?> findUserInfoByUser(@RequestParam("userId") String userId){
         UserResponse userResponse = userServiceI.findUserInfoByUser(userId);
         return ResponseEntity.ok(userResponse);
     }

@@ -14,9 +14,16 @@ spring:
     cassandra:
       keyspace-name: parlour
       contact-points: 127.0.0.1
+#      contact-points: cassandra.us-east-1.amazonaws.com
       port: 9042
+#      port: 9142
       schema-action: CREATE_IF_NOT_EXISTS
       username: null
+#      username: ishara.d.wijesinghe@gmail.com-at-317082675872
+#      password: BUvnF0tjIJiLkPLrNFKTI60FoGDZFnvePD4M+rWG2BY=
+      #      ssl: true
+      #      request:
+      #        consistency: local_quorum
       password: null
   security:
     oauth2:

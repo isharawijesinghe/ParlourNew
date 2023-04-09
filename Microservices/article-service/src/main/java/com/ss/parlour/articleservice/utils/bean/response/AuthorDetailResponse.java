@@ -11,4 +11,9 @@ public class AuthorDetailResponse {
 
     private String name;
     private String profileImageUrl;
+
+    public AuthorDetailResponse(UserInfoResponseBean userInfoResponseBean){
+        this.name = userInfoResponseBean.getFirstName();
+        this.profileImageUrl = userInfoResponseBean.getProfileImage();
+    }
 }

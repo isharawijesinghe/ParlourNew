@@ -21,7 +21,7 @@ public class ArticleListRequest extends ArticleHeader {
     @Setter
     @NoArgsConstructor
     public class ArticleListRequestInner{
-        private String loginName;
+        private String userId;
         private List<String> allowStatusFilter;
         private List<String> removeStatusFilter;
     }

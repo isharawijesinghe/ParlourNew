@@ -117,8 +117,13 @@ public class ArticleDAO implements ArticleDAOI {
     }
 
     @Override
-    public Optional<ArticleByUser> getArticleByUserId(String userId){
-        return articleByUserRepositoryI.findById(userId);
+    public Optional<List<ArticleByUser>> getArticleByUserId(String userId){
+        return articleByUserRepositoryI.findByUserId(userId);
+    }
+
+    @Override
+    public Optional<ArticleByUser> getArticleByUserIdAndArticleId(String userId, String articleId){
+        return articleByUserRepositoryI.findByUserIdAndArticleId(userId, articleId);
     }
 
     @Override

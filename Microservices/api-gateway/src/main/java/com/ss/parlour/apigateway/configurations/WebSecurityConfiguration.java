@@ -14,27 +14,27 @@ public class WebSecurityConfiguration  {
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http.cors().and().csrf().disable();
         http
-                .authorizeExchange()
-//                .pathMatchers("/",
-//                        "/error",
-//                        "/favicon.ico",
-//                        "/**/*.png",
-//                        "/**/*.gif",
-//                        "/**/*.svg",
-//                        "/**/*.jpg",
-//                        "/**/*.html",
-//                        "/**/*.css",
-//                        "/**/*.js")
+                .authorizeExchange().anyExchange().permitAll();
+////                .pathMatchers("/",
+////                        "/error",
+////                        "/favicon.ico",
+////                        "/**/*.png",
+////                        "/**/*.gif",
+////                        "/**/*.svg",
+////                        "/**/*.jpg",
+////                        "/**/*.html",
+////                        "/**/*.css",
+////                        "/**/*.js")
+////                .permitAll()
+//                .pathMatchers("/authentication/auth/**", "/login/**", "/auth/**",
+//                        "/oauth2/**", "/createUser/**", "/authentication/**",
+//                        "/user/**", "/user/upload/**")
 //                .permitAll()
-                .pathMatchers("/authentication/auth/**", "/login/**", "/auth/**",
-                        "/oauth2/**", "/createUser/**", "/authentication/**",
-                        "/user/**", "/user/upload/**")
-                .permitAll()
-                .anyExchange().authenticated()
-                .and()
-                .csrf().disable()
-                .oauth2ResourceServer()
-                .jwt();
+//                .anyExchange().authenticated()
+//                .and()
+//                .csrf().disable()
+//                .oauth2ResourceServer()
+//                .jwt();
 
         return http.build();
     }

@@ -88,10 +88,13 @@ public class DefaultSecurityConfig  {
                 .permitAll()
                 .antMatchers(
                         "/authentication/auth/**",
-                        "/login/**", "/auth/**",
-                        "/oauth2/**", "/createUser/**",
+                        "/login/**",
+                        "/auth/**",
+                        "/oauth2/**",
+                        "/createUser/**",
                         "/authentication/**",
-                        "/user/**", "/user/upload/**")
+                        "/user/**",
+                        "/user/upload/**")
                 .permitAll()
                 .anyRequest()
                 .permitAll()
@@ -117,7 +120,7 @@ public class DefaultSecurityConfig  {
 
 
         // Add our custom Token based authentication filter
-        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

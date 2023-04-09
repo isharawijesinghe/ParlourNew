@@ -12,7 +12,6 @@ import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 import java.sql.Timestamp;
 
 @Table("comment")
-@UserDefinedType
 @Getter
 @Setter
 @NoArgsConstructor

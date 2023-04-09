@@ -1,6 +1,7 @@
 package com.ss.parlour.articleservice.utils.bean.response;
 
 import com.ss.parlour.articleservice.domain.cassandra.Article;
+import com.ss.parlour.articleservice.domain.cassandra.ArticleByUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,5 +14,5 @@ import java.util.List;
 @NoArgsConstructor
 public class ArticleListResponse {
 
-    private List<Article> articleResponseList = new ArrayList<>();
+    private List<ArticleByUser> articleResponseList = new ArrayList<>();
 }

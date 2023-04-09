@@ -1,10 +1,12 @@
 package com.ss.parlour.articleservice.handler.article;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.ss.parlour.articleservice.dao.cassandra.ArticleDAOI;
 import com.ss.parlour.articleservice.domain.cassandra.*;
 import com.ss.parlour.articleservice.handler.LikeTypeHandlerI;
 import com.ss.parlour.articleservice.utils.bean.*;
 import com.ss.parlour.articleservice.utils.bean.common.ArticleResponse;
+import com.ss.parlour.articleservice.utils.bean.common.ObjectHelper;
 import com.ss.parlour.articleservice.utils.bean.requests.*;
 import com.ss.parlour.articleservice.utils.bean.response.*;
 import com.ss.parlour.articleservice.utils.common.DateUtils;
@@ -29,6 +31,9 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
 
     @Autowired
     private ExternalRestWriterI externalRestWriterI;
+
+    @Autowired
+    private ObjectHelper objectHelper;
 
     /***
      * Handle when user request post create
@@ -64,7 +69,11 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     public void addLikeRequest(LikeRequestBean likeRequestBean){
         ArticleLikeHandlerHelperBean articleLikeHandlerHelperBean = new ArticleLikeHandlerHelperBean();
         likeRequestBean.setCreatedDate(DateUtils.currentSqlTimestamp());
+        //1. Load current user like for article
+        //2. Load article like group
         populateCurrentUserArticleLikeStatus(articleLikeHandlerHelperBean, likeRequestBean);
+        //1. Populate current user like for article
+        //2. Populate article like group
         populateNewArticleUserLikeDate(articleLikeHandlerHelperBean, likeRequestBean);
         articleDAOI.updateArticleUserLikeRequest(articleLikeHandlerHelperBean);
     }
@@ -115,13 +124,12 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     @Override
     public ArticleListResponse findArticleByUser(ArticleListRequest articleListRequest){
         ArticleListResponse  articleListResponse = new ArticleListResponse();
-        AtomicReference<List<Article>> currentUserAssignArticle = new AtomicReference<>();
+        AtomicReference<List<ArticleByUser>> currentUserAssignArticle = new AtomicReference<>();
         ArticleListRequest.ArticleListRequestInner articleListRequestInner = articleListRequest.getArticleListRequestInner();
-        Optional<ArticleByUser> currentUserArticleFromDb = articleDAOI.getArticleByUserId(articleListRequestInner.getLoginName());
-//        currentUserArticleFromDb.ifPresent(
-//                userArticle -> currentUserAssignArticle.set(new ArrayList<>(userArticle.getUserCreatedArticles().values()))
-//        );
-     //   articleListResponse.setArticleResponseList(currentUserArticleFromDb.get().);
+        Optional<List<ArticleByUser>> currentUserArticleFromDb = articleDAOI.getArticleByUserId(articleListRequestInner.getUserId());
+        currentUserArticleFromDb.ifPresent(userArticle -> {currentUserAssignArticle.set(userArticle);});
+        //todo --> need to add pagination
+        articleListResponse.setArticleResponseList(currentUserAssignArticle.get());
         return articleListResponse;
     }
 
@@ -289,7 +297,8 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     }
 
     protected void populateDeleteArticleByUser(ArticleHandlerHelperBean articleHandlerHelperBean, ArticleDeleteRequest articleDeleteRequest){
-        Optional<ArticleByUser> currentArticleByUserInDb = articleDAOI.getArticleByUserId(articleDeleteRequest.getArticleDeleteRequestInner().getUserId());
+        Optional<ArticleByUser> currentArticleByUserInDb = articleDAOI.getArticleByUserIdAndArticleId(
+                articleDeleteRequest.getArticleDeleteRequestInner().getUserId(), articleDeleteRequest.getArticleDeleteRequestInner().getArticleId());
         currentArticleByUserInDb.ifPresent((articleByUser) -> articleHandlerHelperBean.setArticleByUser(articleByUser));
     }
 
@@ -388,12 +397,15 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         editRequestHandlerHelperBean.setSharedArticlesWithUser(new SharedArticlesWithUser(editRequest, status));
     }
 
-    public void populateArticleAuthorDetails(ArticleDetailsResponse articleDetailsResponse) {
+    protected void populateArticleAuthorDetails(ArticleDetailsResponse articleDetailsResponse) {
         Article article = articleDetailsResponse.getArticle();
-        Optional<ResponseEntity<ArticleResponse>> authorDetailResponseBean = externalRestWriterI.findAuthorDetailsByLoginName(article.getUserId());
-        ResponseEntity<ArticleResponse> authorDetails = authorDetailResponseBean
-                .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.AUTHOR_NOT_FOUND_ERROR + article.getUserId()));
-        //articleDetailsResponse.setAuthorDetails(authorDetails);
+        ResponseEntity<ArticleResponse> authorDetailResponseBean = (ResponseEntity<ArticleResponse>) externalRestWriterI.findUserInfoDetailsById(article.getUserId());
+        ArticleResponse articleResponse = authorDetailResponseBean.getBody();
+        if (articleResponse.getHttpStatus() != 200){
+            throw new ArticleServiceRuntimeException(ArticleErrorCodes.AUTHOR_NOT_FOUND_ERROR + article.getUserId());
+        }
+        UserInfoResponseBean userInfoResponseBean =  objectHelper.getObjectMapper().convertValue(articleResponse.getBody(), new TypeReference<UserInfoResponseBean>() {});
+        articleDetailsResponse.setAuthorDetails(new AuthorDetailResponse(userInfoResponseBean));
     }
 
     protected void populateEditArticleDraft(ArticleEditDraftRequest.ArticleEditDraftRequestInner articleEditDraftRequestInner, EditRequestHandlerHelperBean editRequestHandlerHelperBean){

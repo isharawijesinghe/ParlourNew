@@ -89,7 +89,6 @@ CREATE TABLE IF NOT EXISTS parlour.like_by_comment_group (
     PRIMARY KEY ((commentId, articleId), createdDate, userId )
 )  WITH CLUSTERING ORDER BY (createdDate ASC , userId DESC);
 
-
 CREATE TABLE IF NOT EXISTS parlour.edit_request (
     editRequestId text,
     articleId text,
@@ -170,13 +169,13 @@ CREATE TABLE IF NOT EXISTS parlour.topics (
 );
 
 CREATE TABLE IF NOT EXISTS parlour.edit_article_contributors (
-    name articleId,
-    name contributorId,
+    articleId text,
+    contributorId text,
     PRIMARY KEY ((articleId), contributorId)
 );
 
 CREATE TABLE IF NOT EXISTS parlour.article_contributors (
-    name articleId,
-    name contributorId,
+    articleId text,
+    contributorId text,
     PRIMARY KEY ((articleId), contributorId)
 );

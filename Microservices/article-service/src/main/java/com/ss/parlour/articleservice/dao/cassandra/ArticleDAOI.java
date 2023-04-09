@@ -23,7 +23,8 @@ public interface ArticleDAOI {
     void saveArticleCreateRequest(ArticleHandlerHelperBean articleHandlerHelperBean);
     void saveTopic(List<Topics> topics);
     Optional<List<Topics>> loadAllTopicsEntries();
-    Optional<ArticleByUser> getArticleByUserId(String userId);
+    Optional<List<ArticleByUser>> getArticleByUserId(String userId);
+    Optional<ArticleByUser> getArticleByUserIdAndArticleId(String userId, String articleId);
     void deleteArticleEntry(ArticleHandlerHelperBean articleHandlerHelperBean);
     Optional<LikeByArticle> getLikeByArticleEntry(String articleId, String userId);
     Optional<LikeByArticleGroup> getLikeByArticleGroupEntry(String articleId, String userId, Timestamp createdDate);

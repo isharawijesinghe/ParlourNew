@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import java.util.Optional;
 
 @Service
@@ -16,14 +18,20 @@ public class ExternalRestWriter implements ExternalRestWriterI{
     private RestTemplate restTemplate;
 
     @Override
-    public Optional<ResponseEntity<ArticleResponse>> findAuthorDetailsByLoginName(String userId){
+    public ResponseEntity<?> findUserInfoDetailsById(String userId){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        final HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map ,
-                headers);
-        ResponseEntity<ArticleResponse> authorDetailResponse = restTemplate.exchange("http://USER-SERVICE/user/findUserInfoByUser/" + userId,
-                        HttpMethod.GET, entity, ArticleResponse.class);
-        return Optional.ofNullable(authorDetailResponse);
+        final HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map , headers);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("http://USER-SERVICE/user/findUserInfoByUser")
+                .queryParam("userId", userId);
+
+        ResponseEntity<?> authorDetailResponse = restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                entity,
+                ArticleResponse.class);
+        return authorDetailResponse;
     }
 }

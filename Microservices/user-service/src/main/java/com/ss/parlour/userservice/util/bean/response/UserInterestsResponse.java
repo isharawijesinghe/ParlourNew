@@ -12,5 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 public class UserInterestsResponse {
 
+    private String userId;
     private List<String> topicName = new ArrayList<>();
 }

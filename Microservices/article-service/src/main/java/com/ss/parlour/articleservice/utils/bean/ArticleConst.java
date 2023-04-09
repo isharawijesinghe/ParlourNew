@@ -59,6 +59,8 @@ public interface ArticleConst {
     int COMMENT_DEFAULT_COMMENT_COUNT = 5;
     int COMMENT_DEFAULT_DEPTH_COUNT = 2;
 
+    boolean STATUS_TRUE = true;
+    boolean STATUS_FALSE = false;
 
 
 }

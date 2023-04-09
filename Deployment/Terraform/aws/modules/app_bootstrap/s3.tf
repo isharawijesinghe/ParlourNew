@@ -1,5 +1,5 @@
 locals {
-  main_s3_name = "${var.environment}-parlour-terraform-state-bucket"
+  main_s3_name = "${var.environment}-parlour1-terraform-state-bucket"
 }
 
 module "remote_state_s3" {

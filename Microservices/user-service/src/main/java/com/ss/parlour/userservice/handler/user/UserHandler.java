@@ -58,7 +58,8 @@ public class UserHandler implements UserHandlerI{
     @Override
     public UserInterestsResponse findUserInterests(String userId){
         UserInterestsResponse userInterestsResponse = new UserInterestsResponse();
-        Optional<List<UserInterests>> currentUserInterests = userDAOI.getUserInterestsByLoginName(userId);
+        Optional<List<UserInterestsByUser>> currentUserInterests = userDAOI.getUserInterestsByLoginName(userId);
+        userInterestsResponse.setUserId(userId);
         currentUserInterests.ifPresent(userInterests -> {
             userInterests.forEach(interests -> userInterestsResponse.getTopicName().add(interests.getTopic()));
         });

@@ -81,7 +81,7 @@ public class UserService implements UserServiceI{
         return  UserResponse.builder()
                 .httpStatus(200)
                 .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
-                .userMsgHeader(new UserMsgHeader())
+                .userMsgHeader(userInterestsAddRequest.getUserMsgHeader())
                 .message(UserConst.USER_INTERESTS_ADDED_SUCCESSFUL_NARRATION)
                 .build();
     }

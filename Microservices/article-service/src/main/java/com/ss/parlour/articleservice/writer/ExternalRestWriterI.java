@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface ExternalRestWriterI {
 
-    Optional<ResponseEntity<ArticleResponse>> findAuthorDetailsByLoginName(String loginName);
+    ResponseEntity<?> findUserInfoDetailsById(String loginName);
 }

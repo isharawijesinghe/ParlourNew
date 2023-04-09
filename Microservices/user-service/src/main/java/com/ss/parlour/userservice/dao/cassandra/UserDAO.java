@@ -37,6 +37,9 @@ public class UserDAO implements UserDAOI{
     private UserInterestsRepositoryI userInterestsRepositoryI;
 
     @Autowired
+    private UserInterestsByUserRepositoryI userInterestsByUserRepositoryI;
+
+    @Autowired
     private CassandraTemplate cassandraTemplate;
 
     @Override
@@ -98,6 +101,7 @@ public class UserDAO implements UserDAOI{
     @Override
     public void saveUserSignUpDataBeans(UserSignupHelperBean userSignupHelperBean){
         CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        userRepositoryI.save(userSignupHelperBean.getUser());
         insertUserSignUpDataBeansInBatch(userSignupHelperBean, batchOps);
     }
 
@@ -109,8 +113,8 @@ public class UserDAO implements UserDAOI{
     }
 
     @Override
-    public Optional<List<UserInterests>> getUserInterestsByLoginName(String userId){
-        return userInterestsRepositoryI.findByUserId(userId);
+    public Optional<List<UserInterestsByUser>> getUserInterestsByLoginName(String userId){
+        return userInterestsByUserRepositoryI.findByUserId(userId);
     }
 
     protected void insertUserSignUpDataBeansInBatch(UserSignupHelperBean userSignupHelperBean, CassandraBatchOperations batchOps){
