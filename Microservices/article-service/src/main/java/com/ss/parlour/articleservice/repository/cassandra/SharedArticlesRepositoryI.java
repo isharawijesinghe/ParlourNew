@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface SharedArticlesRepositoryI extends CassandraRepository<SharedArticles, String> {
 
-    Optional<SharedArticles> findSharedArticlesByArticleIdAndRequesterId(String articleId, String requestId);
+    Optional<SharedArticles> findSharedArticlesByEditRequestIdAndAndArticleId(String editRequestId, String articleId);
 }

@@ -41,4 +41,17 @@ public class ArticleByUser {
         this.createdDate = articleBean.getCreatedDate();
         this.modifiedDate = articleBean.getModifiedDate();
     }
+
+    public ArticleByUser(Article article){
+        this.articleId = article.getArticleId();
+        this.userId = article.getUserId();
+        this.title = article.getTitle();
+        this.summary = article.getSummary();
+        this.content = article.getSummary();
+        this.status = article.getStatus();
+        this.categoryId = article.getCategoryId();
+        this.thumbnailUrl = article.getThumbnailUrl();
+        this.createdDate = article.getCreatedDate();
+        this.modifiedDate = article.getModifiedDate();
+    }
 }

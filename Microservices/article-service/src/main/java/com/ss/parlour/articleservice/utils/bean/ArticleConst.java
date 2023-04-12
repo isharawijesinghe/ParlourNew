@@ -22,6 +22,7 @@ public interface ArticleConst {
     String ARTICLE_COMMENT_LOAD_SUCCESSFUL_NARRATION = "Successfully loaded article comments";
     String ARTICLE_HISTORY_SEARCH_SUCCESSFUL_NARRATION = "Successfully loaded article history";
     String ARTICLE_IMAGE_UPLOAD_PRE_SIGNED_GENERATE_SUCCESSFUL_NARRATION = "Successfully generate pre sign url for article image upload";
+    String SUCCESSFULLY_LOADED_EDIT_APPROVE_REQUESTS = "Successfully loaded article edit approve requests for users";
 
     String SEPARATOR = "~";
 
@@ -41,6 +42,7 @@ public interface ArticleConst {
     String ARTICLE_EDIT_REQUEST_APPROVED = "Edit Approved";
     String SHARED_WITH_USER_PENDING = "Share article pending";
     String SHARED_WITH_USER_ARTICLE_DRAFT = "Shared article drafted";
+    String SHARED_WITH_USER_ARTICLE_PUBLISHED = "Shared article published";
     String ARTICLE_EDIT_REQUEST_IN_REVIEW = "Review In Progress";
 
     String AWS_CLOUD_PROVIDER = "AWS";
@@ -61,6 +63,8 @@ public interface ArticleConst {
 
     boolean STATUS_TRUE = true;
     boolean STATUS_FALSE = false;
+
+    int NUMBER_ZERO = 0 ;
 
 
 }

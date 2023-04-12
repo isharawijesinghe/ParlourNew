@@ -69,12 +69,6 @@ public class ArticleREST {
         return ResponseEntity.ok().body(articleResponse);
     }
 
-    @RequestMapping(value = "/findArticleDetailsById/{id}", method = RequestMethod.GET, consumes = {"application/json"})
-    public ResponseEntity<?> findArticleDetailsById(@PathVariable("id") String articleId){
-        ArticleResponse articleResponse = articleServiceI.findArticleDetailsById(articleId);
-        return ResponseEntity.ok().body(articleResponse);
-    }
-
     @RequestMapping(value = "/articleEditRequest", method = RequestMethod.POST, consumes = {"application/json"})
     public ResponseEntity<?> articleEditRequest(@RequestBody ArticleEditRequest articleEditRequest){
         ArticleResponse articleResponse = articleServiceI.articleEditRequest(articleEditRequest);
@@ -87,9 +81,9 @@ public class ArticleREST {
         return ResponseEntity.ok().body(articleResponse);
     }
 
-    @RequestMapping(value = "/findShareArticles", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<?> findShareArticles(@RequestBody ArticleEditApproveRequest articleEditApproveRequest){
-        ArticleResponse articleResponse = articleServiceI.approveArticleEditRequest(articleEditApproveRequest);
+    @RequestMapping(value = "/findShareArticlesByUser", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<?> findShareArticlesByUser(@RequestBody ArticleEditShareUserRequest articleEditShareUserRequest){
+        ArticleResponse articleResponse = articleServiceI.findShareArticlesByUser(articleEditShareUserRequest);
         return ResponseEntity.ok().body(articleResponse);
     }
 
@@ -99,16 +93,9 @@ public class ArticleREST {
         return ResponseEntity.ok().body(articleResponse);
     }
 
-    @RequestMapping(value = "/addTopic", method = RequestMethod.POST, consumes = {"application/json"})
-    public ResponseEntity<?> addTopic(@RequestBody TopicAddRequest topicAddRequest){
-        ArticleResponse articleResponse = articleServiceI.addTopic(topicAddRequest);
+    @RequestMapping(value = "/publishArticleEditDraft", method = RequestMethod.POST, consumes = {"application/json"})
+    public ResponseEntity<?> publishArticleEditDraft(@RequestBody ArticlePublishEditDraftRequest articlePublishEditDraftRequest){
+        ArticleResponse articleResponse = articleServiceI.publishArticleEditDraft(articlePublishEditDraftRequest);
         return ResponseEntity.ok().body(articleResponse);
     }
-
-    @RequestMapping(value = "/findAllTopic", method = RequestMethod.GET, consumes = {"application/json"})
-    public ResponseEntity<?> findAllTopic(){
-        ArticleResponse articleResponse = articleServiceI.findAllTopic();
-        return ResponseEntity.ok().body(articleResponse);
-    }
-
 }

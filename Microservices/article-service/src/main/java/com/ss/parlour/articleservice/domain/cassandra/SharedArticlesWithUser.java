@@ -21,10 +21,10 @@ public class SharedArticlesWithUser {
     private String editRequestId;
     @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
     private String requesterId;
+    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED)
     private String articleId;
     private String status;
     private String ownerId;
-    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED)
     private Timestamp createdDate;
 
     public SharedArticlesWithUser(EditRequest editRequest, String status){

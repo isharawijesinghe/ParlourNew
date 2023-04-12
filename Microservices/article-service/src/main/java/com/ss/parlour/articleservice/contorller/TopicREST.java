@@ -1,14 +1,15 @@
 package com.ss.parlour.articleservice.contorller;
 
-import com.ss.parlour.articleservice.domain.cassandra.Article;
 import com.ss.parlour.articleservice.service.ArticleServiceI;
 import com.ss.parlour.articleservice.utils.bean.common.ArticleResponse;
-import com.ss.parlour.articleservice.utils.bean.requests.*;
-import com.ss.parlour.articleservice.utils.bean.response.*;
+import com.ss.parlour.articleservice.utils.bean.requests.TopicAddRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
 @RequestMapping(path = "/topics",consumes= MediaType.APPLICATION_JSON_VALUE)

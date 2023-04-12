@@ -20,7 +20,7 @@ public class SharedArticles {
     @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
     private String editRequestId;
     private String requesterId;
-    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED)
     private String articleId;
     private String status;
     private String ownerId;

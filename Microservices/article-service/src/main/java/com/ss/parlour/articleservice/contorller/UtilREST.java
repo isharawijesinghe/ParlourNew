@@ -3,7 +3,6 @@ package com.ss.parlour.articleservice.contorller;
 import com.ss.parlour.articleservice.service.UtilServiceI;
 import com.ss.parlour.articleservice.utils.bean.common.ArticleResponse;
 import com.ss.parlour.articleservice.utils.bean.requests.PreSignUrlGenerateRequest;
-import com.ss.parlour.articleservice.utils.bean.response.PreSignUrlResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
@@ -35,36 +34,6 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
     @Autowired
     private ObjectHelper objectHelper;
 
-    /***
-     * Handle when user request post create
-     * 1. Check request has article id -> If not then it is new article create request
-     * 2. If request has article id then article edit or update request -> Then keep history and update new request
-     * @param articleBean
-     * @return
-     */
-    @Override
-    public ArticleCommonResponse processCreateArticleRequest(ArticleBean articleBean){
-        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
-        ArticleHandlerHelperBean articleHandlerHelperBean = new ArticleHandlerHelperBean();
-        if (articleBean.getArticleId() == null || articleBean.getArticleId().isEmpty()){ //New article request
-            prePopulatedForNewArticleFlow(articleBean);
-        } else { //Article update approve request flow
-            prePopulateForUpdateArticleFlow(articleBean, articleHandlerHelperBean);
-        }
-        populateUpdateArticle(articleHandlerHelperBean, articleBean);//Populate article bean
-        populateUserAssignArticle(articleHandlerHelperBean, articleBean);//Populate article by user bean
-        //1. Update Article table
-        //2. Update article by user table
-        articleDAOI.saveArticleCreateRequest(articleHandlerHelperBean);
-        articleCommonResponse.setArticleId(articleBean.getArticleId());
-        return articleCommonResponse;
-    }
-
-    /***
-     * Update saved article object in db >> Update Article table
-     * Handle when user add post like
-     * @param likeRequestBean
-     */
     @Override
     public void addLikeRequest(LikeRequestBean likeRequestBean){
         ArticleLikeHandlerHelperBean articleLikeHandlerHelperBean = new ArticleLikeHandlerHelperBean();
@@ -78,66 +47,16 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         articleDAOI.updateArticleUserLikeRequest(articleLikeHandlerHelperBean);
     }
 
-    /***
-     * 1. If delete request article exists --> Then update article status to inactive
-     * 2. If required can be removed entry from list as well
-     * Handle when user delete an article
-     * @param articleDeleteRequest
-     */
-    @Override
-    public ArticleCommonResponse processDeleteArticleRequest(ArticleDeleteRequest articleDeleteRequest){
-        ArticleCommonResponse articleCommonResponse = new ArticleCommonResponse();
-        ArticleHandlerHelperBean articleHandlerHelperBean = new ArticleHandlerHelperBean();
-        //1. Delete article entry
-        //2. Delete article entry by user
-        //3. Delete article history entry
-        populateDeleteArticle(articleHandlerHelperBean, articleDeleteRequest);
-        populateDeleteArticleByUser(articleHandlerHelperBean, articleDeleteRequest);
-        populateDeleteArticleHistory(articleHandlerHelperBean, articleDeleteRequest);
-        articleDAOI.deleteArticleEntry(articleHandlerHelperBean);
-        articleCommonResponse.setArticleId(articleDeleteRequest.getArticleDeleteRequestInner().getArticleId());
-        return articleCommonResponse;
-    }
-
-
-    /***
-     * When user request to find article by id
-     * @param articleId
-     * @return articleResponse
-     */
-    @Override
-    public ArticleDetailsResponse findArticleById(String articleId){
-        ArticleDetailsResponse articleDetailsResponse = new ArticleDetailsResponse();
-        //1. Populate article details
-        //2. Populate article author details
-        //3. Populate article comments
-        populateArticleDetailsFromDb(articleDetailsResponse, articleId);
-        populateArticleAuthorDetails(articleDetailsResponse);
-        return articleDetailsResponse;
-    }
-
-    /***
-     * Query for user created articles and return them back to server
-     * @param articleListRequest
-     * @return List<Article>
-     */
     @Override
     public ArticleListResponse findArticleByUser(ArticleListRequest articleListRequest){
         ArticleListResponse  articleListResponse = new ArticleListResponse();
-        AtomicReference<List<ArticleByUser>> currentUserAssignArticle = new AtomicReference<>();
         ArticleListRequest.ArticleListRequestInner articleListRequestInner = articleListRequest.getArticleListRequestInner();
         Optional<List<ArticleByUser>> currentUserArticleFromDb = articleDAOI.getArticleByUserId(articleListRequestInner.getUserId());
-        currentUserArticleFromDb.ifPresent(userArticle -> {currentUserAssignArticle.set(userArticle);});
+        currentUserArticleFromDb.ifPresent(userArticle -> {articleListResponse.setArticleResponseList(userArticle);});
         //todo --> need to add pagination
-        articleListResponse.setArticleResponseList(currentUserAssignArticle.get());
         return articleListResponse;
     }
 
-    /***
-     * When user request to find article history by id
-     * @param articleHistoryRequest
-     * @return articleHistoryResponse
-     */
     @Override
     public ArticleHistoryResponse findArticleHistoryById(ArticleHistoryRequest articleHistoryRequest){
         ArticleHistoryResponse articleHistoryResponse = new ArticleHistoryResponse();
@@ -146,116 +65,16 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         return articleHistoryResponse;
     }
 
-    /***
-     * Find user article by id
-     * @param articleId
-     * @return Article
-     */
     @Override
-    public Article findArticleDetailsById(String articleId){
-        Optional<Article> currentArticleInDb = articleDAOI.getArticleById(articleId);
-        var articleReturned = currentArticleInDb.
-                orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.ARTICLE_DETAIL_FOUND_ERROR + articleId));
-        return articleReturned;
+    public ArticleEditShareUserResponse findShareArticlesByUser(ArticleEditShareUserRequest articleEditShareUserRequest){
+        ArticleEditShareUserResponse articleEditShareUserResponse = new ArticleEditShareUserResponse();
+        Optional<List<SharedArticlesWithUser>> sharedArticlesWithUsersOptional = articleDAOI.getSharedArticlesWithUser(articleEditShareUserRequest.getArticleEditShareUserRequestInner().getUserId());
+        var sharedArticleWithUser = sharedArticlesWithUsersOptional.
+                orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.NO_ARTICLE_FOUND_SHARE_WITH_USER + articleEditShareUserRequest.getArticleEditShareUserRequestInner().getUserId()));
+        articleEditShareUserResponse.setSharedArticlesWithUsers(sharedArticleWithUser);
+        return articleEditShareUserResponse;
     }
 
-    /***
-     * Process article edit request
-     * 1. Populate edit request
-     * 2. Populate edit request by article
-     * 3. Populate edit request by user
-     * 4. Save request into tables
-     * @param articleEditRequest
-     * @return ArticleEditRequestResponse
-     */
-    @Override
-    public ArticleEditRequestResponse processArticleEditRequest(ArticleEditRequest articleEditRequest){
-        ArticleEditRequestResponse articleEditRequestResponse = new ArticleEditRequestResponse();
-        //1. Populate article edit request from db
-        //2. Populate edit request by article from db
-        //3. Populate edit request by user from db
-        EditRequest articleEditBean = prePopulateArticleEditRequest(articleEditRequest);
-        EditRequestHandlerHelperBean editRequestHandlerHelperBean =  populateEditRequestHelperBean(articleEditBean);//Populate article edit request
-        populateEditRequestByArticle(editRequestHandlerHelperBean, articleEditBean);//Populate article edit request for article
-        populateEditRequestByUser(editRequestHandlerHelperBean, articleEditBean);//Populate article  edit request for user
-        articleDAOI.saveArticleEditRequest(editRequestHandlerHelperBean);//Save entries into db
-        articleEditRequestResponse.setEditRequestId(articleEditBean.getArticleId());
-        return articleEditRequestResponse;
-    }
-
-    /***
-     * Process article edit request approval
-     * 1. Populate edit request by loading from db
-     * 2. Populate edit request by article by loading from db + updating edit request bean
-     * 3. Populate edit request by user by loading from db + updating edit request bean
-     * 4. Save request into tables
-     * @param articleEditApproveRequest
-     */
-    @Override
-    public ArticleEditApproveResponse processArticleEditRequestApproval(ArticleEditApproveRequest articleEditApproveRequest){
-        ArticleEditApproveResponse articleEditApproveResponse = new ArticleEditApproveResponse();
-        EditRequestHandlerHelperBean editRequestHandlerHelperBean =  populateEditRequestHelperBeanFromDb(
-                articleEditApproveRequest.getArticleEditApproveRequestInner().getEditRequestId(), articleEditApproveRequest.getArticleEditApproveRequestInner().getArticleId());
-        //1. Load article edit request from db
-        //2. Populate edit request by article after approval
-        //3. Populate edit request by user after approval
-        prePopulateEditRequestForApproval(editRequestHandlerHelperBean, ArticleConst.ARTICLE_EDIT_REQUEST_APPROVED);
-        populateEditRequestByArticleForApproval(editRequestHandlerHelperBean);
-        populateEditRequestByUserForApproval(editRequestHandlerHelperBean);
-        //1. Populate shared article data bean
-        //2. Populate shared article with user data bean
-        populateSharedArticle(editRequestHandlerHelperBean, ArticleConst.SHARED_WITH_USER_PENDING);
-        articleDAOI.saveArticleApprovalRequest(editRequestHandlerHelperBean);
-        articleEditApproveResponse.setEditRequestId(articleEditApproveRequest.getArticleEditApproveRequestInner().getEditRequestId());
-        return articleEditApproveResponse;
-    }
-
-    /***
-     * Process of posting edit article draft request
-     * 1. Populate edit request from db
-     * 2. Load shared article bean from db
-     * 3. Populate article edit draft request from db
-     * 4. Save requests in db tables
-     * @param articleEditDraftRequest
-     * @return ArticleEditDraftResponse
-     */
-    @Override
-    public ArticleEditDraftResponse postArticleEditDraft(ArticleEditDraftRequest articleEditDraftRequest){
-        ArticleEditDraftResponse articleEditDraftResponse = new ArticleEditDraftResponse();
-        //Load article edit request from db
-        EditRequestHandlerHelperBean editRequestHandlerHelperBean =  populateEditRequestHelperBeanFromDb(
-                articleEditDraftRequest.getArticleEditDraftRequestInner().getEditRequestId(), articleEditDraftRequest.getArticleEditDraftRequestInner().getArticleId());
-        //1. Populate shared article data bean
-        //2. Populate shared article with user data bean
-        populateSharedArticle(editRequestHandlerHelperBean, ArticleConst.SHARED_WITH_USER_ARTICLE_DRAFT);
-        //1. Populate article edit draft data
-        //2. Populate article contributors data
-        populateEditArticleDraft(articleEditDraftRequest.getArticleEditDraftRequestInner() , editRequestHandlerHelperBean);
-        articleDAOI.saveArticleEditDraftRequest(editRequestHandlerHelperBean);
-        articleEditDraftResponse.setEditRequestId(articleEditDraftRequest.getArticleEditDraftRequestInner().getEditRequestId());
-        articleEditDraftResponse.setArticleId(articleEditDraftRequest.getArticleEditDraftRequestInner().getArticleId());
-        return articleEditDraftResponse;
-    }
-
-
-    /***
-     * This will add interest topic to db
-     * @param topicAddRequest
-     * @return topicAddResponse
-     */
-    @Override
-    public TopicAddResponse addTopic(TopicAddRequest topicAddRequest){
-        TopicAddResponse topicAddResponse = new TopicAddResponse();
-        articleDAOI.saveTopic(topicAddRequest.getTopicAddRequestInner().getTopicName());
-        topicAddResponse.setStatus(ArticleConst.STATUS_SUCCESS);
-        topicAddResponse.setNarration(ArticleConst.ARTICLE_TOPIC_ADDED_SUCCESSFUL_NARRATION);
-        return topicAddResponse;
-    }
-
-    /***
-     * Load all available topics from db and send
-     * @return TopicResponse
-     */
     @Override
     public TopicResponse findAllTopic(){
         TopicResponse topicResponse = new TopicResponse();
@@ -264,29 +83,207 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         return topicResponse;
     }
 
-    //---------------------------********* Article handler provide methods *********---------------------------//
+    @Override
+    public ArticleHandlerHelperBean populateArticleCreateHandlerHelperBean(ArticleBean articleBean){
+        ArticleHandlerHelperBean articleHandlerHelperBean = new ArticleHandlerHelperBean();
 
-    protected void prePopulatedForNewArticleFlow(ArticleBean articleBean){
+
+        populateNewArticle(articleHandlerHelperBean, articleBean);
+        populateNewUserAssignArticle(articleHandlerHelperBean, articleBean);
+        return articleHandlerHelperBean;
+    }
+
+    @Override
+    public ArticleHandlerHelperBean populateArticleDeleteHelperBean(ArticleDeleteRequest articleDeleteRequest){
+        ArticleHandlerHelperBean articleHandlerHelperBean = new ArticleHandlerHelperBean();
+
+        populateDeleteArticle(articleHandlerHelperBean, articleDeleteRequest);
+        populateDeleteArticleByUser(articleHandlerHelperBean, articleDeleteRequest);
+        populateDeleteArticleHistory(articleHandlerHelperBean, articleDeleteRequest);
+        return articleHandlerHelperBean;
+    }
+
+    @Override
+    public EditRequestHandlerHelperBean populateArticleEditRequestHelperBean(ArticleEditRequest articleEditRequest){
+        EditRequestHandlerHelperBean editRequestHandlerHelperBean = new EditRequestHandlerHelperBean();
+        //Create new edit request
+        EditRequest articleEditBean = createNewArticleEditRequest(articleEditRequest, ArticleConst.ARTICLE_EDIT_REQUEST_PENDING);
+
+        //1. Update edit request --> Changing status
+        //2. Populate edit request by article after approval
+        //3. Populate edit request by user after approval
+        populateArticleEditRequest(articleEditBean, editRequestHandlerHelperBean);
+        populateArticleEditRequestByArticle(editRequestHandlerHelperBean);
+        populateArticleEditRequestByUser(editRequestHandlerHelperBean);
+        return editRequestHandlerHelperBean;
+    }
+
+    @Override
+    public EditRequestHandlerHelperBean populateArticleEditRequestApprovalHelperBean(ArticleEditApproveRequest articleEditApproveRequest){
+        EditRequestHandlerHelperBean editRequestHandlerHelperBean = new EditRequestHandlerHelperBean();
+        //Load article edit request from db
+        EditRequest editRequest = populateEditRequestBeanFromDb(articleEditApproveRequest.getArticleEditApproveRequestInner().getEditRequestId(),
+                articleEditApproveRequest.getArticleEditApproveRequestInner().getArticleId());
+
+        //1. Update edit request --> Changing status
+        //2. Populate edit request by article after approval
+        //3. Populate edit request by user after approval
+        prePopulateEditRequestForApproval(editRequest, ArticleConst.ARTICLE_EDIT_REQUEST_APPROVED);
+        populateArticleEditRequest(editRequest, editRequestHandlerHelperBean);
+        populateArticleEditRequestByArticle(editRequestHandlerHelperBean);
+        populateArticleEditRequestByUser(editRequestHandlerHelperBean);
+
+        //1. Populate shared article data bean
+        //2. Populate shared article with user data bean
+        populateNewSharedArticle(editRequestHandlerHelperBean, ArticleConst.SHARED_WITH_USER_PENDING);
+        populateSharedArticleWithUser(editRequestHandlerHelperBean, ArticleConst.SHARED_WITH_USER_PENDING);
+
+        return editRequestHandlerHelperBean;
+    }
+
+    @Override
+    public EditRequestHandlerHelperBean populateSaveArticleEditDraftRequestHelperBean(ArticleEditDraftRequest articleEditDraftRequest){
+        EditRequestHandlerHelperBean editRequestHandlerHelperBean = new EditRequestHandlerHelperBean();
+
+        //Load article edit request from db
+        EditRequest editRequest = populateEditRequestBeanFromDb( articleEditDraftRequest.getArticleEditDraftRequestInner().getEditRequestId(),
+                articleEditDraftRequest.getArticleEditDraftRequestInner().getArticleId());
+
+        //1. Populate shared article data bean
+        //2. Populate shared article with user data bean
+        SharedArticles sharedArticles = populateSharedArticlesEditArticleDraft(editRequest, ArticleConst.SHARED_WITH_USER_ARTICLE_DRAFT);
+        SharedArticlesWithUser sharedArticlesWithUser = populateSharedArticlesWithUserEditArticleDraft(editRequest, ArticleConst.SHARED_WITH_USER_ARTICLE_DRAFT);
+        editRequestHandlerHelperBean.setSharedArticles(sharedArticles);
+        editRequestHandlerHelperBean.setSharedArticlesWithUser(sharedArticlesWithUser);
+
+        //1. Populate article edit draft data
+        populateEditArticleDraft(articleEditDraftRequest.getArticleEditDraftRequestInner() , editRequestHandlerHelperBean);
+
+        return editRequestHandlerHelperBean;
+    }
+
+    @Override
+    public ArticleEditPublishHelperBean populatePublishArticleEditDraftRequestHelperBean(ArticlePublishEditDraftRequest articlePublishEditDraftRequest){
+        ArticleEditPublishHelperBean articleEditPublishHelperBean = new ArticleEditPublishHelperBean();
+
+        //Load article edit request from db
+        EditRequest editRequest = populateEditRequestBeanFromDb( articlePublishEditDraftRequest.getArticlePublishEditDraftInner().getEditRequestId(),
+                articlePublishEditDraftRequest.getArticlePublishEditDraftInner().getArticleId());
+
+        //Load current article from db
+        Article currentArticle = populateCurrentArticleBeanFromDb(articlePublishEditDraftRequest.getArticlePublishEditDraftInner().getArticleId());
+
+        //Load saved edit article draft from db
+        EditDraftArticles editDraftArticles = populateDraftedEditArticle(articlePublishEditDraftRequest.getArticlePublishEditDraftInner().getEditRequestId(),
+                articlePublishEditDraftRequest.getArticlePublishEditDraftInner().getArticleId());
+
+        //1. Populate shared article data bean
+        //2. Populate shared article with user data bean
+        SharedArticles sharedArticles =  populateSharedArticlesEditArticleDraft(editRequest, ArticleConst.SHARED_WITH_USER_ARTICLE_DRAFT);
+        SharedArticlesWithUser sharedArticlesWithUser =  populateSharedArticlesWithUserEditArticleDraft(editRequest, ArticleConst.SHARED_WITH_USER_ARTICLE_DRAFT);
+        articleEditPublishHelperBean.setSharedArticles(sharedArticles);
+        articleEditPublishHelperBean.setSharedArticlesWithUser(sharedArticlesWithUser);
+
+        //1.Update old article with modified values
+        //2.Populate article by user values
+        //2.Populate article contributors
+        populateUpdatedArticle(articleEditPublishHelperBean, currentArticle, editDraftArticles);
+        populateUpdatedArticleByUser(articleEditPublishHelperBean);
+        populateArticleContributors(articleEditPublishHelperBean);
+
+        return articleEditPublishHelperBean;
+
+    }
+
+    @Override
+    //Populate article details to send response back to browser
+    public void populateArticleDetailsFromDb(ArticleDetailsResponse articleDetailsResponse, String articleId){
+        Article article = populateCurrentArticleBeanFromDb(articleId);
+        articleDetailsResponse.setArticle(article);
+    }
+
+    @Override
+    public void populateArticleAuthorDetails(ArticleDetailsResponse articleDetailsResponse) {
+        Article article = articleDetailsResponse.getArticle();
+        ResponseEntity<ArticleResponse> authorDetailResponseBean = (ResponseEntity<ArticleResponse>) findUserDetails(article.getUserId());
+        ArticleResponse articleResponse = authorDetailResponseBean.getBody();
+        if (articleResponse.getHttpStatus() != 200){
+            throw new ArticleServiceRuntimeException(ArticleErrorCodes.AUTHOR_NOT_FOUND_ERROR + article.getUserId());
+        }
+        UserInfoResponseBean userInfoResponseBean =  objectHelper.getObjectMapper().convertValue(articleResponse.getBody(), new TypeReference<UserInfoResponseBean>() {});
+        articleDetailsResponse.setAuthorDetails(new UserDetailResponse(userInfoResponseBean));
+    }
+
+    @Override
+    public void populateArticleContributorsDetails(ArticleDetailsResponse articleDetailsResponse,String articleId){
+        List<UserDetailResponse> contributors = new ArrayList<>();
+        Optional<List<ArticleContributors>> articleContributorsOptional = articleDAOI.getArticleContributorsList(articleId);
+        articleContributorsOptional.ifPresent(
+                articleContributorsList -> {
+                    articleContributorsList.forEach(
+                            articleContributors -> {
+                                UserDetailResponse returnedUserDetailResponse = resolveContributor(articleContributors);
+                                if (returnedUserDetailResponse != null){
+                                    contributors.add(returnedUserDetailResponse);
+                                }
+                            }
+                    );
+                }
+        );
+        articleDetailsResponse.setContributors(contributors);
+    }
+
+    @Override
+    public void prePopulatedForNewArticleFlow(ArticleBean articleBean){
         articleBean.setArticleId(keyGenerator.articleKeyGenerator(articleBean.getAuthorName()));
         articleBean.setCreatedDate(DateUtils.currentSqlTimestamp());
         articleBean.setModifiedDate(DateUtils.currentSqlTimestamp());
     }
 
-    protected void prePopulateForUpdateArticleFlow(ArticleBean articleBean, ArticleHandlerHelperBean articleHandlerHelperBean){
-        Optional<Article> currentArticleResponse = articleDAOI.getArticleById(articleBean.getArticleId());
-        var currentArticle = currentArticleResponse
-                .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.ARTICLE_NOT_FOUND_ERROR + articleBean.getArticleId()));
-        updateArticleHistoryToPushIntoHistory(currentArticle, articleHandlerHelperBean); //Update article history bean for persistence
+    @Override
+    public void prePopulateForUpdateArticleFlow(ArticleBean articleBean){
+        var currentArticle =  populateCurrentArticleBeanFromDb(articleBean.getArticleId());
         articleBean.setCreatedDate(currentArticle.getCreatedDate());
         articleBean.setModifiedDate(DateUtils.currentSqlTimestamp());
     }
 
-    protected void populateUpdateArticle(ArticleHandlerHelperBean articleHandlerHelperBean, ArticleBean articleBean){
+
+    protected SharedArticles populateSharedArticle(String editRequestId, String articleId){
+        Optional<SharedArticles> sharedArticlesOptional = articleDAOI.getSharedArticle(editRequestId, articleId);
+        var sharedArticleOld = sharedArticlesOptional.orElseThrow();
+        return sharedArticleOld;
+    }
+
+    protected SharedArticles populateSharedArticlesEditArticleDraft(EditRequest editRequest, String status){
+        SharedArticles sharedArticles = populateSharedArticle(editRequest.getEditRequestId(), editRequest.getArticleId());
+        sharedArticles.setStatus(status);
+        return sharedArticles;
+    }
+
+    protected SharedArticlesWithUser populateSharedArticlesWithUserEditArticleDraft(EditRequest editRequest, String status){
+        SharedArticlesWithUser sharedArticlesWithUser = populateSharedArticleWithUser(editRequest.getEditRequestId(), editRequest.getArticleId());
+        sharedArticlesWithUser.setStatus(status);
+        return sharedArticlesWithUser;
+    }
+
+    protected SharedArticlesWithUser populateSharedArticleWithUser(String editRequestId, String articleId){
+        Optional<SharedArticlesWithUser> sharedArticlesWithUserOptional = articleDAOI.getSharedArticlesWithUser(editRequestId, articleId);
+        var sharedArticlesWithUserOld = sharedArticlesWithUserOptional.orElseThrow();
+        return sharedArticlesWithUserOld;
+    }
+
+    protected Article populateCurrentArticleBeanFromDb(String articleId){
+        Optional<Article> currentArticleInDb = articleDAOI.getArticleById(articleId);
+        var currentArticle = currentArticleInDb.orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.ARTICLE_NOT_FOUND_ERROR + articleId));
+        return currentArticle;
+    }
+
+    protected void populateNewArticle(ArticleHandlerHelperBean articleHandlerHelperBean, ArticleBean articleBean){
         Article article = new Article(articleBean);//Create article bean
         articleHandlerHelperBean.setUpdatedArticle(article);
     }
 
-    protected void populateUserAssignArticle(ArticleHandlerHelperBean articleHandlerHelperBean, ArticleBean articleBean){
+    protected void populateNewUserAssignArticle(ArticleHandlerHelperBean articleHandlerHelperBean, ArticleBean articleBean){
         ArticleByUser articleByUser = new ArticleByUser(articleBean);
         articleHandlerHelperBean.setArticleByUser(articleByUser);
     }
@@ -302,10 +299,7 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         currentArticleByUserInDb.ifPresent((articleByUser) -> articleHandlerHelperBean.setArticleByUser(articleByUser));
     }
 
-    protected void populateDeleteArticleHistory(ArticleHandlerHelperBean articleHandlerHelperBean, ArticleDeleteRequest articleDeleteRequest){
-//        Optional<ArticleHistory> currentArticleHistoryInDb = articleDAOI.getArticleHistoryByArticleId(articleDeleteRequest.getArticleId());
-//        currentArticleHistoryInDb.ifPresent((articleHistory) -> articleHandlerHelperBean.setArticleHistory(articleHistory));
-    }
+    protected void populateDeleteArticleHistory(ArticleHandlerHelperBean articleHandlerHelperBean, ArticleDeleteRequest articleDeleteRequest){}
 
     protected void populateCurrentUserArticleLikeStatus(ArticleLikeHandlerHelperBean articleLikeHandlerHelperBean, LikeRequestBean likeRequestBean){
         Optional<LikeByArticle> likeByArticle = articleDAOI.getLikeByArticleEntry(likeRequestBean.getArticleId(), likeRequestBean.getUserId());
@@ -323,94 +317,96 @@ public class ArticleHandler implements ArticleHandlerI, LikeTypeHandlerI {
         }
     }
 
-    //Populate article details to send response back to browser
-    protected void populateArticleDetailsFromDb(ArticleDetailsResponse articleDetailsResponse, String articleId){
-        Optional<Article> currentArticleInDb = articleDAOI.getArticleById(articleId);
-        //Only load if article exists and active
-        var currentArticle = currentArticleInDb
-                .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.ARTICLE_NOT_FOUND_ERROR + articleId));
-        articleDetailsResponse.setArticle(currentArticle);
-    }
-
-    protected void updateArticleHistoryToPushIntoHistory(Article oldArticle, ArticleHandlerHelperBean articleHandlerHelperBean){
-//        ArticleHistory updatedArticleHistory = new ArticleHistory();
-//        updatedArticleHistory.setArticleId(oldArticle.getArticleId());
-//        Optional<ArticleHistory> currentArticleHistoryInDb = articleDAOI.getArticleHistoryByArticleId(oldArticle.getArticleId());
-//        currentArticleHistoryInDb.ifPresent(articleHistory -> updatedArticleHistory.setOldArticles(articleHistory.getOldArticles()));
-//        updatedArticleHistory.getOldArticles().add(oldArticle);
-//        articleHandlerHelperBean.setArticleHistory(updatedArticleHistory);
-    }
-
-    protected EditRequest prePopulateArticleEditRequest(ArticleEditRequest articleEditRequest){
+    protected EditRequest createNewArticleEditRequest(ArticleEditRequest articleEditRequest, String status){
         EditRequest articleEditBean = articleEditRequest.getArticleEditRequest();
         String articleEditRequestId = keyGenerator.articleEditRequestGenerator(articleEditBean.getArticleId(), articleEditBean.getRequesterId());
         articleEditBean.setEditRequestId(articleEditRequestId); //Update article edit request id (~Generate)
         articleEditBean.setCreatedDate(DateUtils.currentSqlTimestamp());
         articleEditBean.setModifiedDate(articleEditBean.getModifiedDate());
-        articleEditBean.setEditRequestStatus(ArticleConst.ARTICLE_EDIT_REQUEST_PENDING); //Update article edit request status to pending
+        articleEditBean.setEditRequestStatus(status); //Update article edit request status to pending
         return articleEditBean;
     }
 
-    protected EditRequestHandlerHelperBean populateEditRequestHelperBean(EditRequest editRequest){
-        EditRequestHandlerHelperBean editRequestHandlerHelperBean = new EditRequestHandlerHelperBean();
-        editRequestHandlerHelperBean.setEditRequest(editRequest);
-        return editRequestHandlerHelperBean;
-    }
-
-    protected void populateEditRequestByArticle(EditRequestHandlerHelperBean editRequestHandlerHelperBean, EditRequest articleEditBean){
-        EditRequestByArticle editRequestByArticle = new EditRequestByArticle(articleEditBean);
-        editRequestHandlerHelperBean.setEditRequestByArticle(editRequestByArticle);
-    }
-
-    protected void populateEditRequestByUser(EditRequestHandlerHelperBean editRequestHandlerHelperBean, EditRequest articleEditBean){
-        EditRequestByUser editRequestByUser = new EditRequestByUser(articleEditBean);
-        editRequestHandlerHelperBean.setEditRequestByUser(editRequestByUser);
-    }
-
-    protected EditRequestHandlerHelperBean populateEditRequestHelperBeanFromDb(String editRequestId, String articleId)  {
+    protected EditRequest populateEditRequestBeanFromDb(String editRequestId, String articleId)  {
         var currentEditRequest = articleDAOI.getArticleEditRequest(editRequestId, articleId)
                 .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.ARTICLE_EDIT_REQ_NOT_FOUND_ERROR + editRequestId));
-        EditRequestHandlerHelperBean editRequestHandlerHelperBean = new EditRequestHandlerHelperBean();
-        editRequestHandlerHelperBean.setEditRequest(currentEditRequest);
-        return editRequestHandlerHelperBean;
+        return currentEditRequest;
     }
 
-    protected void prePopulateEditRequestForApproval(EditRequestHandlerHelperBean editRequestHandlerHelperBean, String status){
-        EditRequest editRequest = editRequestHandlerHelperBean.getEditRequest();
+    protected void prePopulateEditRequestForApproval(EditRequest editRequest, String status){
         editRequest.setEditRequestStatus(status);
         editRequest.setModifiedDate(DateUtils.currentSqlTimestamp());
     }
 
-    protected void populateEditRequestByArticleForApproval(EditRequestHandlerHelperBean editRequestHandlerHelperBean){
+    protected void populateArticleEditRequest(EditRequest editRequest, EditRequestHandlerHelperBean editRequestHandlerHelperBean){
+        editRequestHandlerHelperBean.setEditRequest(editRequest);
+    }
+
+    protected void populateArticleEditRequestByArticle(EditRequestHandlerHelperBean editRequestHandlerHelperBean){
         EditRequest editRequest = editRequestHandlerHelperBean.getEditRequest();
         editRequestHandlerHelperBean.setEditRequestByArticle(new EditRequestByArticle(editRequest));
     }
 
-    protected void populateEditRequestByUserForApproval(EditRequestHandlerHelperBean editRequestHandlerHelperBean){
+    protected void populateArticleEditRequestByUser(EditRequestHandlerHelperBean editRequestHandlerHelperBean){
         EditRequest editRequest = editRequestHandlerHelperBean.getEditRequest();
         editRequestHandlerHelperBean.setEditRequestByUser(new EditRequestByUser(editRequest));
     }
 
-    protected void populateSharedArticle(EditRequestHandlerHelperBean editRequestHandlerHelperBean, String status){
+    protected void populateNewSharedArticle(EditRequestHandlerHelperBean editRequestHandlerHelperBean, String status){
         EditRequest editRequest = editRequestHandlerHelperBean.getEditRequest();
         editRequestHandlerHelperBean.setSharedArticles(new SharedArticles(editRequest, status));
+    }
+
+    protected void populateSharedArticleWithUser(EditRequestHandlerHelperBean editRequestHandlerHelperBean, String status){
+        EditRequest editRequest = editRequestHandlerHelperBean.getEditRequest();
         editRequestHandlerHelperBean.setSharedArticlesWithUser(new SharedArticlesWithUser(editRequest, status));
     }
 
-    protected void populateArticleAuthorDetails(ArticleDetailsResponse articleDetailsResponse) {
-        Article article = articleDetailsResponse.getArticle();
-        ResponseEntity<ArticleResponse> authorDetailResponseBean = (ResponseEntity<ArticleResponse>) externalRestWriterI.findUserInfoDetailsById(article.getUserId());
-        ArticleResponse articleResponse = authorDetailResponseBean.getBody();
-        if (articleResponse.getHttpStatus() != 200){
-            throw new ArticleServiceRuntimeException(ArticleErrorCodes.AUTHOR_NOT_FOUND_ERROR + article.getUserId());
-        }
-        UserInfoResponseBean userInfoResponseBean =  objectHelper.getObjectMapper().convertValue(articleResponse.getBody(), new TypeReference<UserInfoResponseBean>() {});
-        articleDetailsResponse.setAuthorDetails(new AuthorDetailResponse(userInfoResponseBean));
+    protected ResponseEntity<?> findUserDetails(String userId){
+        return externalRestWriterI.findUserInfoDetailsById(userId);
     }
 
     protected void populateEditArticleDraft(ArticleEditDraftRequest.ArticleEditDraftRequestInner articleEditDraftRequestInner, EditRequestHandlerHelperBean editRequestHandlerHelperBean){
         editRequestHandlerHelperBean.setEditDraftArticles(new EditDraftArticles(articleEditDraftRequestInner));
-        editRequestHandlerHelperBean.setEditArticleContributors(new EditArticleContributors(articleEditDraftRequestInner));
+    }
+
+    protected EditDraftArticles populateDraftedEditArticle(String editRequestId, String articleId){
+        Optional<EditDraftArticles> editDraftArticlesOptional = articleDAOI.getDraftedEditArticle(editRequestId, articleId);
+        var editDraftArticles = editDraftArticlesOptional
+                .orElseThrow(() -> new ArticleServiceRuntimeException(ArticleErrorCodes.EDIT_DRAFT_ARTICLE_NOT_FOUND + editRequestId));
+        return editDraftArticles;
+    }
+
+    protected void populateUpdatedArticle(ArticleEditPublishHelperBean articleEditPublishHelperBean, Article oldArticle, EditDraftArticles editDraftArticles){
+        Article updatedArticle = oldArticle;
+        updatedArticle.setTitle(editDraftArticles.getTitle());
+        updatedArticle.setSummary(editDraftArticles.getSummary());
+        updatedArticle.setContent(editDraftArticles.getContent());
+        updatedArticle.setThumbnailUrl(editDraftArticles.getThumbnailUrl());
+        updatedArticle.setCategoryId(editDraftArticles.getCategoryId());
+        updatedArticle.setModifiedDate(DateUtils.currentSqlTimestamp());
+        articleEditPublishHelperBean.setUpdatedArticle(updatedArticle);
+    }
+
+    protected UserDetailResponse resolveContributor(ArticleContributors articleContributors){
+        UserInfoResponseBean userInfoResponseBean = null;
+        ResponseEntity<ArticleResponse> authorDetailResponseBean = (ResponseEntity<ArticleResponse>) findUserDetails(articleContributors.getContributorId());
+        ArticleResponse articleResponse = authorDetailResponseBean.getBody();
+        if (articleResponse.getHttpStatus() == 200){
+            userInfoResponseBean =  objectHelper.getObjectMapper().convertValue(articleResponse.getBody(), new TypeReference<UserInfoResponseBean>() {});
+            return new UserDetailResponse(userInfoResponseBean);
+        }
+        return null;
+    }
+
+    protected void populateArticleContributors(ArticleEditPublishHelperBean articleEditPublishHelperBean){
+        EditDraftArticles editDraftArticles = articleEditPublishHelperBean.getEditDraftArticles();
+        articleEditPublishHelperBean.setArticleContributors(new ArticleContributors(editDraftArticles));
+    }
+
+    protected void populateUpdatedArticleByUser(ArticleEditPublishHelperBean articleEditPublishHelperBean){
+        Article article = articleEditPublishHelperBean.getUpdatedArticle();
+        articleEditPublishHelperBean.setArticleByUser(new ArticleByUser(article));
     }
 
 

@@ -52,6 +52,9 @@ public class ArticleDAO implements ArticleDAOI {
     private LikeByArticleGroupRepositoryI likeByArticleGroupRepositoryI;
 
     @Autowired
+    private ArticleContributorsRepositoryI articleContributorsRepositoryI;
+
+    @Autowired
     private  CassandraTemplate cassandraTemplate;
 
 
@@ -61,10 +64,14 @@ public class ArticleDAO implements ArticleDAOI {
     }
 
     @Override
-    public Optional<SharedArticles> getSharedArticle(String articleId, String requestId){
-        return sharedArticlesRepositoryI.findSharedArticlesByArticleIdAndRequesterId(articleId, requestId);
+    public Optional<SharedArticles> getSharedArticle(String editRequestId, String articleId){
+        return sharedArticlesRepositoryI.findSharedArticlesByEditRequestIdAndAndArticleId(editRequestId, articleId);
     }
 
+    @Override
+    public Optional<EditDraftArticles> getDraftedEditArticle(String editRequestId, String articleId){
+        return editDraftArticlesRepositoryI.findEditDraftArticlesByEditRequestIdAndAndArticleId(editRequestId, articleId);
+    }
 
     @Override
     public Optional<EditRequest> getArticleEditRequest(String editRequestId, String articleId){
@@ -97,6 +104,21 @@ public class ArticleDAO implements ArticleDAOI {
     public void saveArticleEditDraftRequest(EditRequestHandlerHelperBean editRequestHandlerHelperBean){
         CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
         insertArticleEditDraftRequestInBatch(editRequestHandlerHelperBean, batchOps);
+    }
+
+    @Override
+    public void saveArticleEditPublishRequest(ArticleEditPublishHelperBean articleEditPublishHelperBean){
+        CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
+        insertArticleEditPublishRequestInBatch(articleEditPublishHelperBean, batchOps);
+    }
+
+    protected void insertArticleEditPublishRequestInBatch(ArticleEditPublishHelperBean articleEditPublishHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(articleEditPublishHelperBean.getSharedArticles());
+        batchOps.insert(articleEditPublishHelperBean.getSharedArticlesWithUser());
+        batchOps.insert(articleEditPublishHelperBean.getUpdatedArticle());
+        batchOps.insert(articleEditPublishHelperBean.getArticleByUser());
+        batchOps.insert(articleEditPublishHelperBean.getArticleContributors());
+        batchOps.execute();
     }
 
     @Override
@@ -147,6 +169,22 @@ public class ArticleDAO implements ArticleDAOI {
         CassandraBatchOperations batchOps = cassandraTemplate.batchOps();
         insertArticleUserLikeRequestInBatch(articleLikeHandlerHelperBean, batchOps);
         deleteArticleUserLikeRequestInBatch(articleLikeHandlerHelperBean, batchOps);
+        batchOps.execute();
+    }
+
+    @Override
+    public Optional<List<SharedArticlesWithUser>> getSharedArticlesWithUser(String userId){
+        return sharedArticlesWithUserRepositoryI.findByRequesterId(userId);
+    }
+
+    @Override
+    public Optional<SharedArticlesWithUser> getSharedArticlesWithUser(String userId, String articleId){
+        return sharedArticlesWithUserRepositoryI.findByRequesterIdAndArticleId(userId, articleId);
+    }
+
+    @Override
+    public Optional<List<ArticleContributors>> getArticleContributorsList(String articleId){
+        return articleContributorsRepositoryI.findArticleContributorsByArticleId(articleId);
     }
 
     protected void insertArticleEditRequestInBatch(EditRequestHandlerHelperBean editRequestHandlerHelperBean, CassandraBatchOperations batchOps){
@@ -166,9 +204,9 @@ public class ArticleDAO implements ArticleDAOI {
     }
 
     protected void insertArticleEditDraftRequestInBatch(EditRequestHandlerHelperBean editRequestHandlerHelperBean, CassandraBatchOperations batchOps){
+        batchOps.insert(editRequestHandlerHelperBean.getSharedArticles());
         batchOps.insert(editRequestHandlerHelperBean.getSharedArticlesWithUser());
         batchOps.insert(editRequestHandlerHelperBean.getEditDraftArticles());
-        batchOps.insert(editRequestHandlerHelperBean.getEditArticleContributors());
         batchOps.execute();
     }
 

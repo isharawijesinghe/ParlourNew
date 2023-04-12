@@ -27,7 +27,6 @@ public class EditDraftArticles {
     private String content;
     private String categoryId;
     private String thumbnailUrl;
-    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED)
     private Timestamp createdDate;
     private Timestamp modifiedDate;
 

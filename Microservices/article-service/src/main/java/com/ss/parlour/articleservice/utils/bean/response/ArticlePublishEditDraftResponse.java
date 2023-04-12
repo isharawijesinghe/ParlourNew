@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CommentCommonResponse {
+public class ArticlePublishEditDraftResponse {
 
-    private String commentId;
-
+    private String editRequestId;
 }

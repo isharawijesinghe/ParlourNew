@@ -7,13 +7,13 @@ import java.time.ZonedDateTime;
 public class ArticleServiceErrorMessage {
 
     private final String message;
-    private final Throwable throwable;
+    private final String errorMessage;
     private final HttpStatus httpStatus;
     private final ZonedDateTime zonedDateTime;
 
     public ArticleServiceErrorMessage(String message, Throwable throwable, HttpStatus httpStatus, ZonedDateTime zonedDateTime){
         this.message = message;
-        this.throwable = throwable;
+        this.errorMessage = throwable.getMessage();
         this.httpStatus = httpStatus;
         this.zonedDateTime = zonedDateTime;
     }
@@ -22,8 +22,8 @@ public class ArticleServiceErrorMessage {
         return message;
     }
 
-    public Throwable getThrowable() {
-        return throwable;
+    public String getThrowable() {
+        return errorMessage;
     }
 
     public HttpStatus getHttpStatus() {

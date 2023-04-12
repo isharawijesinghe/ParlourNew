@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS parlour.shared_articles (
     status text,
     ownerId text,
     createdDate timestamp,
-    PRIMARY KEY ((editRequestId, requesterId), createdDate)
+    PRIMARY KEY ((editRequestId), articleId)
 );
 
 CREATE TABLE IF NOT EXISTS parlour.shared_articles_with_user (
@@ -145,14 +145,14 @@ CREATE TABLE IF NOT EXISTS parlour.shared_articles_with_user (
     status text,
     ownerId text,
     createdDate timestamp,
-    PRIMARY KEY ((requesterId), editRequestId, createdDate)
+    PRIMARY KEY ((requesterId), articleId)
 );
 
 CREATE TABLE IF NOT EXISTS parlour.edit_draft_articles (
     editRequestId text,
     editorId text,
     articleId text,
-    authorName text,
+    authorId text,
     title text,
     summary text,
     content text,
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS parlour.edit_draft_articles (
     categoryId text,
     thumbnailUrl text,
     createdDate timestamp,
-    PRIMARY KEY ((editRequestId, editorId), createdDate)
+    PRIMARY KEY ((editRequestId, articleId))
 );
 
 CREATE TABLE IF NOT EXISTS parlour.topics (

@@ -2,7 +2,6 @@ package com.ss.parlour.articleservice.utils.bean.response;
 
 import com.ss.parlour.articleservice.domain.cassandra.Article;
 import com.ss.parlour.articleservice.domain.cassandra.Comment;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +15,8 @@ import java.util.List;
 public class ArticleDetailsResponse {
 
     private Article article;
-    private List<Comment> articleComments = new ArrayList<>();
-    private AuthorDetailResponse authorDetails;
+    private List articleComments = new ArrayList<>();
+    private UserDetailResponse authorDetails;
+    private List<UserDetailResponse> contributors = new ArrayList<>();
 
 }

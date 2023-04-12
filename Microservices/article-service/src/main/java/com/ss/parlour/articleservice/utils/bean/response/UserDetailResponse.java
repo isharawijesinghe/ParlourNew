@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AuthorDetailResponse {
+public class UserDetailResponse {
 
     private String name;
     private String profileImageUrl;
 
-    public AuthorDetailResponse(UserInfoResponseBean userInfoResponseBean){
+    public UserDetailResponse(UserInfoResponseBean userInfoResponseBean){
         this.name = userInfoResponseBean.getFirstName();
         this.profileImageUrl = userInfoResponseBean.getProfileImage();
     }
