@@ -11,11 +11,14 @@ spring:
   application:
     name: stream-service
   data:
+    #Local or own managed cassandra configurations
     cassandra:
       keyspace-name: parlour
       contact-points: 127.0.0.1
       port: 9042
       schema-action: CREATE_IF_NOT_EXISTS
+      username: null
+      password: null
   security:
     oauth2:
       resourceserver:

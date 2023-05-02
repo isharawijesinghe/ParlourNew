@@ -1,0 +1,24 @@
+spring:
+  data:
+    cassandra:
+      keyspace-name: parlour
+      contact-points: 127.0.0.1
+      port: 9042
+      schema-action: CREATE_IF_NOT_EXISTS
+      username: "XbyCeBTiFYpjrDotmzINuHfY"
+      password: "hcM1pvi6N8uoGTvL2+WAj3oj,uX_q0+A,4Z0hN4ZHh5rnAzZJBWgSUjKe,q-51ef4HkUypZNpJCYl2,2utOzJnugmnG,_qE6BIHcvOgZ.OzI0fUKx8f.6Mn7SHS2RoaM"
+      request:
+        timeout: 30s
+      connection:
+        init-query-timeout: 30s
+        connect-timeout: 30s
+
+datastax.astra:
+  secure-connect-bundle: https://dev-parlour1-terraform-state-bucket.s3.amazonaws.com/dev/secure-connect-parlour-db.zip
+
+astra.db:
+  id: c497689c-12d0-47de-9d4d-33fc76db082c-1
+  region: us-east-1
+  keyspace: parlour
+  application.token: "AstraCS:XbyCeBTiFYpjrDotmzINuHfY:e5e29ddcb51c5a875659e2404e1364b1724f8bed575b261cb18214c929d233f2"
+

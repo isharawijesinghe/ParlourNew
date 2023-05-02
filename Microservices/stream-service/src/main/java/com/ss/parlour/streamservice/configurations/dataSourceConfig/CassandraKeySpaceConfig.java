@@ -1,4 +1,4 @@
-package com.ss.parlour.userservice.configurations.dataSoureConfig;
+package com.ss.parlour.streamservice.configurations.dataSourceConfig;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.config.DriverConfigLoader;
@@ -15,7 +15,7 @@ import java.security.NoSuchAlgorithmException;
 @Configuration
 @Profile("keyspace")
 public class CassandraKeySpaceConfig {
-    File driverConfig = new File(System.getProperty("user.dir")+"/Microservices/user-service/application.conf");
+    File driverConfig = new File(System.getProperty("user.dir")+"/Microservices/stream-service/application.conf");
 
     @Primary
     public @Bean
@@ -27,5 +27,20 @@ public class CassandraKeySpaceConfig {
                 withSslContext(SSLContext.getDefault()).
                 withKeyspace("parlour").
                 build();
+
+//        return Cluster.builder()
+//                .addContactPoint("cassandra.us-east-1.amazonaws.com")
+//                .withPort(9142)
+//                .withAuthProvider((AuthProvider) provider)
+//                .withSSL()
+//                .build()
+//                .connect();
+
+//        DriverConfigLoader loader = DriverConfigLoader.fromFile(driverConfig);
+//        return CqlSession.builder()
+//                .withConfigLoader(loader)
+//                .withKeyspace("parlour")
+//                . withSslContext(SSLContext.getDefault()).
+//                .build();
     }
 }

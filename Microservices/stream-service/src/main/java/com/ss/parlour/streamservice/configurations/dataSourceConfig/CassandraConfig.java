@@ -1,12 +1,14 @@
-package com.ss.parlour.articleservice.configurations;
+package com.ss.parlour.streamservice.configurations.dataSourceConfig;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.CqlSessionFactoryBean;
 
 @Configuration
+@Profile({"!astra & !keyspace"})
 public class CassandraConfig extends AbstractCassandraConfiguration {
 
     @Value("${spring.data.cassandra.keyspace-name}")

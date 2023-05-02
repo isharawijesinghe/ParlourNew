@@ -20,7 +20,7 @@ variable "main_vpc_one_nat_gateway_per_az" {default = false}
 variable "main_vpc_single_nat_gateway" {default = true}
 
 //Seed ENI Parameters
-variable "enable_az1_cassandra_seed" {default = true} //By default only enable single seed node
+variable "enable_az1_cassandra_seed" {default = false} //By default only enable single seed node
 variable "enable_az2_cassandra_seed" {default = false}
 variable "enable_cassandra_node_asg" {default = false}
 variable "main_az1_eni_private_ips" {

@@ -146,3 +146,11 @@ resource "aws_vpc_endpoint" "sts-endpoint" {
   subnet_ids = module.main_vpc.vpc_private_subnets
   tags = local.sts_tags
 }
+
+resource "aws_vpc_endpoint" "astra_vpc_endpoint" {
+  vpc_id             = module.main_vpc.vpc_id
+  service_name       = astra_private_link.astra_private_link.service_name
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = module.main_vpc.vpc_private_subnets
+  security_group_ids = [aws_security_group.vpc_endpoint_sg.id]
+}

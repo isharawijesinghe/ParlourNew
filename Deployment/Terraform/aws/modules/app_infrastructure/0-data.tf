@@ -15,13 +15,10 @@ data "astra_databases" "databaselist" {
 output "existing_dbs" {
   value = [for db in data.astra_databases.databaselist.results : db.id]
 }
-
-output "astra_database_id" {
-  value = data.astra_databases.databaselist.results[0].id
-}
-
-output "astra_database_datacenter" {
-  value = data.astra_databases.databaselist.results[0].datacenters[0]
-}
+#
+#output "astra_database_id" {
+#  value = data.astra_databases.databaselist.results[0].id
+#}
+#
 
 

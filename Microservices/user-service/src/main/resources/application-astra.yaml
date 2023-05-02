@@ -1,0 +1,42 @@
+spring:
+  data:
+    #Astra db cassandra configurations
+    cassandra:
+      keyspace-name: parlour
+      contact-points: 127.0.0.1
+      port: 9042
+      schema-action: CREATE_IF_NOT_EXISTS
+      username: "<Astra_Username>" #Resolve via SSM
+      password: "<Astra_Password>" #Resolve via SSM
+      request:
+        timeout: 30s
+      connection:
+        init-query-timeout: 30s
+        connect-timeout: 30s
+
+datastax.astra:
+  secure-connect-bundle: https://dev-parlour1-terraform-state-bucket.s3.amazonaws.com/dev/secure-connect-parlour-db.zip
+
+astra.db:
+  id: c497689c-12d0-47de-9d4d-33fc76db082c-1
+  region: us-east-1
+  keyspace: parlour
+  application.token: "<Astra_Token>" #Resolve via SSM
+
+cloud:
+  aws:
+    region:
+      static: us-east-1
+      auto: false
+    stack:
+      auto: false
+  provider: AWS
+
+logging:
+  level:
+    com:
+      amazonaws:
+        internal:
+          InstanceMetadataServiceResourceFetcher: ERROR
+        util:
+          EC2MetadataUtils: ERROR
