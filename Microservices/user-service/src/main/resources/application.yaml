@@ -82,6 +82,12 @@ app:
     signup-email-verification: false
 
 cloud:
+  aws:
+    region:
+      static: us-east-1
+      auto: false
+    stack:
+      auto: false
   provider: AWS
 
 aws:
