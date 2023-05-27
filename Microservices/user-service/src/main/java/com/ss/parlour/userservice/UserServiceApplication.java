@@ -18,7 +18,13 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@SpringBootApplication
+@SpringBootApplication (
+		exclude = {
+				org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration.class,
+				org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration.class,
+				org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration.class
+		}
+)
 @EnableEurekaClient
 @EnableDiscoveryClient
 @KubernetesApplication

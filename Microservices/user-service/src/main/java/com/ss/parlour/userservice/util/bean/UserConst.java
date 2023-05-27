@@ -25,4 +25,5 @@ public class UserConst {
     public final static String USER_INTERESTS_ADDED_SUCCESSFUL_NARRATION = "User interests added successfully";
     public final static String USER_IMAGE_UPLOAD_PRE_SIGN_SUCCESSFUL_NARRATION = "User image upload pre sign url successfully created";
     public final static String USER_INFO_FOUND_SUCCESSFUL_NARRATION = "User info found successfully";
+    public final static String USER_INTERESTS_FOUND_SUCCESSFUL_NARRATION = "User interests found successfully";
 }

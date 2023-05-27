@@ -105,7 +105,7 @@ public class ArticleService implements ArticleServiceI {
         //Load article posted by user from db
         ArticleListResponse articleListResponse = articleHandlerI.findArticleByUser(articleListRequest);
         return  ArticleResponse.builder().body(articleListResponse).articleMsgHeader(articleListRequest.getArticleMsgHeader())
-                .message(ArticleConst.SUCCESSFULLY_LIKE_ADDED).httpStatus(200).zonedDateTime(ZonedDateTime.now(ZoneId.of("Z"))).build();
+                .message(ArticleConst.SUCCESSFULLY_LOAD_USER_ARTICLES).httpStatus(200).zonedDateTime(ZonedDateTime.now(ZoneId.of("Z"))).build();
     }
 
     @Override

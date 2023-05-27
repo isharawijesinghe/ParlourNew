@@ -23,6 +23,7 @@ public interface ArticleConst {
     String ARTICLE_HISTORY_SEARCH_SUCCESSFUL_NARRATION = "Successfully loaded article history";
     String ARTICLE_IMAGE_UPLOAD_PRE_SIGNED_GENERATE_SUCCESSFUL_NARRATION = "Successfully generate pre sign url for article image upload";
     String SUCCESSFULLY_LOADED_EDIT_APPROVE_REQUESTS = "Successfully loaded article edit approve requests for users";
+    String SUCCESSFULLY_LOAD_USER_ARTICLES = "Successfully loaded user's articles";
 
     String SEPARATOR = "~";
 

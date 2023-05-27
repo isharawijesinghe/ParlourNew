@@ -120,7 +120,7 @@ public class DefaultSecurityConfig  {
 
 
         // Add our custom Token based authentication filter
-        //http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
